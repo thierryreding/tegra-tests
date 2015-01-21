@@ -2,10 +2,12 @@
 
 import io
 import os
+import pyudev
 import random
 import sys
 import time
 
+from linux import drm
 from linux import kmsg
 from linux import system
 from linux import watchdog
@@ -172,6 +174,32 @@ def test_board():
     board = detect()
     board.check()
 
+
+def test_drm():
+    context = pyudev.Context()
+    devices = context.list_devices(subsystem = 'drm')
+
+    print('DRM devices:')
+
+    for device in devices:
+        if not device.device_node:
+            continue
+
+        if 'seat' not in device.tags:
+            continue
+
+        devno = device.device_number
+
+        print('  %s (%u, %u)' % (device.device_node, os.major(devno),
+                                 os.minor(devno)))
+
+        dev = drm.open(device.device_node)
+        version = dev.GetVersion()
+        print('    %s (%u.%u.%u, %s, %s)' % (version.name, version.major,
+                                             version.minor, version.patch,
+                                             version.date,
+                                             version.description))
+
 if __name__ == '__main__':
     if len(sys.argv) > 1:
         if sys.argv[1] == 'info':
@@ -191,6 +219,9 @@ if __name__ == '__main__':
 
         if sys.argv[1] == 'board':
             test_board()
+
+        if sys.argv[1] == 'drm':
+            test_drm()
 
     else:
         test_show_info()
