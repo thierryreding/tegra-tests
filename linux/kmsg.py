@@ -164,6 +164,14 @@ class Kmsg():
         self.entry = None
         return entry
 
+    def __iter__(self):
+        while True:
+            entry = self.read()
+            if not entry:
+                break
+
+            yield entry
+
 '''
 Open the /dev/kmsg device and set the file descriptor to non-blocking. The
 returned Kmsg object can be used to read entries from the device one at a

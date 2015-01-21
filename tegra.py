@@ -81,13 +81,7 @@ def test_show_info():
 
 def test_kmsg():
     with kmsg.open('/dev/kmsg') as log:
-        entry = None
-
-        while True:
-            entry = log.read()
-            if not entry:
-                break
-
+        for entry in log:
             print(entry)
 
 '''
