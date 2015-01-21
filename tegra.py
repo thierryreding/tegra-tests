@@ -73,6 +73,11 @@ def test_show_info():
     print('System information:')
     print('-------------------')
 
+    (system, hostname, release, version, machine) = os.uname()
+    print('OS:', system, release, version)
+    print('Hostname:', hostname)
+    print('Machine:', machine)
+
     board = detect()
     board.print()
 
