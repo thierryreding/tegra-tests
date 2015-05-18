@@ -1,82 +1,17 @@
 #!/usr/bin/python3
 
-import io
+import boards
 import os
-import pyudev
-import random
 import sys
-import time
-
-from linux import drm
-from linux import kmsg
-from linux import system
-from linux import watchdog
-
-def check_device(path, indent = 2):
-    print('%s- %s: ' % (' ' * indent, path), end = '')
-
-    if os.access(path, os.F_OK):
-        print('OK')
-    else:
-        print('failed')
-
-class Tegra():
-    def check_devices(self):
-        print('- checking for devices:')
-
-    def check(self):
-        print('%s detected' % self.__description__)
-        print('running tests:')
-        self.check_devices()
-
-    def print(self, file = sys.stdout):
-        print('Board:', self.__description__, file = file)
-
-class Tegra20(Tegra):
-    __compatible__ = 'nvidia,tegra20'
-
-class Tegra30(Tegra):
-    __compatible__ = 'nvidia,tegra30'
-
-class Tegra114(Tegra):
-    __compatible__ = 'nvidia,tegra114'
-
-class Tegra124(Tegra):
-    __compatible__ = 'nvidia,tegra124'
-
-class JetsonTK1(Tegra124):
-    __compatible__ = 'nvidia,jetson-tk1'
-    __description__ = 'NVIDIA Jetson TK1'
-
-    def check_devices_mmc(self):
-        check_device('/dev/mmcblk0') # eMMC
-        check_device('/dev/mmcblk1') # MMC/SD
-
-    def check_devices(self):
-        super().check_devices()
-        self.check_devices_mmc()
-
-class Tegra132(Tegra):
-    __compatible__ = 'nvidia,tegra132'
-
-socs = [
-        Tegra20,
-        Tegra30,
-        Tegra114,
-        Tegra124,
-        Tegra132,
-    ]
-
-boards = [
-        JetsonTK1,
-    ]
+import tegra
+import unittest
 
 def test_show_info():
     print('System information:')
     print('-------------------')
 
-    (system, hostname, release, version, machine) = os.uname()
-    print('OS:', system, release, version)
+    (opsys, hostname, release, version, machine) = os.uname()
+    print('OS:', opsys, release, version)
     print('Hostname:', hostname)
     print('Machine:', machine)
 
@@ -153,7 +88,7 @@ Detect the type of board by looking at the compatible string of the device
 tree's root node.
 '''
 def detect():
-    with io.open('/sys/firmware/devicetree/base/compatible', 'r') as file:
+    with open('/sys/firmware/devicetree/base/compatible', 'r') as file:
         line = file.read()
         if line:
             # remove the last, empty element
@@ -174,33 +109,44 @@ def test_board():
     board = detect()
     board.check()
 
+#def test_drm():
+#    context = pyudev.Context()
+#    devices = context.list_devices(subsystem = 'drm')
+#
+#    print('DRM devices:')
+#
+#    for device in devices:
+#        if not device.device_node:
+#            continue
+#
+#        if 'seat' not in device.tags:
+#            continue
+#
+#        devno = device.device_number
+#
+#        print('  %s (%u, %u)' % (device.device_node, os.major(devno),
+#                                 os.minor(devno)))
+#
+#        dev = drm.open(device.device_node)
+#        version = dev.GetVersion()
+#        print('    %s (%u.%u.%u, %s, %s)' % (version.name, version.major,
+#                                             version.minor, version.patch,
+#                                             version.date,
+#                                             version.description))
 
-def test_drm():
-    context = pyudev.Context()
-    devices = context.list_devices(subsystem = 'drm')
+class TegraTestLoader(unittest.TestLoader):
+    pass
 
-    print('DRM devices:')
-
-    for device in devices:
-        if not device.device_node:
-            continue
-
-        if 'seat' not in device.tags:
-            continue
-
-        devno = device.device_number
-
-        print('  %s (%u, %u)' % (device.device_node, os.major(devno),
-                                 os.minor(devno)))
-
-        dev = drm.open(device.device_node)
-        version = dev.GetVersion()
-        print('    %s (%u.%u.%u, %s, %s)' % (version.name, version.major,
-                                             version.minor, version.patch,
-                                             version.date,
-                                             version.description))
+class TegraTestRunner(unittest.TextTestRunner):
+    pass
 
 if __name__ == '__main__':
+    board = boards.detect()
+    soc = tegra.detect()
+
+    print('Detected:', board.name, '(%s)' % soc.name)
+    print()
+
     if len(sys.argv) > 1:
         if sys.argv[1] == 'info':
             test_show_info()
@@ -220,8 +166,15 @@ if __name__ == '__main__':
         if sys.argv[1] == 'board':
             test_board()
 
-        if sys.argv[1] == 'drm':
-            test_drm()
+#        if sys.argv[1] == 'drm':
+#            test_drm()
+
+        if sys.argv[1] == 'all':
+            loader = TegraTestLoader()
+            runner = TegraTestRunner()
+
+            suite = loader.discover('tests', '*.py', '.')
+            runner.run(suite)
 
     else:
         test_show_info()
