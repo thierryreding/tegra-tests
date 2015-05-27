@@ -38,7 +38,7 @@ class Version():
 
 class libdrm(ctypes.CDLL):
     def __init__(self):
-        ctypes.CDLL.__init__(self, 'libdrm.so')
+        ctypes.CDLL.__init__(self, 'libdrm.so.2')
 
         self.drmGetVersion.argstype = [ ctypes.c_int ]
         self.drmGetVersion.restype = drmVersionPtr

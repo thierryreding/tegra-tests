@@ -1,12 +1,98 @@
 #!/usr/bin/python3
 
+import argparse
 import boards
+import io
 import os
 import sys
 import tegra
 import unittest
 
-def test_show_info():
+from linux import kmsg, log, system
+
+class TegraTestLoader(unittest.TestLoader):
+    pass
+
+#class TegraTestRunner(unittest.TextTestRunner):
+#    pass
+
+class WritelnDecorator(object):
+    def __init__(self, stream):
+        self.stream = stream
+
+    def __getattr__(self, attr):
+        if attr in ('stream', '__getstate__'):
+            raise AttributeError(attr)
+
+        return getattr(self.stream, attr)
+
+    def writeln(self, arg = None):
+        if arg:
+            self.write(arg)
+
+        self.write('\n')
+
+def strclass(cls):
+    return '%s.%s' % (cls.__module__, cls.__name__)
+
+class RedirectOutput(io.IOBase):
+    def __init__(self, stream = sys.stdout):
+        self.stream = stream
+        self.newline = True
+
+    def write(self, b):
+        if self.newline:
+            self.stream.write('| ')
+
+        self.stream.write(b)
+
+        self.newline = b.endswith('\n')
+
+class TegraTestResult(unittest.TestResult):
+    def __init__(self, stream = None, descriptions = True, verbosity = 1):
+        super().__init__(stream, descriptions, verbosity)
+        self.stream = WritelnDecorator(stream)
+        self.verbosity = verbosity
+
+    def startTest(self, test):
+        self.stdout = sys.stdout
+        self.stderr = sys.stderr
+
+        if self.verbosity > 0:
+            log.begin('running: %s (%s)' % (strclass(test.__class__),
+                                            test._testMethodName),
+                      end = '\n')
+            sys.stdout = RedirectOutput(sys.stdout)
+            sys.stderr = RedirectOutput(sys.stderr)
+        else:
+            log.begin('running: %s (%s)' % (strclass(test.__class__),
+                                            test._testMethodName))
+            sys.stdout = None
+            sys.stderr = None
+
+        super().startTest(test)
+
+    def stopTest(self, test):
+        super().stopTest(test)
+        sys.stderr = self.stderr
+        sys.stdout = self.stdout
+        log.end()
+
+class TegraTestRunner(object):
+    def __init__(self, stream = None, descriptions = True, verbosity = 1):
+        if not stream:
+            stream = sys.stderr
+
+        self.stream = stream
+        self.descriptions = descriptions
+        self.verbosity = verbosity
+
+    def run(self, test):
+        result = TegraTestResult(self.stream, self.descriptions, self.verbosity)
+        test(result)
+        return result
+
+def show_system_info():
     print('System information:')
     print('-------------------')
 
@@ -15,166 +101,54 @@ def test_show_info():
     print('Hostname:', hostname)
     print('Machine:', machine)
 
-    board = detect()
-    board.print()
+    board = boards.detect()
+    print('Board:', board.name)
+
+    soc = tegra.detect()
+    print('SoC:', soc.name)
 
     cpus = system.CPUSet()
     cpus.print()
 
-def test_kmsg():
+    print()
+
+def show_kmsg():
     with kmsg.open('/dev/kmsg') as log:
         for entry in log:
             print(entry)
 
-'''
-Provides access to a realtime clock device in the system.
-'''
-class RTC:
-    def __init__(self, name = 'rtc0'):
-        self.alarm = '/sys/class/rtc/%s/wakealarm' % name
-
-    '''
-    Set the RTC to raise an alarm a given number of seconds from now.
-    '''
-    def set_alarm_relative(self, alarm):
-        alarm = int(time.time()) + alarm
-
-        with io.open(self.alarm, 'w') as rtc:
-            rtc.write('%u' % alarm)
-
-def test_suspend(rtc = 'rtc0'):
-    print('Testing suspend/resume')
-
-    rtc = RTC(rtc)
-    rtc.set_alarm_relative(10)
-
-    sys = system.System()
-    sys.suspend()
-
-def test_cpu_hotplug():
-    print('Testing CPU hotplugging')
-
-    cpus = system.CPUSet()
-
-    for cpu in cpus:
-        print('CPU#%u: mask:' % cpu.num, 1 << cpu.num)
-
-    masks = cpus.generate_masks()
-
-    # go through all combinations once
-    for mask in masks:
-        cpus.apply_mask(mask)
-
-    # select random combinations
-    for i in range(0, 100):
-        mask = random.choice(masks)
-        cpus.apply_mask(mask)
-
-    # bring all CPUs online
-    cpus.online()
-
-def test_watchdog():
-    print('Testing watchdog')
-
-    wdt = watchdog.Watchdog('/dev/watchdog')
-    wdt.set_timeout(30)
-    wdt.enable()
-
-class UnsupportedBoard(Exception):
-    pass
-
-'''
-Detect the type of board by looking at the compatible string of the device
-tree's root node.
-'''
-def detect():
-    with open('/sys/firmware/devicetree/base/compatible', 'r') as file:
-        line = file.read()
-        if line:
-            # remove the last, empty element
-            values = line.split('\0')[:-1]
-
-            name = values[0]
-            soc = values[-1]
-
-            for board in boards:
-                if name == board.__compatible__:
-                    return board()
-
-            raise UnsupportedBoardException('SoC: %s, Board: %s' % (soc, name))
-
-        raise IOError
-
-def test_board():
-    board = detect()
-    board.check()
-
-#def test_drm():
-#    context = pyudev.Context()
-#    devices = context.list_devices(subsystem = 'drm')
-#
-#    print('DRM devices:')
-#
-#    for device in devices:
-#        if not device.device_node:
-#            continue
-#
-#        if 'seat' not in device.tags:
-#            continue
-#
-#        devno = device.device_number
-#
-#        print('  %s (%u, %u)' % (device.device_node, os.major(devno),
-#                                 os.minor(devno)))
-#
-#        dev = drm.open(device.device_node)
-#        version = dev.GetVersion()
-#        print('    %s (%u.%u.%u, %s, %s)' % (version.name, version.major,
-#                                             version.minor, version.patch,
-#                                             version.date,
-#                                             version.description))
-
-class TegraTestLoader(unittest.TestLoader):
-    pass
-
-class TegraTestRunner(unittest.TextTestRunner):
-    pass
-
 if __name__ == '__main__':
-    board = boards.detect()
-    soc = tegra.detect()
+    parser = argparse.ArgumentParser('')
+    parser.add_argument('--batch', '-b', action = 'store_const', const = True)
+    parser.add_argument('--verbose', '-v', default = 1, action = 'count')
+    parser.add_argument('--quiet', '-q', action = 'store_const', const = True)
+    parser.add_argument('tests', type = str, nargs = '*')
+    args = parser.parse_args(sys.argv[1:])
 
-    print('Detected:', board.name, '(%s)' % soc.name)
-    print()
+    if args.quiet:
+        args.verbose -= 1
 
-    if len(sys.argv) > 1:
-        if sys.argv[1] == 'info':
-            test_show_info()
+    if args.verbose > 0:
+        show_system_info()
+        #show_kmsg()
 
-        if sys.argv[1] == 'kmsg':
-            test_kmsg()
+    tests = []
 
-        if sys.argv[1] == 'suspend':
-            test_suspend()
+    for module in args.tests:
+        tests.append('tests.%s' % module)
 
-        if sys.argv[1] == 'cpu-hotplug':
-            test_cpu_hotplug()
+    loader = TegraTestLoader()
 
-        if sys.argv[1] == 'watchdog':
-            test_watchdog()
-
-        if sys.argv[1] == 'board':
-            test_board()
-
-#        if sys.argv[1] == 'drm':
-#            test_drm()
-
-        if sys.argv[1] == 'all':
-            loader = TegraTestLoader()
-            runner = TegraTestRunner()
-
-            suite = loader.discover('tests', '*.py', '.')
-            runner.run(suite)
-
+    if args.batch:
+        runner = unittest.TextTestRunner(verbosity = args.verbose)
+        log.color = False
     else:
-        test_show_info()
+        runner = TegraTestRunner(verbosity = args.verbose)
+        log.color = False
+
+    if not tests:
+        suite = loader.discover('tests', '*.py', '.')
+    else:
+        suite = loader.loadTestsFromNames(tests)
+
+    runner.run(suite)
