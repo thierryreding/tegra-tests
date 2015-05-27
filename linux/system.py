@@ -1,20 +1,23 @@
 #!/usr/bin/python
 
-import io
+import ctypes
 import os
 import sys
+import time
+
+from . import ioctl, libc, sysfs
 
 '''
 Represents one CPU present in the system.
 '''
 class CPU():
     def __init__(self, num):
-        self.path = '/sys/devices/system/cpu/cpu%u' % num
+        self.sysfs = sysfs.Object('devices/system/cpu/cpu%u' % num)
         self.hotpluggable = True
         self.num = num
 
-        with io.open(os.path.join(self.path, 'online'), 'r') as cpu:
-            online = cpu.readline().strip()
+        with self.sysfs.open('online', 'r') as file:
+            online = file.readline().strip()
             if online == '0':
                 self.online = False
             else:
@@ -24,13 +27,13 @@ class CPU():
     Bring the CPU online or take it offline.
     '''
     def set_online(self, online):
-        with io.open(os.path.join(self.path, 'online'), 'w') as cpu:
+        with self.sysfs.open('online', 'w') as file:
             if online:
-                cpu.write('1')
+                file.write('1')
             else:
-                cpu.write('0')
+                file.write('0')
 
-            cpu.online = online
+            self.online = online
 
     '''
     Return the CPU mask.
@@ -52,7 +55,7 @@ bringing them online or taking them offline.
 '''
 class CPUSet():
     def __init__(self):
-        with io.open('/sys/devices/system/cpu/present', 'r') as file:
+        with sysfs.open('devices/system/cpu/present', 'r') as file:
             present = file.readline().rstrip()
             self.start, self.end = map(int, present.split('-'))
 
@@ -145,6 +148,22 @@ class CPUSet():
         return iter(self.cpus)
 
 '''
+Provides access to a realtime clock device in the system.
+'''
+class RTC:
+    def __init__(self, name = 'rtc0'):
+        self.sysfs = sysfs.Object('class/rtc/%s' % name)
+
+    '''
+    Set the RTC to raise an alarm a given number of seconds from now.
+    '''
+    def set_alarm_relative(self, alarm):
+        alarm = int(time.time()) + alarm
+
+        with self.sysfs.open('wakealarm', 'w') as file:
+            file.write('%u' % alarm)
+
+'''
 Provides access to the system and system wide controls.
 '''
 class System:
@@ -152,5 +171,38 @@ class System:
         pass
 
     def suspend(self):
-        with io.open('/sys/power/state', 'w') as file:
+        with sysfs.open('power/state', 'w') as file:
             file.write('mem')
+
+'''
+Provides access to a watchdog device in the system.
+'''
+class Watchdog():
+    WDIOC_SETOPTIONS = ioctl.IOR(ord('W'), 4, 4)
+    WDIOC_SETTIMEOUT = ioctl.IOWR(ord('W'), 6, 4)
+
+    WDIOS_DISABLECARD = 0x0001
+    WDIOS_ENABLECARD = 0x0002
+
+    def __init__(self, path):
+        self.fd = os.open(path, os.O_RDWR)
+
+    def disable(self):
+        options = ctypes.pointer(ctypes.c_uint(Watchdog.WDIOS_DISABLECARD))
+
+        libc.ioctl(self.fd, Watchdog.WDIOC_SETOPTIONS, options)
+
+    def enable(self):
+        options = ctypes.pointer(ctypes.c_uint(Watchdog.WDIOS_ENABLECARD))
+
+        libc.ioctl(self.fd, Watchdog.WDIOC_SETOPTIONS, options)
+
+    def set_timeout(self, timeout):
+        timeout = ctypes.pointer(ctypes.c_uint(timeout))
+
+        libc.ioctl(self.fd, Watchdog.WDIOC_SETTIMEOUT, timeout)
+
+    def __del__(self):
+        options = ctypes.pointer(ctypes.c_uint(Watchdog.WDIOS_DISABLECARD))
+        libc.ioctl(self.fd, Watchdog.WDIOC_SETOPTIONS, options)
+        os.close(self.fd)
