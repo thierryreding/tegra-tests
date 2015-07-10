@@ -45,14 +45,19 @@ class libdrm(ctypes.CDLL):
 
 class DRM:
     def __init__(self, device):
+        self.device = device
+
+    def __enter__(self):
         self.libdrm = libdrm()
 
-        if type(device) == str:
-            self.fd = os.open(device, os.O_RDWR)
-        elif type(device) == int:
-            self.fd = device
+        if type(self.device) == str:
+            self.fd = os.open(self.device, os.O_RDWR)
+        elif type(self.device) == int:
+            self.fd = self.device
 
-    def __del__(self):
+        return self
+
+    def __exit__(self, type, value, traceback):
         os.close(self.fd)
 
     def GetVersion(self):
@@ -61,15 +66,7 @@ class DRM:
         self.libdrm.drmFreeVersion(version)
         return result
 
-def open(device):
-    if type(device) == str:
-        fd = os.open(device, os.O_RDWR)
-    elif type(device) == int:
-        fd = device
-
-    return DRM(fd)
-
 if __name__ == '__main__':
-    drm = open(sys.argv[1])
-    version = drm.GetVersion()
-    print(version)
+    with DRM(sys.argv[1]) as drm:
+        version = drm.GetVersion()
+        print(version)
