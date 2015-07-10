@@ -55,9 +55,9 @@ def detect():
 path = os.path.dirname(__file__)
 
 for directory in os.listdir(path):
-    path = os.path.join(path, directory)
+    subpath = os.path.join(path, directory)
 
-    if os.path.exists(os.path.join(path, '__init__.py')):
+    if os.path.exists(os.path.join(subpath, '__init__.py')):
         name = 'boards.%s' % directory
         module = importlib.import_module(name)
-        boards.extend(module.vendor.load(path))
+        boards.extend(module.vendor.load(subpath))
