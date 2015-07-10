@@ -2,7 +2,7 @@ import os.path
 import random
 import unittest
 
-from linux import system, watchdog
+from linux import system
 
 class suspend(unittest.TestCase):
     def test(self, rtc = 'rtc0'):
