@@ -14,3 +14,9 @@ class Object:
 
     def open(self, path, *args, **kwargs):
         return open('%s/%s' % (self.path, path), *args, **kwargs)
+
+class Device:
+    def __init__(self, bus, name, driver):
+        self.bus = bus
+        self.name = name
+        self.driver = driver
