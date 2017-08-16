@@ -1,14 +1,23 @@
 #!/usr/bin/python3
 
 import os
-import pyudev
 import sys
 import unittest
 
+def has_pyudev():
+    try:
+        import pyudev
+        return True
+    except:
+        return False
+
 import linux.drm
 
+@unittest.skipUnless(has_pyudev(), 'pyudev required')
 class drm(unittest.TestCase):
     def test_list_devices(self):
+        import pyudev
+
         context = pyudev.Context()
         devices = context.list_devices(subsystem = 'drm')
 
