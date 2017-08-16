@@ -8,6 +8,15 @@ def exists(path):
 def open(path, *args, **kwargs):
     return io.open('%s/%s' % (mountpoint, path), *args, **kwargs)
 
+def list(path):
+    objects = []
+
+    for name in os.listdir('%s/%s' % (mountpoint, path)):
+        vtcon = Object('%s/%s' % (path, name))
+        objects.append(vtcon)
+
+    return objects
+
 class Object:
     def __init__(self, path):
         self.path = path
