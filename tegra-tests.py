@@ -76,7 +76,14 @@ class TegraTestResult(unittest.TestResult):
         super().stopTest(test)
         sys.stderr = self.stderr
         sys.stdout = self.stdout
-        log.end()
+        if self.skipped:
+            print('skipped (%s)' % self.skipped)
+            self.skipped = None
+        else:
+            log.end()
+
+    def addSkip(self, test, reason):
+        self.skipped = reason
 
 class TegraTestRunner(object):
     def __init__(self, stream = None, descriptions = True, verbosity = 1):
