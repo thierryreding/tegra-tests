@@ -4,9 +4,6 @@ import unittest
 
 from linux import log, sysfs, system
 
-def cpufreq_supported():
-    return sysfs.exists('devices/system/cpu/cpu0/cpufreq')
-
 class CPU:
     def __init__(self, num):
         self.sysfs = sysfs.Object('devices/system/cpu/cpu%u/cpufreq' % num)
@@ -53,6 +50,23 @@ class CPU:
 
         return super.__setattr__(self, name, value)
 
+    def has_governor(self, name):
+        return name in self.supported_governors
+
+def cpufreq_supported():
+    return sysfs.exists('devices/system/cpu/cpu0/cpufreq')
+
+def cpufreq_has_governor(name):
+    cpuset = system.CPUSet()
+
+    for cpu in cpuset:
+        cpu = CPU(cpu.num)
+
+        if not cpu.has_governor(name):
+            return False
+
+    return True
+
 @unittest.skipUnless(cpufreq_supported(), 'CPUfreq not supported')
 class cpufreq(unittest.TestCase):
     def test_list_governors(self):
@@ -88,6 +102,8 @@ class cpufreq(unittest.TestCase):
                 else:
                     print('    - %*s' % (width, rate))
 
+    @unittest.skipUnless(cpufreq_has_governor('userspace'),
+                         'userspace governor not supported')
     def test_set_rates(self):
         cpuset = system.CPUSet()
 
