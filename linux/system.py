@@ -13,15 +13,22 @@ Represents one CPU present in the system.
 class CPU():
     def __init__(self, num):
         self.sysfs = sysfs.Object('devices/system/cpu/cpu%u' % num)
-        self.hotpluggable = True
         self.num = num
 
-        with self.sysfs.open('online', 'r') as file:
-            online = file.readline().strip()
-            if online == '0':
-                self.online = False
-            else:
-                self.online = True
+        try:
+            file = self.sysfs.open('online', 'r')
+        except FileNotFoundError:
+            self.hotpluggable = False
+            self.online = True
+        else:
+            with file:
+                online = file.readline().strip()
+                if online == '0':
+                    self.online = False
+                else:
+                    self.online = True
+
+            self.hotpluggable = True
 
     '''
     Bring the CPU online or take it offline.
@@ -57,7 +64,10 @@ class CPUSet():
     def __init__(self):
         with sysfs.open('devices/system/cpu/present', 'r') as file:
             present = file.readline().rstrip()
-            self.start, self.end = map(int, present.split('-'))
+            if '-' in present:
+                self.start, self.end = map(int, present.split('-'))
+            else:
+                self.start = self.end = int(present)
 
         self.cpus = []
 
