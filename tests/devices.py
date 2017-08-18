@@ -7,6 +7,7 @@ import unittest
 class sysfs(unittest.TestCase):
     def test_check(self):
         board = boards.detect()
+        failed = False
 
         print('board:', board.name)
 
@@ -18,6 +19,7 @@ class sysfs(unittest.TestCase):
                 print('exists')
             else:
                 print('failed')
+                failed = True
 
             path = '%s/driver' % path
 
@@ -29,7 +31,11 @@ class sysfs(unittest.TestCase):
 
                 if driver != device.driver:
                     print('failed')
+                    failed = True
                 else:
                     print('done')
             else:
                 print('    unbound')
+
+        if failed:
+            self.fail('not all devices are properly initialized')
