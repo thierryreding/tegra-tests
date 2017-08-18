@@ -6,6 +6,7 @@ import io
 import os
 import sys
 import tegra
+import textwrap
 import unittest
 
 from linux import kmsg, log, system
@@ -80,7 +81,22 @@ class TegraTestResult(unittest.TestResult):
             print('skipped (%s)' % self.skipped)
             self.skipped = None
         else:
-            log.end()
+            if self.wasSuccessful():
+                print('done')
+            else:
+                if self.errors:
+                    print('* errors:')
+
+                    for test, error in self.errors:
+                        print(textwrap.indent('- %s' % test, '  '))
+                        print(textwrap.indent(error, '    | '))
+
+                if self.failures:
+                    print('* failures:')
+
+                    for test, error in self.failures:
+                        print(textwrap.indent('- %s' % test, '  '))
+                        print(textwrap.indent(error, '    | '))
 
     def addSkip(self, test, reason):
         self.skipped = reason
