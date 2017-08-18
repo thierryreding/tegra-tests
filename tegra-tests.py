@@ -174,4 +174,7 @@ if __name__ == '__main__':
     else:
         suite = loader.loadTestsFromNames(tests)
 
-    runner.run(suite)
+    result = runner.run(suite)
+
+    if not result.wasSuccessful():
+        sys.exit(1)
