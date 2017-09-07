@@ -195,7 +195,10 @@ class Watchdog():
     WDIOS_ENABLECARD = 0x0002
 
     def __init__(self, path):
-        self.fd = os.open(path, os.O_RDWR)
+        self.path = path
+
+    def __enter__(self):
+        self.fd = os.open(self.path, os.O_RDWR)
 
     def disable(self):
         options = ctypes.pointer(ctypes.c_uint(Watchdog.WDIOS_DISABLECARD))
@@ -212,7 +215,7 @@ class Watchdog():
 
         libc.ioctl(self.fd, Watchdog.WDIOC_SETTIMEOUT, timeout)
 
-    def __del__(self):
+    def __exit__(self, type, value, traceback):
         options = ctypes.pointer(ctypes.c_uint(Watchdog.WDIOS_DISABLECARD))
         libc.ioctl(self.fd, Watchdog.WDIOC_SETOPTIONS, options)
         os.close(self.fd)

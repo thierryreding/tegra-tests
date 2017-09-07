@@ -2,7 +2,7 @@ import os.path
 import random
 import unittest
 
-from linux import system, watchdog
+from linux import system
 
 class suspend(unittest.TestCase):
     def test(self, rtc = 'rtc0'):
@@ -45,6 +45,6 @@ class watchdog(unittest.TestCase):
     def test(self):
         print('Testing watchdog')
 
-        wdt = system.Watchdog('/dev/watchdog')
-        wdt.set_timeout(30)
-        wdt.enable()
+        with system.Watchdog('/dev/watchdog') as wdt:
+            wdt.set_timeout(30)
+            wdt.enable()
