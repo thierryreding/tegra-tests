@@ -2,6 +2,7 @@
 
 import ctypes
 import os
+import platform
 import sys
 import time
 
@@ -172,6 +173,75 @@ class RTC:
 
         with self.sysfs.open('wakealarm', 'w') as file:
             file.write('%u' % alarm)
+
+class Kernel:
+    class Version:
+        def __init__(self, release = None):
+            if not release:
+                self.release = platform.release()
+            else:
+                self.release = release
+
+            try:
+                self.version, self.extra = self.release.split('-', maxsplit = 1)
+            except:
+                self.version = self.release
+                self.extra = None
+
+            try:
+                major, minor, patch = self.version.split('.')
+            except:
+                major, minor = self.version.split('.')
+                patch = 0
+
+            self.major = int(major)
+            self.minor = int(minor)
+            self.patch = int(patch)
+
+        def numerical(self):
+            return self.major << 16 | self.minor << 8 | self.patch
+
+        def __lt__(self, other):
+            if isinstance(other, str):
+                other = Version(other)
+
+            return self.numerical() < other.numerical()
+
+        def __le__(self, other):
+            if isinstance(other, str):
+                other = Version(other)
+
+            return self.numerical() <= other.numerical()
+
+        def __eq__(self, other):
+            if isinstance(other, str):
+                other = Version(other)
+
+            return self.numerical() == other.numerical()
+
+        def __gt__(self, other):
+            if isinstance(other, str):
+                other = Version(other)
+
+            return self.numerical() > other.numerical()
+
+        def __ge__(self, other):
+            if isinstance(other, str):
+                other = Version(other)
+
+            return self.numerical() >= other.numerical()
+
+        def __repr__(self):
+            return '%u.%u.%u' % (self.major, self.minor, self.patch)
+
+        def __str__(self):
+            if self.extra:
+                return '%u.%u.%u-%s' % (self.major, self.minor, self.patch, self.extra)
+            else:
+                return repr(self)
+
+    def __init__(self):
+        self.version = Kernel.Version()
 
 '''
 Provides access to the system and system wide controls.
