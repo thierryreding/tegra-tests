@@ -86,11 +86,6 @@ class CPUSet():
     def count(self):
         return len(self.cpus)
 
-    def print(self, file = sys.stdout):
-        print('CPU Set: %u CPUs' % self.count(), file = file)
-        for cpu in self.cpus:
-            print(' ', cpu, file = file)
-
     '''
     Generate a list of masks for all possible on/off combinations of all
     CPUs in this set.

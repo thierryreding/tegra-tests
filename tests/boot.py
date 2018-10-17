@@ -1,10 +1,32 @@
 #!/usr/bin/python3
 
-import os.path, sys
+import os, os.path, sys
 import runner
 
 module = sys.modules[__name__]
 module.name = 'boot'
+
+class system(runner.Test):
+    def __call__(self, log, *args, **kwargs):
+        from linux import system
+        import boards, tegra
+
+        log.debug('System information:')
+        log.debug('-------------------')
+
+        (opsys, hostname, release, version, machine) = os.uname()
+        log.debug('OS:', opsys, release, version)
+        log.debug('Hostname:', hostname)
+        log.debug('Machine:', machine)
+        log.debug('Board:', boards.detect())
+        log.debug('SoC:', tegra.detect())
+
+        cpus = system.CPUSet()
+
+        log.debug('CPUs:', cpus.count())
+
+        for cpu in cpus:
+            log.debug(' ', cpu)
 
 class devices(runner.Test):
     def __call__(self, log, *args, **kwargs):
@@ -78,6 +100,7 @@ class logs(runner.Test):
             raise runner.Error('%u warning%s %s error%s found in the kernel log' % (count, plural, andor, plural))
 
 tests = [
+    system,
     devices,
     logs,
 ]
