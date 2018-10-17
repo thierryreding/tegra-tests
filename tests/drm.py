@@ -1,27 +1,19 @@
 #!/usr/bin/python3
 
-import os
-import sys
-import unittest
+import pyudev, sys
+import runner
 
-def has_pyudev():
-    try:
-        import pyudev
-        return True
-    except:
-        return False
+module = sys.modules[__name__]
+module.name = 'drm'
 
-import linux.drm
-
-@unittest.skipUnless(has_pyudev(), 'pyudev required')
-class drm(unittest.TestCase):
-    def test_list_devices(self):
-        import pyudev
+class devices(runner.Test):
+    def __call__(self, log, *args, **kwargs):
+        from linux import drm
 
         context = pyudev.Context()
         devices = context.list_devices(subsystem = 'drm')
 
-        print('DRM devices:')
+        log.debug('DRM devices:')
 
         for device in devices:
             if not device.device_node:
@@ -32,14 +24,21 @@ class drm(unittest.TestCase):
 
             devno = device.device_number
 
-            print('  %s (%u, %u)' % (device.device_node, os.major(devno),
-                                     os.minor(devno)))
+            log.debug('  %s (%u, %u)' % (device.device_node, os.major(devno),
+                                         os.minor(devno)))
 
-            dev = linux.drm.open(device.device_node)
+            dev = drm.open(device.device_node)
             version = dev.GetVersion()
-            print('    Driver:', version.name)
-            print('      Description:', version.description)
-            print('      Version: %u.%u.%u (%s)' % (version.major,
-                                                    version.minor,
-                                                    version.patch,
-                                                    version.date))
+            log.debug('    Driver:', version.name)
+            log.debug('      Description:', version.description)
+            log.debug('      Version: %u.%u.%u (%s)' % (version.major,
+                                                        version.minor,
+                                                        version.patch,
+                                                        version.date))
+
+tests = [
+    devices,
+]
+
+if __name__ == '__main__':
+    runner.standalone(module)

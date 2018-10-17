@@ -1,50 +1,40 @@
-import os.path
-import random
-import unittest
+#!/usr/bin/python3
 
-from linux import system, watchdog
+import sys
+import runner
 
-class suspend(unittest.TestCase):
-    def test(self, rtc = 'rtc0'):
-        print('Testing suspend/resume')
+module = sys.modules[__name__]
+module.name = 'system'
 
-        rtc = system.RTC(rtc)
-        rtc.set_alarm_relative(2)
+class suspend(runner.Test):
+    def __call__(self, log, *args, **kwargs):
+        from linux import system
+
+        rtc = system.RTC('rtc0')
+        rtc.set_alarm_relative(5)
 
         sys = system.System()
         sys.suspend()
 
-class cpuhotplug(unittest.TestCase):
-    def test(self):
-        print('Testing CPU hotplugging')
+'''
+Note that this is merely an API test, because when this test finishes running,
+the watchdog object will be deleted, which in turn will disable the watchdog.
+The reason for this is that the watchdog will reboot the system if successful,
+at which point we have no way of determining whether or not it actually
+worked from this test suite.
+'''
+class watchdog(runner.Test):
+    def __call__(self, log, *args, **kwargs):
+        from linux import system
 
-        cpus = system.CPUSet()
+        watchdog = system.Watchdog('/dev/watchdog')
+        watchdog.set_timeout(30)
+        watchdog.enable()
 
-        for cpu in cpus:
-            print('CPU#%u: mask:' % cpu.num, 1 << cpu.num)
+tests = [
+    suspend,
+    watchdog,
+]
 
-        masks = cpus.generate_masks()
-
-        # go through all combinations once
-        for mask in masks:
-            cpus.apply_mask(mask)
-
-        # select random combinations
-        for i in range(0, 100):
-            mask = random.choice(masks)
-            cpus.apply_mask(mask)
-
-        # bring all CPUs online
-        cpus.online()
-
-def watchdog_supported():
-    return os.path.exists('/dev/watchdog')
-
-@unittest.skipUnless(watchdog_supported(), 'Watchdog not supported')
-class watchdog(unittest.TestCase):
-    def test(self):
-        print('Testing watchdog')
-
-        wdt = system.Watchdog('/dev/watchdog')
-        wdt.set_timeout(30)
-        wdt.enable()
+if __name__ == '__main__':
+    runner.standalone(module)
