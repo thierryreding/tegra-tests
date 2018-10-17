@@ -58,3 +58,26 @@ class Board(boards.Board):
         # SPI bus
         sysfs.Device('spi', 'spi1.0', 'm25p80'),
     ]
+
+    whitelist = [
+        r'/cpus/cpu@\d+missing clock-frequency property',
+        r' usb\d+-\d+: usb\d+-\d+ supply vbus not found',
+        r'.*Failed to get supply \'.*\': -517',
+        r'\+.*: bypassed regulator has no supply!',
+        r'\+.*: failed to get the current voltage\(-517\)',
+        r'as3722-regulator as3722-regulator: regulator .* register failed -517',
+        r'tegra124-dfll 70110000.clock: couldn\'t get vdd_cpu regulator',
+        r'tegra-ahci 70027000\.sata: Failed to get regulators',
+        r'tegra-xusb 70090000\.usb: failed to get regulators: -517',
+        r'lm90 0-004c: 0-004c supply vcc not found, using dummy regulator',
+        r'mmc\d+: Unknown controller version \(3\)\. You may experience problems\.',
+        r'mmc\d+: Invalid maximum block size, assuming 512 bytes',
+        r'tegra30-i2s 70301100\.i2s: DMA channels sourced from device 70300000\.ahub',
+        r'as3722-regulator as3722-regulator: DMA mask not set',
+        r'tegra-pcie 1003000\.pcie: Slot present pin change, signature: \d+',
+        r'tegra-pcie 1003000\.pcie: link \d+ down, retrying',
+        r'pci_bus [0-9a-fA-F]{4}:[0-9a-fA-F]{2}: \d+-byte config .* to [0-9a-fA-F]{4}:[0-9a-fA-F]{2}:[0-9a-fA-F]{2}\.\d offset 0x[0-9a-fA-F]+ may corrupt adjacent RW1C bits',
+        r'pci [0-9a-fA-F]{4}:[0-9a-fA-F]{2}:[0-9a-fA-F]{2}\.[0-9a-fA-F]: nv_msi_ht_cap_quirk didn\'t locate host bridge',
+        r'platform regulatory.0: Direct firmware load for regulatory.db failed with error -2',
+        r'tegra-hdmi 54280000.hdmi: cannot set audio to 48000 Hz at 297000000 Hz pixel clock',
+    ]
