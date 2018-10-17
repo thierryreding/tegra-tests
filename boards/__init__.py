@@ -30,7 +30,8 @@ class UnsupportedBoardException(Exception):
     pass
 
 class Board:
-    pass
+    def __str__(self):
+        return self.name
 
 boards = []
 

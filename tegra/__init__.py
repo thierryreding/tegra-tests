@@ -9,6 +9,9 @@ class SoC:
     compatible = 'nvidia,tegra'
     name = 'NVIDIA Tegra'
 
+    def __str__(self):
+        return self.name
+
 '''
 Detect the type of SoC by looking at the compatible string of the device
 tree's root node.
