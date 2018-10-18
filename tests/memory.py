@@ -62,9 +62,5 @@ class emc(runner.Test):
 
         return rate
 
-tests = [
-    emc,
-]
-
 if __name__ == '__main__':
     runner.standalone(module)

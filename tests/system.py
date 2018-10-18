@@ -29,10 +29,5 @@ class watchdog(runner.Test):
         watchdog.set_timeout(30)
         watchdog.enable()
 
-tests = [
-    suspend,
-    watchdog,
-]
-
 if __name__ == '__main__':
     runner.standalone(module)

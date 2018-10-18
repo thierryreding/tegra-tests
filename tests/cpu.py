@@ -143,10 +143,5 @@ class cpufreq(runner.Test):
             else:
                 log.cont('done')
 
-tests = [
-    hotplug,
-    cpufreq,
-]
-
 if __name__ == '__main__':
     runner.standalone(module)

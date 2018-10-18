@@ -40,9 +40,5 @@ class framebuffer_console(runner.Test):
             log.debug('binding %s...' % console.path)
             f.write('1')
 
-tests = [
-    framebuffer_console,
-]
-
 if __name__ == '__main__':
     runner.standalone(module)

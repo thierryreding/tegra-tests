@@ -64,7 +64,13 @@ def standalone(module):
     fail = 0
     skip = 0
 
-    for test in module.tests:
+    tests = []
+
+    for value in module.__dict__.values():
+        if isinstance(value, type) and issubclass(value, Test):
+            tests.append(value)
+
+    for test in tests:
         log.test = test()
 
         try:

@@ -94,11 +94,5 @@ class logs(runner.Test):
 
             raise runner.Error('%u warning%s %s error%s found in the kernel log' % (count, plural, andor, plural))
 
-tests = [
-    system,
-    devices,
-    logs,
-]
-
 if __name__ == '__main__':
     runner.standalone(module)
