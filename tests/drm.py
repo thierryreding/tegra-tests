@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-import pyudev, sys
+import os, pyudev, sys
 import runner
 
 from linux import drm
