@@ -3,13 +3,13 @@
 import pyudev, sys
 import runner
 
+from linux import drm
+
 module = sys.modules[__name__]
 module.name = 'drm'
 
 class devices(runner.Test):
     def __call__(self, log, *args, **kwargs):
-        from linux import drm
-
         context = pyudev.Context()
         devices = context.list_devices(subsystem = 'drm')
 

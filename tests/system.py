@@ -3,13 +3,13 @@
 import sys
 import runner
 
+from linux import system
+
 module = sys.modules[__name__]
 module.name = 'system'
 
 class suspend(runner.Test):
     def __call__(self, log, *args, **kwargs):
-        from linux import system
-
         rtc = system.RTC('rtc0')
         rtc.set_alarm_relative(5)
 
@@ -25,8 +25,6 @@ worked from this test suite.
 '''
 class watchdog(runner.Test):
     def __call__(self, log, *args, **kwargs):
-        from linux import system
-
         watchdog = system.Watchdog('/dev/watchdog')
         watchdog.set_timeout(30)
         watchdog.enable()

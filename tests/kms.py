@@ -3,13 +3,13 @@
 import sys, time
 import runner
 
+from linux import sysfs
+
 module = sys.modules[__name__]
 module.name = 'kms'
 
 class framebuffer_console(runner.Test):
     def __call__(self, log, *args, **kwargs):
-        from linux import sysfs
-
         fbcon = None
 
         for console in sysfs.list('class/vtconsole'):

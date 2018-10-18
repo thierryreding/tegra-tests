@@ -3,13 +3,13 @@
 import sys
 import runner
 
+from linux import debugfs
+
 module = sys.modules[__name__]
 module.name = 'memory'
 
 class emc(runner.Test):
     def __call__(self, log, *args, **kwargs):
-        from linux import debugfs
-
         supported_rates = []
         errors = 0
 
@@ -54,8 +54,6 @@ class emc(runner.Test):
             raise runner.Error('not all rate changes succeeded')
 
     def set_rate(self, rate):
-        from linux import debugfs
-
         with debugfs.open('emc/rate', 'w') as f:
             f.write(rate)
 

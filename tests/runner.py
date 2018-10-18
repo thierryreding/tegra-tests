@@ -43,13 +43,6 @@ class Test:
 class Error(Exception):
     pass
 
-def setup():
-    path = os.path.dirname(sys.argv[0])
-    path = os.path.join(path, '..')
-    path = os.path.abspath(path)
-
-    sys.path.append(path)
-
 def standalone(module):
     output = sys.stdout
 
@@ -70,8 +63,6 @@ def standalone(module):
     okay = 0
     fail = 0
     skip = 0
-
-    setup()
 
     for test in module.tests:
         log.test = test()
@@ -113,3 +104,11 @@ def standalone(module):
     else:
         log.info('OKAY')
         sys.exit(0)
+
+module = sys.modules[__name__]
+
+path = os.path.dirname(module.__file__)
+path = os.path.join(path, '..')
+path = os.path.abspath(path)
+
+sys.path.append(path)

@@ -3,14 +3,14 @@
 import os, os.path, sys
 import runner
 
+from linux import kmsg, system, util
+import boards, tegra
+
 module = sys.modules[__name__]
 module.name = 'boot'
 
-class system(runner.Test):
+class sysinfo(runner.Test):
     def __call__(self, log, *args, **kwargs):
-        from linux import system
-        import boards, tegra
-
         log.debug('System information:')
         log.debug('-------------------')
 
@@ -30,8 +30,6 @@ class system(runner.Test):
 
 class devices(runner.Test):
     def __call__(self, log, *args, **kwargs):
-        import boards
-
         board = boards.detect()
         failed = False
 
@@ -73,9 +71,6 @@ class devices(runner.Test):
 
 class logs(runner.Test):
     def __call__(self, log, *args, **kwargs):
-        from linux import kmsg, system, util
-        import boards
-
         board = boards.detect()
         kernel = system.Kernel()
         count = 0

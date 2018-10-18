@@ -3,13 +3,13 @@
 import random, sys
 import runner
 
+from linux import sysfs, system
+
 module = sys.modules[__name__]
 module.name = 'cpu'
 
 class hotplug(runner.Test):
     def __call__(self, log, *args, **kwargs):
-        from linux import system
-
         cpus = system.CPUSet()
 
         for cpu in cpus:
@@ -34,8 +34,6 @@ class hotplug(runner.Test):
 class cpufreq(runner.Test):
     class CPU:
         def __init__(self, num):
-            from linux import sysfs
-
             self.sysfs = sysfs.Object('devices/system/cpu/cpu%u/cpufreq' % num)
             self.supported_governors = []
             self.supported_rates = []
@@ -84,8 +82,6 @@ class cpufreq(runner.Test):
             return name in self.supported_governors
 
     def __call__(self, log, *args, **kwargs):
-        from linux import sysfs, system
-
         cpuset = system.CPUSet()
 
         # output supported governors and frequencies
