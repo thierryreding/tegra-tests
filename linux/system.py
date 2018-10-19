@@ -13,7 +13,7 @@ Represents one CPU present in the system.
 '''
 class CPU():
     def __init__(self, num):
-        self.sysfs = sysfs.Object('devices/system/cpu/cpu%u' % num)
+        self.sysfs = sysfs.Object('devices/system/cpu', 'cpu%u' % num)
         self.num = num
 
         try:
@@ -158,7 +158,7 @@ Provides access to a realtime clock device in the system.
 '''
 class RTC:
     def __init__(self, name = 'rtc0'):
-        self.sysfs = sysfs.Object('class/rtc/%s' % name)
+        self.sysfs = sysfs.Object('class/rtc', name)
 
     '''
     Set the RTC to raise an alarm a given number of seconds from now.

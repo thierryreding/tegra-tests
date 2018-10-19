@@ -18,8 +18,9 @@ def list(path):
     return objects
 
 class Object:
-    def __init__(self, path):
-        self.path = path
+    def __init__(self, path, name):
+        self.path = os.path.join(path, name)
+        self.name = name
 
     def open(self, path, *args, **kwargs):
         return open('%s/%s' % (self.path, path), *args, **kwargs)

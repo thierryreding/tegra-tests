@@ -34,7 +34,7 @@ class hotplug(runner.Test):
 class cpufreq(runner.Test):
     class CPU:
         def __init__(self, num):
-            self.sysfs = sysfs.Object('devices/system/cpu/cpu%u/cpufreq' % num)
+            self.sysfs = sysfs.Object('devices/system/cpu/cpu%u' % num, 'cpufreq')
             self.supported_governors = []
             self.supported_rates = []
 
