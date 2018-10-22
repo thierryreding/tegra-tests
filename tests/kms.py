@@ -12,7 +12,7 @@ class framebuffer_console(runner.Test):
     def __call__(self, log, *args, **kwargs):
         fbcon = None
 
-        for console in sysfs.list('class/vtconsole'):
+        for console in sysfs.enumerate(subsystem = 'vtconsole'):
             with console.open('name', 'r') as f:
                 for line in f:
                     line = line.strip()
