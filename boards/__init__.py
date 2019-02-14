@@ -53,10 +53,10 @@ def detect():
 
         raise IOError
 
-path = os.path.dirname(__file__)
+parent = os.path.dirname(__file__)
 
-for directory in os.listdir(path):
-    path = os.path.join(path, directory)
+for directory in os.listdir(parent):
+    path = os.path.join(parent, directory)
 
     if os.path.exists(os.path.join(path, '__init__.py')):
         name = 'boards.%s' % directory
