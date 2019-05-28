@@ -40,3 +40,7 @@ class Board(boards.Board):
         # USB bus
         sysfs.Device('usb', '2-1:1.0', 'r8152'),
     ]
+
+    whitelist = [
+        r'urandom_read: [0-9]+ callbacks suppressed',
+    ]
