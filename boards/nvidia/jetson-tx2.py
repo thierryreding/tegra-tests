@@ -8,3 +8,7 @@ class Board(boards.Board):
         # platform bus
         # I2C bus
     ]
+
+    whitelist = [
+        r'urandom_read: [0-9]+ callbacks suppressed',
+    ]

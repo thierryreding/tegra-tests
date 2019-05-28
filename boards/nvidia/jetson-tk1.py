@@ -80,4 +80,5 @@ class Board(boards.Board):
         r'pci [0-9a-fA-F]{4}:[0-9a-fA-F]{2}:[0-9a-fA-F]{2}\.[0-9a-fA-F]: nv_msi_ht_cap_quirk didn\'t locate host bridge',
         r'platform regulatory.0: Direct firmware load for regulatory.db failed with error -2',
         r'tegra-hdmi 54280000.hdmi: cannot set audio to 48000 Hz at 297000000 Hz pixel clock',
+        r'urandom_read: [0-9]+ callbacks suppressed',
     ]
