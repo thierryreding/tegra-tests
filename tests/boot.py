@@ -88,6 +88,12 @@ class logs(runner.Test):
                         log.debug(entry)
                         count += 1
 
+        if whitelist:
+            unmatched = whitelist.unmatched()
+
+            for pattern in unmatched:
+                log.debug('pattern \'%s\' had no matches' % pattern)
+
         if count > 0:
             andor = 'and/or' if count > 1 else 'or'
             plural = 's' if count > 1 else ''
