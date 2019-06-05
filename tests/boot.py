@@ -3,7 +3,7 @@
 import os, os.path, sys
 import runner
 
-from linux import kmsg, system, util
+from linux import debugfs, kmsg, system, util
 import boards, tegra
 
 module = sys.modules[__name__]
@@ -65,6 +65,22 @@ class devices(runner.Test):
 
                 if device.driver:
                     failed = True
+
+        # no devices should be left in the deferred probe pending list
+        if debugfs.exists('devices_deferred'):
+            count = 0
+
+            log.debug('deferred:')
+
+            with debugfs.open('devices_deferred', 'r') as devices:
+                for line in devices:
+                    log.debug('  deferred: %s' % line.strip())
+                    count += 1
+
+            if count == 0:
+                log.debug('  none')
+            else:
+                failed = True
 
         if failed:
             raise runner.Error()
