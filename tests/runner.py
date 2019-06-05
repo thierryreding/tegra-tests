@@ -45,9 +45,12 @@ class Error(Exception):
 
 def standalone(module):
     parser = argparse.ArgumentParser('')
-    parser.add_argument('--quiet', '-q', action = 'store_true')
-    parser.add_argument('--summary', '-s', action = 'store_true')
-    parser.add_argument('--verbose', '-v', action = 'store_true')
+    parser.add_argument('--quiet', '-q', action = 'store_true',
+                        help = 'do not show any output unless a failure occurred')
+    parser.add_argument('--summary', '-s', action = 'store_true',
+                        help = 'show a summary of the tests that have been run')
+    parser.add_argument('--verbose', '-v', action = 'store_true',
+                        help = 'show verbose output messages')
     args = parser.parse_args(sys.argv[1:])
 
     if args.quiet:
