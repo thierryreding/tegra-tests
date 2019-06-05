@@ -44,8 +44,6 @@ class Error(Exception):
     pass
 
 def standalone(module):
-    output = sys.stdout
-
     parser = argparse.ArgumentParser('')
     parser.add_argument('--quiet', '-q', action = 'store_true')
     parser.add_argument('--summary', '-s', action = 'store_true')
@@ -54,6 +52,8 @@ def standalone(module):
 
     if args.quiet:
         output = io.StringIO()
+    else:
+        output = sys.stdout
 
     log = Log(module, output)
 
