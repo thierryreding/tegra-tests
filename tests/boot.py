@@ -61,7 +61,7 @@ class devices(runner.Test):
                 else:
                     log.cont('done')
             else:
-                log.debug('unbound')
+                log.debug('    unbound')
 
                 if device.driver:
                     failed = True
