@@ -13,6 +13,9 @@ class emc(runner.Test):
         supported_rates = []
         errors = 0
 
+        if not debugfs.exists('emc/supported_rates'):
+            raise runner.Skip('EMC frequency scaling is not supported')
+
         with debugfs.open('emc/supported_rates') as f:
             for line in f:
                 supported_rates.extend(line.split())
