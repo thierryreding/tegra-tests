@@ -130,7 +130,6 @@ def standalone(module):
             log.info('OKAY')
             okay += 1
         except Error as e:
-            log.info(e)
             log.info('FAIL')
             fail += 1
         except Skip as e:
