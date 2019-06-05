@@ -83,6 +83,7 @@ class cpufreq(runner.Test):
 
     def __call__(self, log, *args, **kwargs):
         cpuset = system.CPUSet()
+        failed = False
 
         # output supported governors and frequencies
         for cpu in cpuset:
@@ -114,12 +115,18 @@ class cpufreq(runner.Test):
             cpu = cpufreq.CPU(cpu.num)
 
             log.debug('  - switching to userspace governor...', end = '')
+
+            if 'userspace' not in cpu.supported_governors:
+                log.cont('skip')
+                continue
+
             governor = cpu.governor
 
             try:
                 cpu.governor = 'userspace'
             except Exception as e:
-                log.cont('skip (%s)' % e)
+                log.cont('fail (%s)' % e)
+                failed = True
                 continue
             else:
                 log.cont('done')
@@ -131,6 +138,7 @@ class cpufreq(runner.Test):
                     cpu.rate = rate
                 except Exception as e:
                     log.cont('fail (%s)' % e)
+                    failed = True
                 else:
                     log.cont('done')
 
@@ -140,8 +148,12 @@ class cpufreq(runner.Test):
                 cpu.governor = governor
             except Exception as e:
                 log.cont('fail (%s)' % e)
+                failed = True
             else:
                 log.cont('done')
+
+        if failed:
+            raise runner.Error()
 
 if __name__ == '__main__':
     runner.standalone(module)
