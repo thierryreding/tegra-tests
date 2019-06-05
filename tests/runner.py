@@ -47,6 +47,8 @@ def standalone(module):
     parser = argparse.ArgumentParser('')
     parser.add_argument('--quiet', '-q', action = 'store_true',
                         help = 'do not show any output unless a failure occurred')
+    parser.add_argument('--list', '-l', action = 'store_true',
+                        help = 'display a list of subtests that can be selected')
     parser.add_argument('--summary', '-s', action = 'store_true',
                         help = 'show a summary of the tests that have been run')
     parser.add_argument('--verbose', '-v', action = 'store_true',
@@ -82,6 +84,12 @@ def standalone(module):
     if num_tests == 0:
         log.error('no tests found in module', module)
         return
+
+    if args.list:
+        for test in tests:
+            log.info(test.__name__)
+
+        sys.exit(0)
 
     for test in tests:
         log.test = test()
