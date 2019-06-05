@@ -43,6 +43,37 @@ class Test:
 class Error(Exception):
     pass
 
+class Skip(Exception):
+    pass
+
+def skip(reason):
+    def decorator(test):
+        class SkipTest(Test):
+            def __call__(self, log, *args, **kwargs):
+                raise Skip(reason)
+
+        # need to overwrite this in case we have test filters in place
+        SkipTest.__name__ = test.__name__
+
+        return SkipTest
+
+    return decorator
+
+def _id(obj):
+    return obj
+
+def skipIf(condition, reason):
+    if condition:
+        return skip(reason)
+
+    return _id
+
+def skipUnless(condition, reason):
+    if not condition:
+        return skip(reason)
+
+    return _id
+
 def standalone(module):
     parser = argparse.ArgumentParser('')
     parser.add_argument('--quiet', '-q', action = 'store_true',
@@ -108,6 +139,10 @@ def standalone(module):
                 log.info('FAIL')
 
             fail += 1
+        except Skip as e:
+            log.info(e)
+            log.info('SKIP')
+            skip += 1
         except Exception as e:
             raise
 
