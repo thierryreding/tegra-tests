@@ -127,17 +127,11 @@ def standalone(module):
 
         try:
             log.test(log = log)
-
-            if args.summary:
-                log.info('OKAY')
-
+            log.info('OKAY')
             okay += 1
         except Error as e:
             log.info(e)
-
-            if args.summary:
-                log.info('FAIL')
-
+            log.info('FAIL')
             fail += 1
         except Skip as e:
             log.info(e)
