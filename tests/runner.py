@@ -51,6 +51,8 @@ def standalone(module):
                         help = 'show a summary of the tests that have been run')
     parser.add_argument('--verbose', '-v', action = 'store_true',
                         help = 'show verbose output messages')
+    parser.add_argument('subtests', metavar = 'SUBTEST', nargs = '*',
+                        help = 'a list of tests that should be run')
     args = parser.parse_args(sys.argv[1:])
 
     if args.quiet:
@@ -67,11 +69,19 @@ def standalone(module):
     fail = 0
     skip = 0
 
+    num_tests = 0
     tests = []
 
-    for value in module.__dict__.values():
+    for key, value in module.__dict__.items():
         if isinstance(value, type) and issubclass(value, Test):
-            tests.append(value)
+            if not args.subtests or value.__name__ in args.subtests:
+                tests.append(value)
+
+            num_tests += 1
+
+    if num_tests == 0:
+        log.error('no tests found in module', module)
+        return
 
     for test in tests:
         log.test = test()
