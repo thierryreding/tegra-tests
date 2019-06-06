@@ -1,6 +1,7 @@
-import boards
+import boards, tegra
 from linux.system import Kernel
-from linux import sysfs
+from linux import sysfs, system
+from tegra import tegra186
 
 class Board(boards.Board):
     __compatible__ = 'nvidia,p2771-0000'
@@ -71,3 +72,12 @@ class Board(boards.Board):
         r'dwc-eth-dwmac 2490000.ethernet: PTP uses main clock',
         r'urandom_read: [0-9]+ callbacks suppressed',
     ]
+
+    def __init__(self):
+        self.soc = tegra186.SoC()
+        self.eeproms = {}
+
+        i2c = self.soc.devices['i2c8']
+
+        self.eeproms['module'] = i2c.device(0x50)
+        self.eeproms['system'] = i2c.device(0x57)

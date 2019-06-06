@@ -1,6 +1,7 @@
-import boards
+import boards, tegra
 from linux.system import Kernel
 from linux import sysfs
+from tegra import tegra194
 
 class Board(boards.Board):
     __compatible__ = 'nvidia,p2972-0000'
@@ -62,3 +63,12 @@ class Board(boards.Board):
         r'\[drm\] parse error at position 6 in video mode \'tegrafb\'',
         r'urandom_read: [0-9]+ callbacks suppressed',
     ]
+
+    def __init__(self):
+        self.soc = tegra194.SoC()
+        self.eeproms = {}
+
+        i2c = self.soc.devices['i2c1']
+
+        self.eeproms['module'] = i2c.device(0x50)
+        self.eeproms['system'] = i2c.device(0x56)

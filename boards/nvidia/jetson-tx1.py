@@ -1,6 +1,7 @@
 import boards
 from linux.system import Kernel
-from linux import sysfs
+from linux import sysfs, system
+from tegra import tegra210
 
 class Board(boards.Board):
     __compatible__ = 'nvidia,p2371-2180'
@@ -66,3 +67,12 @@ class Board(boards.Board):
     allowlist = [
         r'urandom_read: [0-9]+ callbacks suppressed',
     ]
+
+    def __init__(self):
+        self.soc = tegra210.SoC()
+        self.eeproms = {}
+
+        i2c = self.soc.devices['i2c3']
+
+        self.eeproms['module'] = i2c.device(0x50)
+        self.eeproms['system'] = i2c.device(0x57)

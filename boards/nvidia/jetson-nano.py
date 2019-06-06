@@ -78,5 +78,5 @@ class Board(boards.Board):
 
         i2c = self.soc.devices['i2c3']
 
-        self.eeproms['module'] = i2c.slave(0x50)
-        self.eeproms['system'] = i2c.slave(0x57)
+        self.eeproms['module'] = i2c.device(0x50)
+        self.eeproms['system'] = i2c.device(0x57)

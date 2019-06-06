@@ -1,9 +1,10 @@
 #!/usr/bin/python3
 
-import sys
+import io, sys
 import runner
 
 from linux import system
+import boards
 
 module = sys.modules[__name__]
 module.name = 'system'
@@ -28,6 +29,42 @@ class watchdog(runner.Test):
         watchdog = system.Watchdog('/dev/watchdog')
         watchdog.set_timeout(30)
         watchdog.enable()
+
+class eeprom(runner.Test):
+    def __call__(self, log, *args, **kwargs):
+        board = boards.detect()
+
+        if not hasattr(board, 'eeproms'):
+            raise runner.Error()
+
+        if 'module' in board.eeproms:
+            device = board.eeproms['module']
+            buf = io.StringIO()
+
+            eeprom = system.EEPROM(device.sysfs)
+
+            log.debug('module ID EEPROM:')
+            eeprom.dump(output = buf)
+            buf.seek(0, io.SEEK_SET)
+
+            for line in buf:
+                log.debug('  %s' % line.rstrip())
+
+        if 'system' in board.eeproms:
+            device = board.eeproms['system']
+            buf = io.StringIO()
+
+            try:
+                eeprom = system.EEPROM(device.sysfs)
+            except Exception as e:
+                log.info('ERROR:', e)
+
+            log.debug('system ID EEPROM:')
+            eeprom.dump(output = buf)
+            buf.seek(0, io.SEEK_SET)
+
+            for line in buf:
+                log.debug('  %s' % line.rstrip())
 
 if __name__ == '__main__':
     runner.standalone(module)

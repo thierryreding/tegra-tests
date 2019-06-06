@@ -15,6 +15,9 @@ class Object:
         self.path = os.path.join(path, name)
         self.name = name
 
+    def child(self, name):
+        return Object(self.path, name)
+
     def exists(self):
         path = os.path.join(mountpoint, self.path)
 
@@ -41,6 +44,12 @@ class Object:
             properties[key] = value
 
         return properties
+
+    def __iter__(self):
+        path = os.path.join(mountpoint, self.path)
+
+        for entry in os.listdir(path):
+            yield self.child(entry)
 
     def __str__(self):
         return 'Object(\'%s\')' % self.path
