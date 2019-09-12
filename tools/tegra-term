@@ -1,0 +1,411 @@
+#!/usr/bin/python3
+
+import fcntl, io, os, os.path, re, sys, termios, tty
+import selectors, serial
+
+import paramiko
+
+class Sysfs:
+    class Bus:
+        def __init__(self, path):
+            self.name = os.path.split(path)[-1]
+            self.path = path
+
+        def devices(self):
+            base = os.path.join(self.path, 'devices')
+
+            for entry in os.listdir(base):
+                path = os.path.join(base, entry)
+
+                yield Sysfs.Object(path)
+
+        def __str__(self):
+            return self.name
+
+    class Object:
+        def __init__(self, path):
+            self.name = os.path.split(path)[-1]
+            self.path = path
+
+        def __getattr__(self, name):
+            path = os.path.join(self.path, name)
+
+            if not os.path.exists(path):
+                raise AttributeError
+
+            with open(path, 'r') as attr:
+                value = attr.read().strip()
+
+            return value
+
+        def __str__(self):
+            return self.name
+
+    def __init__(self, path = '/sys'):
+        self.path = path
+
+    def busses(self):
+        base = os.path.join(self.path, 'bus')
+
+        for entry in os.listdir(base):
+            path = os.path.join(base, entry)
+
+            yield Sysfs.Bus(path)
+
+    def find_usb_device(self, vendor, product):
+        for bus in self.busses():
+            if bus.name == 'usb':
+                for device in bus.devices():
+                    if not hasattr(device, 'idVendor'):
+                        continue
+
+                    if not hasattr(device, 'idProduct'):
+                        continue
+
+                    v = int(device.idVendor, 16)
+                    p = int(device.idProduct, 16)
+
+                    if v == vendor and p == product:
+                        return device
+
+        return None
+
+class FTDI:
+    def __init__(self):
+        self.sysfs = Sysfs().find_usb_device(0x0403, 0x6011)
+        self.tty = None
+
+        for entry in os.scandir(self.sysfs.path):
+            if entry.is_dir():
+                if entry.name.startswith(self.sysfs.name):
+                    path = os.path.join(self.sysfs.path, entry.name)
+                    tty = Sysfs.Object(path)
+
+                    if tty.bInterfaceNumber == '02':
+                        for entry in os.scandir(path):
+                            if entry.name.startswith('ttyUSB'):
+                                self.tty = entry.name
+                                break
+
+ftdi = FTDI()
+print('FTDI:', ftdi.sysfs)
+print('  tty:', ftdi.tty)
+
+port = serial.Serial('/dev/%s' % ftdi.tty, 115200, timeout = 0)
+print('serial:', port.name)
+
+class QuitException(Exception):
+    pass
+
+class Monitor:
+    def process_byte(self, target, byte):
+        pass
+
+    def process_buffer(self, target):
+        pass
+
+    def process_line(self, target, line):
+        pass
+
+class StdIoMonitor(Monitor):
+    def __init__(self, port):
+        self.port = port
+        self.control = False
+        self.newline = True
+
+        self.attrs = termios.tcgetattr(sys.stdin)
+
+    def process_byte(self, target, byte):
+        sys.stdout.write(chr(byte))
+        sys.stdout.flush()
+
+    def process_buffer(self, target, line):
+        pass
+
+    def process_line(self, target, line):
+        self.newline = True
+
+    def process_input(self, fileobj, mask):
+        if mask & selectors.EVENT_READ:
+            data = fileobj.read(4096)
+
+            for byte in data.encode('utf-8'):
+                if self.control:
+                    if byte == 0x5c:
+                        raise QuitException
+
+                    print('* control character %02x' % byte, end = '\r\n')
+                    self.control = False
+                    continue
+
+                if byte == 0x01:
+                    self.control = True
+                    continue
+
+                self.port.write(bytes([byte]))
+
+    def select(self, selector):
+        attrs = termios.tcgetattr(sys.stdin)
+        attrs[0] &= ~(termios.BRKINT | termios.ICRNL | termios.INPCK | termios.ISTRIP | termios.IXON)
+        attrs[1] &= ~(termios.OPOST)
+        attrs[2] &= ~(termios.CSIZE | termios.PARENB)
+        attrs[2] |= termios.CS8
+        attrs[3] &= ~(termios.ECHO | termios.ICANON | termios.IEXTEN | termios.ISIG);
+        attrs[6][termios.VMIN] = 0
+        attrs[6][termios.VTIME] = 0
+        termios.tcsetattr(sys.stdin, termios.TCSADRAIN, attrs)
+
+        flags = fcntl.fcntl(sys.stdin, fcntl.F_GETFL)
+        flags |= os.O_NONBLOCK;
+        fcntl.fcntl(sys.stdin, fcntl.F_SETFL, flags)
+
+        selector.register(sys.stdin, selectors.EVENT_READ, self.process_input)
+
+    def unselect(self, selector):
+        termios.tcsetattr(sys.stdin, termios.TCSADRAIN, self.attrs)
+        selector.unregister(sys.stdin)
+
+class Target:
+    def __init__(self, port):
+        self.hostname = None
+        self.gateway = None
+        self.address = None
+        self.port = port
+
+        self.buffer = bytearray()
+        self.prev = None
+
+        self.monitors = []
+
+    def send(self, command):
+        self.port.write(command.encode('utf-8'))
+
+    def boot(self):
+        pass
+
+    def attach(self, monitor):
+        self.monitors.append(monitor)
+
+    def process_byte(self, byte):
+        for monitor in self.monitors:
+            monitor.process_byte(self, byte)
+
+    def process_buffer(self):
+        try:
+            line = self.buffer.decode('utf-8')
+        except:
+            return
+
+        for monitor in self.monitors:
+            monitor.process_buffer(self, line)
+
+    def process_line(self, line):
+        for monitor in self.monitors:
+            monitor.process_line(self, line)
+
+    def process_input(self, fileobj, mask):
+        if mask & selectors.EVENT_READ:
+            data = fileobj.read(4096)
+            line = None
+
+            for byte in data:
+                # process MAC-style newline
+                if self.prev == 0x0d:
+                    if byte != 0x0a:
+                        line = self.buffer[:-2].decode('utf-8')
+                        self.buffer.clear()
+
+                self.buffer.append(byte)
+                self.process_byte(byte)
+                self.process_buffer()
+
+                # process Windows and Unix-style newlines
+                if byte == 0x0a:
+                    # Windows-style newline
+                    if self.prev == 0x0d:
+                        line = self.buffer[:-2].decode('utf-8')
+                    # Unix-style newline
+                    else:
+                        line = self.buffer[:-1].decode('utf-8')
+
+                    self.buffer.clear()
+
+                self.prev = byte
+
+                if line is not None:
+                    self.process_line(line)
+                    line = None
+
+    def select(self, selector):
+        selector.register(self.port, selectors.EVENT_READ, self.process_input)
+
+class UBootMonitor(Monitor):
+    def __init__(self):
+        self.version = None
+        self.stamp = None
+        self.autoboot_interrupted = False
+        self.active = False
+
+    def process_byte(self, target, byte):
+        pass
+
+    def process_buffer(self, target, line):
+        if self.active:
+            match = re.match('Hit any key to stop autoboot: .*', line)
+            if match:
+                if not self.autoboot_interrupted:
+                    self.autoboot_interrupted = True
+                    target.send('\n')
+
+                return
+
+            match = re.match('(.*) #', line)
+            if match:
+                target.send('env set boot_targets dhcp\n')
+                target.send('boot\n')
+                return
+
+    def process_line(self, target, line):
+        match = re.match('U-Boot (\S+) (.*)', line)
+        if match:
+            self.version = match.group(1)
+            self.stamp = match.group(2)
+            self.active = True
+
+        if self.active:
+            match = re.match('Board: (.*)', line)
+            if match:
+                self.board = match.group(1)
+                return
+
+            match = re.match('Starting kernel...', line)
+            if match:
+                print('* U-Boot finished')
+                self.active = False
+                return
+
+def ping(target):
+    if target.gateway:
+        target.send('ping -c 5 %s\n' % target.gateway)
+
+def poweroff(target):
+    target.send('poweroff\n')
+
+def ssh(target):
+    if target.address:
+        client = paramiko.client.SSHClient()
+        client.set_missing_host_key_policy(paramiko.client.AutoAddPolicy)
+        client.load_system_host_keys()
+        client.connect(target.address, username = 'root', password = 'root')
+        stdin, stdout, stderr = client.exec_command('uname -a')
+        print('uname -a:', end = '\r\n')
+        print('  stdout:', stdout.read(), end = '\r\n')
+        print('  stderr:', stderr.read(), end = '\r\n')
+
+class PowerOffException(Exception):
+    pass
+
+class LinuxMonitor(Monitor):
+    def __init__(self):
+        self.version = None
+        self.active = False
+        self.login = False
+        self.logged_in = False
+
+        self.commands = [ ping, ssh, poweroff ]
+
+    def process_byte(self, target, byte):
+        pass
+
+    def process_buffer(self, target, line):
+        if self.active:
+            match = re.match('(.*) login:', line)
+            if match:
+                target.hostname = match.group(1)
+
+                if not self.login:
+                    target.send('root\n')
+                    self.login = True
+
+                return
+
+            if self.login:
+                if line == 'Password:':
+                    target.send('root\n')
+                    return
+
+                match = re.match('-sh-(.*)#', line)
+                if match:
+                    self.logged_in = True
+                    self.login = False
+                    return
+
+            match = re.match('-sh-(.*)#', line)
+            if match:
+                self.run(target)
+                return
+
+    def process_line(self, target, line):
+        match = re.match('(\[(.*)\])? Linux version (.*)', line)
+        if match:
+            self.version = match.group(3)
+            self.active = True
+            return
+
+        if self.active:
+            match = re.match('(\[(.*)\])? IP-Config: Got DHCP answer from (.*), my address is (.*)', line)
+            if match:
+                target.gateway = match.group(3)
+                target.address = match.group(4)
+                return
+
+            if line == 'Powering off.':
+                self.active = False
+                raise PowerOffException
+
+    def run(self, target):
+        if self.commands:
+            command = self.commands.pop(0)
+            if command:
+                command(target)
+                return True
+
+        return False
+
+stdio = StdIoMonitor(port)
+uboot = UBootMonitor()
+linux = LinuxMonitor()
+
+target = Target(port)
+target.attach(stdio)
+target.attach(uboot)
+target.attach(linux)
+
+selector = selectors.DefaultSelector()
+target.select(selector)
+stdio.select(selector)
+
+error = None
+
+while True:
+    try:
+        events = selector.select()
+
+        for key, mask in events:
+            key.data(key.fileobj, mask)
+    except PowerOffException:
+        break
+    except QuitException:
+        break
+    except Exception as e:
+        error = e
+        break
+
+# need to restore termios settings here ...
+stdio.unselect(selector)
+
+# so that the prompt can be properly reset
+print()
+
+if error:
+    raise error
