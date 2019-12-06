@@ -39,8 +39,14 @@ class Board(boards.Board):
         sysfs.Device(bus = 'platform', name = 'c360000.pmc', driver = 'tegra-pmc'),
         # I2C bus
         sysfs.Device(bus = 'i2c', name = '0-003c', driver = 'max77620'),
+        sysfs.Device(bus = 'i2c', name = '1-0040', driver = 'ina3221'),
+        sysfs.Device(bus = 'i2c', name = '1-0041', driver = 'ina3221'),
+        sysfs.Device(bus = 'i2c', name = '1-0042', driver = 'ina3221'),
+        sysfs.Device(bus = 'i2c', name = '1-0043', driver = 'ina3221'),
         sysfs.Device(bus = 'i2c', name = '1-0074', driver = 'pca953x'),
         sysfs.Device(bus = 'i2c', name = '1-0077', driver = 'pca953x'),
+        sysfs.Device(bus = 'i2c', name = '6-0050', driver = 'at24'),
+        sysfs.Device(bus = 'i2c', name = '6-0057', driver = 'at24'),
     ]
 
     drivers = [
