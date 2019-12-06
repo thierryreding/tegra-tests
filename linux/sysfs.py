@@ -1,5 +1,7 @@
 import io, os.path
 
+from linux import util
+
 mountpoint = '/sys'
 
 def exists(path):
@@ -51,8 +53,27 @@ def enumerate(subsystem = None, DEVTYPE = None):
             else:
                 yield device
 
-class Device:
-    def __init__(self, bus, name, driver):
+class Device(Object):
+    def __init__(self, path = None, bus = None, name = None, driver = None):
+        if path:
+            parts = path.split('/')
+
+            if path.startswith(mountpoint):
+                if not name:
+                    path = os.path.join(*parts[2:-1])
+                    name = parts[-1]
+                else:
+                    path = os.path.join(*parts[2:])
+        else:
+            util.require_arguments(bus = bus, name = name)
+
+            path = os.path.join('bus', bus, 'devices')
+
+        super().__init__(path, name)
+
         self.bus = bus
         self.name = name
         self.driver = driver
+
+    def __str__(self):
+        return 'Device(\'%s\')' % self.path

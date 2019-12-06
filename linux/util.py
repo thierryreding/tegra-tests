@@ -1,6 +1,28 @@
 #!/usr/bin/python3
 
-import re
+import inspect, re
+
+def listify(arguments):
+    *start, last = arguments
+
+    if start:
+        return ' and '.join([', '.join('%s' % x for x in start), last])
+
+    return last
+
+def require_arguments(**kwargs):
+    missing = []
+
+    for key, value in kwargs.items():
+        if not value:
+            missing.append(key)
+
+    if missing:
+        caller = inspect.stack()[1].function
+
+        raise TypeError("%s() missing %u required argument%s: %s" %
+                (caller, len(missing), 's' if len(missing) > 1 else '',
+                    listify(missing)))
 
 class WhiteList():
     class Pattern:
