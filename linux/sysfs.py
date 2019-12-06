@@ -45,6 +45,23 @@ class Object:
     def __str__(self):
         return 'Object(\'%s\')' % self.path
 
+class Bus(Object):
+    def __init__(self, name):
+        super().__init__('bus', name)
+
+    def device(self, name):
+        path = os.path.join(self.path, 'devices')
+
+        return Object(path, name)
+
+    def driver(self, name):
+        path = os.path.join(self.path, 'drivers')
+
+        return Object(path, name)
+
+    def __str__(self):
+        return 'Bus(\'%s\')' % self.path
+
 def enumerate(subsystem = None, DEVTYPE = None):
     if subsystem:
         top = os.path.join(mountpoint, 'class', subsystem)
