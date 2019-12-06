@@ -43,6 +43,10 @@ class Board(boards.Board):
         sysfs.Device(bus = 'i2c', name = '1-0077', driver = 'pca953x'),
     ]
 
+    drivers = [
+        sysfs.Driver('platform', 'tegra-host1x'),
+    ]
+
     whitelist = [
         r'CPU features: SANITY CHECK: .*',
         r'CPU features: Unsupported CPU feature variation detected',

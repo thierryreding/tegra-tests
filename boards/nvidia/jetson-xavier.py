@@ -27,6 +27,10 @@ class Board(boards.Board):
         sysfs.Device(bus = 'i2c', name = '0-003c', driver = 'max77620'),
     ]
 
+    drivers = [
+        sysfs.Driver('platform', 'tegra-host1x'),
+    ]
+
     whitelist = [
         r'OF: fdt: Reserved memory: unsupported node format, ignoring',
         r'EINJ: ACPI disabled.',

@@ -15,10 +15,22 @@ class Object:
         self.path = os.path.join(path, name)
         self.name = name
 
+    def exists(self):
+        path = os.path.join(mountpoint, self.path)
+
+        if os.path.exists(path) and os.path.isdir(path):
+            return True
+
+        return False
+
     def open(self, path, *args, **kwargs):
         path = os.path.join(mountpoint, self.path, path)
 
         return io.open(path, *args, **kwargs)
+
+    @property
+    def full_path(self):
+        return os.path.join(mountpoint, self.path)
 
     @property
     def uevent(self):
@@ -77,3 +89,44 @@ class Device(Object):
 
     def __str__(self):
         return 'Device(\'%s\')' % self.path
+
+class Driver(Object):
+    def __init__(self, bus, name):
+        path = os.path.join('bus', bus, 'drivers')
+        super().__init__(path, name)
+
+        self.bus = bus
+        self.name = name
+
+    def devices(self):
+        directory = os.path.join(mountpoint, self.path)
+
+        for name in os.listdir(directory):
+            path = os.path.join(directory, name)
+
+            if os.path.islink(path):
+                driver = os.path.join(os.path.realpath(path), 'driver')
+                driver = os.path.realpath(driver)
+
+                # not all symlinks refer to device bound by this driver (e.g.
+                # there is a "module" symlink for loadable modules)
+                if os.path.exists(driver) and driver == directory:
+                    device = Device(os.path.realpath(path))
+                    yield device
+
+    def unbind(self, device):
+        if isinstance(device, Device):
+            device = device.name
+
+        with self.open('unbind', 'w') as fobj:
+            print(device, file = fobj)
+
+    def bind(self, device):
+        if isinstance(device, Device):
+            device = device.name
+
+        with self.open('bind', 'w') as fobj:
+            print(device, file = fobj)
+
+    def __str__(self):
+        return 'Driver(\'%s\')' % self.path

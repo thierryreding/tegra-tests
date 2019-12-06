@@ -59,6 +59,10 @@ class Board(boards.Board):
         sysfs.Device(bus = 'spi', name = 'spi1.0', driver = 'm25p80'),
     ]
 
+    drivers = [
+        sysfs.Driver('platform', 'tegra-host1x'),
+    ]
+
     whitelist = [
         r'/cpus/cpu@\d+missing clock-frequency property',
         r' usb\d+-\d+: usb\d+-\d+ supply vbus not found',

@@ -85,6 +85,44 @@ class devices(runner.Test):
         if failed:
             raise runner.Error()
 
+class drivers(runner.Test):
+    def __call__(self, log, *args, **kwargs):
+        board = boards.detect()
+
+        log.debug('board:', board.name)
+
+        if not hasattr(board, 'drivers') or not board.drivers:
+            raise runner.Skip('no drivers specified')
+
+        for driver in board.drivers:
+            log.debug('  driver: %s ... ' % driver.full_path, end = '', flush = True)
+
+            if not driver.exists():
+                log.cont('failed')
+                continue
+
+            log.cont('exists')
+
+            for device in driver.devices():
+                log.debug('    device: %s' % device.name)
+                log.debug('      unbind ... ', end = '', flush = True)
+
+                try:
+                    driver.unbind(device)
+                except OSError as e:
+                    log.cont('failed: %s' % e)
+                else:
+                    log.cont('done')
+
+                log.debug('      bind ... ', end = '', flush = True)
+
+                try:
+                    driver.bind(device)
+                except OSError as e:
+                    log.cont('failed: %s' % e)
+                else:
+                    log.cont('done')
+
 class logs(runner.Test):
     def __call__(self, log, *args, **kwargs):
         board = boards.detect()

@@ -41,6 +41,10 @@ class Board(boards.Board):
         sysfs.Device(bus = 'usb', name = '2-1:1.0', driver = 'r8152'),
     ]
 
+    drivers = [
+        sysfs.Driver('platform', 'tegra-host1x'),
+    ]
+
     whitelist = [
         r'urandom_read: [0-9]+ callbacks suppressed',
     ]
