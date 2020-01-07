@@ -39,6 +39,7 @@ class Board(boards.Board):
         r'mmc0: Unknown controller version \(5\). You may experience problems.',
         r'mmc1: Unknown controller version \(5\). You may experience problems.',
         r'tegra-dpaux 155e0000.dpaux: 155e0000.dpaux supply vdd not found, using dummy regulator',
+        r'tegra-hda 3510000.hda: azx_get_response timeout, switching to polling mode:',
         r'\[drm\] parse error at position 6 in video mode \'tegrafb\'',
         r'urandom_read: [0-9]+ callbacks suppressed',
     ]
