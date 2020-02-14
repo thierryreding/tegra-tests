@@ -55,11 +55,18 @@ class devices(runner.Test):
 
                 log.debug('    bound: %s ... ' % driver, end = '', flush = True)
 
-                if driver != device.driver:
+                if isinstance(device.driver, str):
+                    drivers = [ device.driver ]
+                else:
+                    drivers = device.driver
+
+                for match in drivers:
+                    if driver == match:
+                        log.cont('done')
+                        break
+                else:
                     log.cont('failed')
                     failed = True
-                else:
-                    log.cont('done')
             else:
                 log.debug('    unbound')
 

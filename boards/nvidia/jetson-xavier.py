@@ -9,7 +9,7 @@ class Board(boards.Board):
         # platform bus
         sysfs.Device(bus = 'platform', name = '2200000.gpio', driver = 'tegra186-gpio'),
         sysfs.Device(bus = 'platform', name = '2490000.ethernet', driver = 'dwc-eth-dwmac'),
-        sysfs.Device(bus = 'platform', name = '3110000.serial', driver = 'of_serial'),
+        sysfs.Device(bus = 'platform', name = '3110000.serial', driver = [ 'of_serial', 'tegra-uart' ]),
         sysfs.Device(bus = 'platform', name = '31c0000.i2c', driver = 'tegra-i2c'),
         sysfs.Device(bus = 'platform', name = '3400000.sdhci', driver = 'sdhci-tegra'),
         sysfs.Device(bus = 'platform', name = '3460000.sdhci', driver = 'sdhci-tegra'),
