@@ -1,4 +1,5 @@
 import boards
+from linux.system import Kernel
 from linux import sysfs
 
 class Board(boards.Board):
@@ -25,6 +26,13 @@ class Board(boards.Board):
         sysfs.Device(bus = 'platform', name = 'gpio-keys', driver = 'gpio-keys'),
         # I2C bus
         sysfs.Device(bus = 'i2c', name = '0-003c', driver = 'max77620'),
+    ] + [
+        device for device in [
+            sysfs.Device(bus = 'platform', name = '14100000.pcie', driver = 'tegra194-pcie'),
+            sysfs.Device(bus = 'platform', name = '14140000.pcie', driver = 'tegra194-pcie'),
+            sysfs.Device(bus = 'platform', name = '14180000.pcie', driver = 'tegra194-pcie'),
+            sysfs.Device(bus = 'platform', name = '141a0000.pcie', driver = 'tegra194-pcie'),
+        ] if Kernel().version >= Kernel.Version('5.5.0')
     ]
 
     drivers = [
