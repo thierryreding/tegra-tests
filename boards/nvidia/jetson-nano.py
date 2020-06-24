@@ -45,6 +45,10 @@ class Board(boards.Board):
         # PCI bus
         sysfs.Device(bus = 'pci', name = '0000:00:02.0', driver = 'pcieport'),
         sysfs.Device(bus = 'pci', name = '0000:01:00.0', driver = 'r8169'),
+    ] + [
+        device for device in [
+            sysfs.Device(bus = 'host1x', name = 'tegra-video', driver = 'tegra-video'),
+        ] if system.Kernel().version >= system.Kernel.Version('5.9.0')
     ]
 
     drivers = [

@@ -39,6 +39,10 @@ class Board(boards.Board):
         sysfs.Device(bus = 'i2c', name = '1-003c', driver = 'max77620'),
         # USB bus
         sysfs.Device(bus = 'usb', name = '2-1:1.0', driver = 'r8152'),
+    ] + [
+        device for device in [
+            sysfs.Device(bus = 'host1x', name = 'tegra-video', driver = 'tegra-video'),
+        ] if system.Kernel().version >= system.Kernel.Version('5.8.0')
     ]
 
     drivers = [
