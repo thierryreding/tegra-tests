@@ -34,18 +34,30 @@ class Board(boards.Board):
         sysfs.Device(bus = 'platform', name = '70030000.hda', driver = 'tegra-hda'),
         sysfs.Device(bus = 'platform', name = '70090000.usb', driver = 'tegra-xusb'),
         sysfs.Device(bus = 'platform', name = '7009f000.padctl', driver = 'tegra-xusb-padctl'),
-        sysfs.Device(bus = 'platform', name = '700b0000.sdhci', driver = 'sdhci-tegra'),
         sysfs.Device(bus = 'platform', name = '700e2000.thermal-sensor', driver = ''),
         sysfs.Device(bus = 'platform', name = '700e3000.mipi', driver = 'tegra-mipi'),
         sysfs.Device(bus = 'platform', name = 'gpio-keys', driver = 'gpio-keys'),
-        # I2C bus
+    # Device trees in Linux v5.9 changed sdhci@... to mmc@...
+    ] + [
+        device for device in [
+            sysfs.Device(bus = 'platform', name = '700b0000.sdhci', driver = 'sdhci-tegra'),
+        ] if Kernel().version < Kernel.Version('5.9.0')
+    ] + [
+        device for device in [
+            sysfs.Device(bus = 'platform', name = '700b0000.mmc', driver = 'sdhci-tegra'),
+        ] if Kernel().version >= Kernel.Version('5.9.0')
+    # I2C bus
+    ] + [
         sysfs.Device(bus = 'i2c', name = '0-0050', driver = 'at24'),
         sysfs.Device(bus = 'i2c', name = '0-0057', driver = 'at24'),
         sysfs.Device(bus = 'i2c', name = '1-003c', driver = 'max77620'),
         sysfs.Device(bus = 'i2c', name = '1-0068', driver = 'dummy'),
-        # PCI bus
+    # PCI bus
+    ] + [
         sysfs.Device(bus = 'pci', name = '0000:00:02.0', driver = 'pcieport'),
         sysfs.Device(bus = 'pci', name = '0000:01:00.0', driver = 'r8169'),
+    # host1x bus
+    # Linux v5.9 enabled support for the Tegra VI/CSI V4L2 driver on Jetson Nano
     ] + [
         device for device in [
             sysfs.Device(bus = 'host1x', name = 'tegra-video', driver = 'tegra-video'),

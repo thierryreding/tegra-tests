@@ -1,4 +1,5 @@
 import boards
+from linux.system import Kernel
 from linux import sysfs
 
 class Board(boards.Board):
@@ -21,14 +22,12 @@ class Board(boards.Board):
         sysfs.Device(bus = 'platform', name = '2200000.gpio', driver = 'tegra186-gpio'),
         sysfs.Device(bus = 'platform', name = '2490000.ethernet', driver = 'dwc-eth-dwmac'),
         sysfs.Device(bus = 'platform', name = '2c00000.memory-controller', driver = 'tegra186-mc'),
-        sysfs.Device(bus = 'platform', name = '30000000.sysram', driver = 'sram'),
         sysfs.Device(bus = 'platform', name = '3100000.serial', driver = [ 'of_serial', 'tegra-uart' ]),
         sysfs.Device(bus = 'platform', name = '3160000.i2c', driver = 'tegra-i2c'),
         sysfs.Device(bus = 'platform', name = '3180000.i2c', driver = 'tegra-i2c'),
         sysfs.Device(bus = 'platform', name = '3190000.i2c', driver = 'tegra-i2c'),
         sysfs.Device(bus = 'platform', name = '31c0000.i2c', driver = 'tegra-i2c'),
         sysfs.Device(bus = 'platform', name = '31e0000.i2c', driver = 'tegra-i2c'),
-        sysfs.Device(bus = 'platform', name = '3400000.sdhci', driver = 'sdhci-tegra'),
         sysfs.Device(bus = 'platform', name = '3510000.hda', driver = 'tegra-hda'),
         sysfs.Device(bus = 'platform', name = '3820000.fuse', driver = 'tegra-fuse'),
         sysfs.Device(bus = 'platform', name = '3c00000.hsp', driver = 'tegra-hsp'),
@@ -37,7 +36,18 @@ class Board(boards.Board):
         sysfs.Device(bus = 'platform', name = 'c2a0000.rtc', driver = 'tegra_rtc'),
         sysfs.Device(bus = 'platform', name = 'c2f0000.gpio', driver = 'tegra186-gpio'),
         sysfs.Device(bus = 'platform', name = 'c360000.pmc', driver = 'tegra-pmc'),
-        # I2C bus
+        sysfs.Device(bus = 'platform', name = '30000000.sram', driver = 'sram'),
+    # Device trees in Linux v5.9 changed sdhci@... to mmc@...
+    ] + [
+        device for device in [
+            sysfs.Device(bus = 'platform', name = '3400000.sdhci', driver = 'sdhci-tegra'),
+        ] if Kernel().version < Kernel.Version('5.9.0')
+    ] + [
+        device for device in [
+            sysfs.Device(bus = 'platform', name = '3400000.mmc', driver = 'sdhci-tegra'),
+        ] if Kernel().version >= Kernel.Version('5.9.0')
+    # I2C bus
+    ] + [
         sysfs.Device(bus = 'i2c', name = '0-003c', driver = 'max77620'),
         sysfs.Device(bus = 'i2c', name = '1-0040', driver = 'ina3221'),
         sysfs.Device(bus = 'i2c', name = '1-0041', driver = 'ina3221'),

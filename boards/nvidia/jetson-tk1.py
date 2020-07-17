@@ -1,4 +1,5 @@
 import boards
+from linux.system import Kernel
 from linux import sysfs
 
 class Board(boards.Board):
@@ -35,27 +36,41 @@ class Board(boards.Board):
         sysfs.Device(bus = 'platform', name = '70030000.hda', driver = 'tegra-hda'),
         sysfs.Device(bus = 'platform', name = '70090000.usb', driver = 'tegra-xusb'),
         sysfs.Device(bus = 'platform', name = '7009f000.padctl', driver = 'tegra-xusb-padctl'),
-        sysfs.Device(bus = 'platform', name = '700b0400.sdhci', driver = 'sdhci-tegra'),
-        sysfs.Device(bus = 'platform', name = '700b0600.sdhci', driver = 'sdhci-tegra'),
         sysfs.Device(bus = 'platform', name = '70300000.ahub', driver = 'tegra30-ahub'),
         sysfs.Device(bus = 'platform', name = '70301100.i2s', driver = 'tegra30-i2s'),
         sysfs.Device(bus = 'platform', name = '7d004000.usb', driver = 'tegra-ehci'),
         sysfs.Device(bus = 'platform', name = '7d004000.usb-phy', driver = 'tegra-phy'),
         sysfs.Device(bus = 'platform', name = '7d008000.usb', driver = 'tegra-ehci'),
         sysfs.Device(bus = 'platform', name = '7d008000.usb-phy', driver = 'tegra-phy'),
-        # HDA bus
+    # Device trees in Linux v5.9 changed sdhci@... to mmc@...
+    ] + [
+        device for device in [
+            sysfs.Device(bus = 'platform', name = '700b0400.sdhci', driver = 'sdhci-tegra'),
+            sysfs.Device(bus = 'platform', name = '700b0600.sdhci', driver = 'sdhci-tegra'),
+        ] if Kernel().version < Kernel.Version('5.9.0')
+    ] + [
+        device for device in [
+            sysfs.Device(bus = 'platform', name = '700b0400.mmc', driver = 'sdhci-tegra'),
+            sysfs.Device(bus = 'platform', name = '700b0600.mmc', driver = 'sdhci-tegra'),
+        ] if Kernel().version < Kernel.Version('5.9.0')
+    # HDA bus
+    ] + [
         sysfs.Device(bus = 'hdaudio', name = 'hdaudioC0D3', driver = 'snd_hda_codec_hdmi'),
-        # host1x bus
+    # host1x bus
+    ] + [
         sysfs.Device(bus = 'host1x', name = 'drm', driver = 'drm'),
-        # I2C bus
+    # I2C bus
+    ] + [
         sysfs.Device(bus = 'i2c', name = '0-001c', driver = 'rt5640'),
         sysfs.Device(bus = 'i2c', name = '0-004c', driver = 'lm90'),
         sysfs.Device(bus = 'i2c', name = '0-0056', driver = 'at24'),
         sysfs.Device(bus = 'i2c', name = '4-0040', driver = 'as3722'),
-        # PCI bus
+    # PCI bus
+    ] + [
         sysfs.Device(bus = 'pci', name = '0000:00:02.0', driver = 'pcieport'),
         sysfs.Device(bus = 'pci', name = '0000:01:00.0', driver = 'r8169'),
-        # SPI bus
+    # SPI bus
+    ] + [
         sysfs.Device(bus = 'spi', name = 'spi1.0', driver = 'm25p80'),
     ]
 
