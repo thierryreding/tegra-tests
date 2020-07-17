@@ -18,7 +18,7 @@ class Board(boards.Board):
         sysfs.Device(bus = 'platform', name = '70000868.pinmux', driver = 'tegra124-pinctrl'),
         sysfs.Device(bus = 'platform', name = '70006000.serial', driver = 'serial-tegra'),
         sysfs.Device(bus = 'platform', name = '70006040.serial', driver = 'serial-tegra'),
-        sysfs.Device(bus = 'platform', name = '70006300.serial', driver = 'of_serial'),
+        sysfs.Device(bus = 'platform', name = '70006300.serial', driver = [ 'of_serial', 'tegra-uart' ]),
         sysfs.Device(bus = 'platform', name = '7000c000.i2c', driver = 'tegra-i2c'),
         sysfs.Device(bus = 'platform', name = '7000c400.i2c', driver = 'tegra-i2c'),
         sysfs.Device(bus = 'platform', name = '7000c500.i2c', driver = 'tegra-i2c'),

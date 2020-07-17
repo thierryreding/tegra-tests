@@ -22,7 +22,7 @@ class Board(boards.Board):
         sysfs.Device(bus = 'platform', name = '2490000.ethernet', driver = 'dwc-eth-dwmac'),
         sysfs.Device(bus = 'platform', name = '2c00000.memory-controller', driver = 'tegra186-mc'),
         sysfs.Device(bus = 'platform', name = '30000000.sysram', driver = 'sram'),
-        sysfs.Device(bus = 'platform', name = '3100000.serial', driver = 'of_serial'),
+        sysfs.Device(bus = 'platform', name = '3100000.serial', driver = [ 'of_serial', 'tegra-uart' ]),
         sysfs.Device(bus = 'platform', name = '3160000.i2c', driver = 'tegra-i2c'),
         sysfs.Device(bus = 'platform', name = '3180000.i2c', driver = 'tegra-i2c'),
         sysfs.Device(bus = 'platform', name = '3190000.i2c', driver = 'tegra-i2c'),
