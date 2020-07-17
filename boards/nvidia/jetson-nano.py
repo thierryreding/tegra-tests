@@ -1,5 +1,6 @@
 import boards
-from linux import sysfs, system
+from linux.system import Kernel
+from linux import sysfs
 from tegra import tegra210
 
 class Board(boards.Board):
@@ -48,7 +49,7 @@ class Board(boards.Board):
     ] + [
         device for device in [
             sysfs.Device(bus = 'host1x', name = 'tegra-video', driver = 'tegra-video'),
-        ] if system.Kernel().version >= system.Kernel.Version('5.9.0')
+        ] if Kernel().version >= Kernel.Version('5.9.0')
     ]
 
     drivers = [
