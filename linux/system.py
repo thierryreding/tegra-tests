@@ -3,6 +3,7 @@
 import ctypes
 import os
 import platform
+import re
 import sys
 import time
 
@@ -192,8 +193,31 @@ class Kernel:
             self.major = int(major)
             self.minor = int(minor)
             self.patch = int(patch)
+            self.next = None
+            self.rc = 0
+
+            if self.extra:
+                parts = self.extra.split('-')
+
+                match = re.match('rc(\d+)', parts[0])
+                if match:
+                    self.rc = int(match.group(1))
+                    del parts[0:1]
+
+                if parts:
+                    if parts[0] == 'next':
+                        self.next = parts[1]
+                        del parts[0:2]
 
         def numerical(self):
+            #
+            # linux-next is a special case: it contains code that will usually
+            # become part of the next release, so version checks usually want
+            # to succeed for the next release when run on linux-next.
+            #
+            if self.next:
+                return self.major << 16 | self.minor + 1 << 8 | self.patch
+
             return self.major << 16 | self.minor << 8 | self.patch
 
         def __lt__(self, other):
