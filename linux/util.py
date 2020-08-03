@@ -24,7 +24,7 @@ def require_arguments(**kwargs):
                 (caller, len(missing), 's' if len(missing) > 1 else '',
                     listify(missing)))
 
-class WhiteList():
+class AllowList():
     class Pattern:
         def __init__(self, re):
             self.matches = []
@@ -35,7 +35,7 @@ class WhiteList():
 
         for pattern in patterns:
             pattern = re.compile(pattern)
-            pattern = WhiteList.Pattern(pattern)
+            pattern = AllowList.Pattern(pattern)
             self.patterns.append(pattern)
 
     def unmatched(self):

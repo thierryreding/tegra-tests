@@ -50,7 +50,7 @@ class Board(boards.Board):
         sysfs.Driver('platform', 'tegra-host1x'),
     ]
 
-    whitelist = [
+    allowlist = [
         r'OF: fdt: Reserved memory: unsupported node format, ignoring',
         r'EINJ: ACPI disabled.',
         r'cacheinfo: Unable to detect cache hierarchy for CPU 0',

@@ -63,7 +63,7 @@ class Board(boards.Board):
         sysfs.Driver('platform', 'tegra-host1x'),
     ]
 
-    whitelist = [
+    allowlist = [
         r'CPU features: SANITY CHECK: .*',
         r'CPU features: Unsupported CPU feature variation detected',
         r'EINJ: ACPI disabled.',

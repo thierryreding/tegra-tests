@@ -136,21 +136,21 @@ class logs(runner.Test):
         kernel = system.Kernel()
         count = 0
 
-        if hasattr(board, 'whitelist'):
-            whitelist = util.WhiteList(board.whitelist)
+        if hasattr(board, 'allowlist'):
+            allowlist = util.AllowList(board.allowlist)
         else:
-            whitelist = None
+            allowlist = None
 
         with kmsg.open('/dev/kmsg') as dmesg:
             for entry in dmesg:
                 if entry.header.facility == kmsg.LOG_KERN and \
                    entry.header.level <= kmsg.LOG_WARNING:
-                    if not whitelist or entry not in whitelist:
+                    if not allowlist or entry not in allowlist:
                         log.debug(entry)
                         count += 1
 
-        if whitelist:
-            unmatched = whitelist.unmatched()
+        if allowlist:
+            unmatched = allowlist.unmatched()
 
             for pattern in unmatched:
                 log.debug('pattern \'%s\' had no matches' % pattern)

@@ -78,7 +78,7 @@ class Board(boards.Board):
         sysfs.Driver('platform', 'tegra-host1x'),
     ]
 
-    whitelist = [
+    allowlist = [
         r'/cpus/cpu@\d+missing clock-frequency property',
         r' usb\d+-\d+: usb\d+-\d+ supply vbus not found',
         r'.*Failed to get supply \'.*\': -517',

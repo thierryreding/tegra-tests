@@ -68,7 +68,7 @@ class Board(boards.Board):
         sysfs.Driver('platform', 'tegra-host1x'),
     ]
 
-    whitelist = [
+    allowlist = [
         r'urandom_read: [0-9]+ callbacks suppressed',
     ]
 
