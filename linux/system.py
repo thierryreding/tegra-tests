@@ -200,10 +200,15 @@ class I2CDevice:
         self.address = address
 
 class Kernel:
+    release = None
+
     class Version:
         def __init__(self, release = None):
             if not release:
-                self.release = platform.release()
+                if not Kernel.release:
+                    self.release = platform.release()
+                else:
+                    self.release = Kernel.release
             else:
                 self.release = release
 

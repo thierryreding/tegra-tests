@@ -78,6 +78,8 @@ def standalone(module):
     parser = argparse.ArgumentParser('')
     parser.add_argument('--quiet', '-q', action = 'store_true',
                         help = 'do not show any output unless a failure occurred')
+    parser.add_argument('--kernel', '-k', type = str, default = '',
+                        help = 'override kernel version')
     parser.add_argument('--list', '-l', action = 'store_true',
                         help = 'display a list of subtests that can be selected')
     parser.add_argument('--summary', '-s', action = 'store_true',
@@ -87,6 +89,13 @@ def standalone(module):
     parser.add_argument('subtests', metavar = 'SUBTEST', nargs = '*',
                         help = 'a list of tests that should be run')
     args = parser.parse_args(sys.argv[1:])
+
+    if args.kernel:
+        # need to do the import here because it needs to run after the Python
+        # path was set up
+        from linux import system
+
+        system.Kernel.release = args.kernel
 
     if args.quiet:
         output = io.StringIO()
