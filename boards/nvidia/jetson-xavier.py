@@ -42,9 +42,20 @@ class Board(boards.Board):
             sysfs.Device(bus = 'platform', name = '3400000.mmc', driver = 'sdhci-tegra'),
             sysfs.Device(bus = 'platform', name = '3460000.mmc', driver = 'sdhci-tegra'),
         ] if Kernel().version >= Kernel.Version('5.9.0')
+    # Linux v5.10 enabled the GEN_I2C1 controller that drives the bus containing ID EEPROMs
+    ] + [
+        device for device in [
+            sysfs.Device(bus = 'platform', name = '3160000.i2c', driver = 'tegra-i2c'),
+        ] if Kernel().version >= Kernel.Version('5.10.0')
     # I2C bus
     ] + [
         sysfs.Device(bus = 'i2c', name = '0-003c', driver = 'max77620'),
+    # ID EEPROMs are available as of Linux v5.10
+    ] + [
+        device for device in [
+            sysfs.Device(bus = 'i2c', name = '1-0050', driver = 'at24'),
+            sysfs.Device(bus = 'i2c', name = '1-0056', driver = 'at24'),
+        ] if Kernel().version >= Kernel.Version('5.10.0')
     ]
 
     drivers = [
@@ -68,7 +79,7 @@ class Board(boards.Board):
         self.soc = tegra194.SoC()
         self.eeproms = {}
 
-        i2c = self.soc.devices['i2c1']
-
-        self.eeproms['module'] = i2c.device(0x50)
-        self.eeproms['system'] = i2c.device(0x56)
+        if 'i2c1' in self.soc.devices:
+            i2c = self.soc.devices['i2c1']
+            self.eeproms['module'] = i2c.device(0x50)
+            self.eeproms['system'] = i2c.device(0x56)

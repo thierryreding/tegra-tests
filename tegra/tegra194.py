@@ -1,3 +1,4 @@
+from linux.system import Kernel
 from linux import system
 import tegra
 
@@ -9,4 +10,5 @@ class SoC(tegra.SoC):
         self.num_cpus = 8
         self.devices = {}
 
-        self.devices['i2c1'] = system.I2CController('platform', '3160000.i2c')
+        if Kernel().version >= Kernel.Version('5.10.0'):
+            self.devices['i2c1'] = system.I2CController('platform', '3160000.i2c')
