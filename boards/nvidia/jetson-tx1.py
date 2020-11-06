@@ -46,7 +46,6 @@ class Board(boards.Board):
         ] if Kernel().version >= Kernel.Version('5.9.0')
     # I2C bus
     ] + [
-        sysfs.Device(bus = 'i2c', name = '0-002c', driver = 'lp855x'),
         sysfs.Device(bus = 'i2c', name = '0-0074', driver = 'pca953x'),
         sysfs.Device(bus = 'i2c', name = '1-003c', driver = 'max77620'),
     # USB bus
@@ -66,6 +65,10 @@ class Board(boards.Board):
 
     allowlist = [
         r'EINJ: ACPI disabled.',
+        r'lp855x 0-002c: failed to read 0x00',
+        r'lp855x 0-002c: pre init device err: -121',
+        r'lp855x 0-002c: device config err: -121',
+        r'lp855x: probe of 0-002c failed with error -121',
         r'tegra-i2c 7000c700.i2c: deferred probe timeout, ignoring dependency',
         r'urandom_read: [0-9]+ callbacks suppressed',
     ]
