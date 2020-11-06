@@ -70,6 +70,7 @@ class Board(boards.Board):
         r'EINJ: ACPI disabled.',
         r'dwc-eth-dwmac 2490000.ethernet: Cannot get CSR clock',
         r'dwc-eth-dwmac 2490000.ethernet: PTP uses main clock',
+        r'tegra-i2c 3190000.i2c: deferred probe timeout, ignoring dependency',
         r'urandom_read: [0-9]+ callbacks suppressed',
     ]
 

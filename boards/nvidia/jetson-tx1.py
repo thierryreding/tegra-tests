@@ -65,6 +65,8 @@ class Board(boards.Board):
     ]
 
     allowlist = [
+        r'EINJ: ACPI disabled.',
+        r'tegra-i2c 7000c700.i2c: deferred probe timeout, ignoring dependency',
         r'urandom_read: [0-9]+ callbacks suppressed',
     ]
 

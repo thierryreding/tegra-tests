@@ -69,6 +69,10 @@ class Board(boards.Board):
     ]
 
     allowlist = [
+        r'EINJ: ACPI disabled.',
+        r'pci_bus [0-9a-fA-F]{4}:[0-9a-fA-F]{2}: \d+-byte config .* to [0-9a-fA-F]{4}:[0-9a-fA-F]{2}:[0-9a-fA-F]{2}\.\d offset 0x[0-9a-fA-F]+ may corrupt adjacent RW1C bits',
+        r'pci [0-9a-fA-F]{4}:[0-9a-fA-F]{2}:[0-9a-fA-F]{2}\.[0-9a-fA-F]: nv_msi_ht_cap_quirk didn\'t locate host bridge',
+        r'tegra-i2c 7000c700.i2c: deferred probe timeout, ignoring dependency',
         r'urandom_read: [0-9]+ callbacks suppressed',
     ]
 
