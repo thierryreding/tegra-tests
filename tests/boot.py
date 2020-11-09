@@ -143,8 +143,6 @@ class logs(runner.Test):
 
         with kmsg.open('/dev/kmsg') as dmesg:
             for entry in dmesg:
-                if entry.message == "":
-                    continue
                 if entry.header.facility == kmsg.LOG_KERN and \
                    entry.header.level <= kmsg.LOG_WARNING:
                     if not allowlist or entry not in allowlist:
