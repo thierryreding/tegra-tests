@@ -13,6 +13,8 @@ class Board(boards.Board):
         sysfs.Device(bus = 'platform', name = '54200000.dc', driver = 'tegra-dc'),
         sysfs.Device(bus = 'platform', name = '54240000.dc', driver = 'tegra-dc'),
         sysfs.Device(bus = 'platform', name = '54280000.hdmi', driver = 'tegra-hdmi'),
+        sysfs.Device(bus = 'platform', name = '54340000.vic', driver = 'tegra-vic'),
+        sysfs.Device(bus = 'platform', name = '60005000.timer', driver = 'tegra-wdt'),
         sysfs.Device(bus = 'platform', name = '60007000.flow-controller', driver = 'tegra-flowctrl'),
         sysfs.Device(bus = 'platform', name = '6000d000.gpio', driver = 'tegra-gpio'),
         sysfs.Device(bus = 'platform', name = '60020000.dma', driver = 'tegra-apbdma'),
@@ -31,17 +33,31 @@ class Board(boards.Board):
         sysfs.Device(bus = 'platform', name = '7000e400.pmc', driver = 'tegra-pmc'),
         sysfs.Device(bus = 'platform', name = '7000f800.fuse', driver = 'tegra-fuse'),
         sysfs.Device(bus = 'platform', name = '70019000.memory-controller', driver = 'tegra-mc'),
-        sysfs.Device(bus = 'platform', name = '7001b000.emc', driver = 'tegra-emc'),
+        sysfs.Device(bus = 'platform', name = '7001b000.external-memory-controller', driver = 'tegra-emc'),
         sysfs.Device(bus = 'platform', name = '70027000.sata', driver = 'tegra-ahci'),
         sysfs.Device(bus = 'platform', name = '70030000.hda', driver = 'tegra-hda'),
         sysfs.Device(bus = 'platform', name = '70090000.usb', driver = 'tegra-xusb'),
         sysfs.Device(bus = 'platform', name = '7009f000.padctl', driver = 'tegra-xusb-padctl'),
+        sysfs.Device(bus = 'platform', name = '700e2000.thermal-sensor', driver = 'tegra_soctherm'),
+        sysfs.Device(bus = 'platform', name = '70110000.clock', driver = 'tegra124-dfll'),
         sysfs.Device(bus = 'platform', name = '70300000.ahub', driver = 'tegra30-ahub'),
         sysfs.Device(bus = 'platform', name = '70301100.i2s', driver = 'tegra30-i2s'),
-        sysfs.Device(bus = 'platform', name = '7d004000.usb', driver = 'tegra-ehci'),
+        sysfs.Device(bus = 'platform', name = '7d000000.usb', driver = [ 'tegra-udc', 'tegra-usb' ]),
+        sysfs.Device(bus = 'platform', name = '7d000000.usb-phy', driver = 'tegra-phy'),
+        sysfs.Device(bus = 'platform', name = '7d004000.usb', driver = [ 'tegra-ehci', 'tegra-usb' ]),
         sysfs.Device(bus = 'platform', name = '7d004000.usb-phy', driver = 'tegra-phy'),
-        sysfs.Device(bus = 'platform', name = '7d008000.usb', driver = 'tegra-ehci'),
+        sysfs.Device(bus = 'platform', name = '7d008000.usb', driver = [ 'tegra-ehci', 'tegra-usb' ]),
         sysfs.Device(bus = 'platform', name = '7d008000.usb-phy', driver = 'tegra-phy'),
+        sysfs.Device(bus = 'platform', name = 'as3722-pinctrl', driver = 'as3722-pinctrl'),
+        sysfs.Device(bus = 'platform', name = 'as3722-power-off', driver = 'as3722-power-off'),
+        sysfs.Device(bus = 'platform', name = 'as3722-regulator', driver = 'as3722-regulator'),
+        sysfs.Device(bus = 'platform', name = 'as3722-rtc', driver = 'as3722-rtc'),
+        sysfs.Device(bus = 'platform', name = 'ci_hdrc.0', driver = 'ci_hdrc'),
+        sysfs.Device(bus = 'platform', name = 'cpufreq-dt.0', driver = 'cpufreq-dt'),
+        sysfs.Device(bus = 'platform', name = 'cpufreq-tegra124', driver = 'cpufreq-tegra124'),
+        sysfs.Device(bus = 'platform', name = 'gpio-keys', driver = 'gpio-keys'),
+        sysfs.Device(bus = 'platform', name = 'pmu', driver = 'armv7-pmu'),
+        sysfs.Device(bus = 'platform', name = 'sound', driver = 'tegra-snd-rt5640'),
     # Device trees in Linux v5.9 changed sdhci@... to mmc@...
     ] + [
         device for device in [
@@ -71,7 +87,7 @@ class Board(boards.Board):
         sysfs.Device(bus = 'pci', name = '0000:01:00.0', driver = 'r8169'),
     # SPI bus
     ] + [
-        sysfs.Device(bus = 'spi', name = 'spi1.0', driver = 'm25p80'),
+        sysfs.Device(bus = 'spi', name = 'spi1.0', driver = 'spi-nor'),
     ]
 
     drivers = [

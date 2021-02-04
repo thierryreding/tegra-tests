@@ -14,25 +14,38 @@ class Board(boards.Board):
         sysfs.Device(bus = 'platform', name = '54040000.dpaux', driver = 'tegra-dpaux'),
         sysfs.Device(bus = 'platform', name = '54200000.dc', driver = 'tegra-dc'),
         sysfs.Device(bus = 'platform', name = '54240000.dc', driver = 'tegra-dc'),
+        sysfs.Device(bus = 'platform', name = '54300000.dsi', driver = 'tegra-dsi'),
         sysfs.Device(bus = 'platform', name = '54340000.vic', driver = 'tegra-vic'),
         sysfs.Device(bus = 'platform', name = '54580000.sor', driver = 'tegra-sor'),
+        sysfs.Device(bus = 'platform', name = '60005000.timer', driver = ''),
         sysfs.Device(bus = 'platform', name = '60007000.flow-controller', driver = 'tegra-flowctrl'),
         sysfs.Device(bus = 'platform', name = '6000d000.gpio', driver = 'tegra-gpio'),
         sysfs.Device(bus = 'platform', name = '60020000.dma', driver = 'tegra-apbdma'),
         sysfs.Device(bus = 'platform', name = '700008d4.pinmux', driver = 'tegra210-pinctrl'),
         sysfs.Device(bus = 'platform', name = '70006000.serial', driver = [ 'of_serial', 'tegra-uart' ]),
+        sysfs.Device(bus = 'platform', name = '7000a000.pwm', driver = 'tegra-pwm'),
         sysfs.Device(bus = 'platform', name = '7000c400.i2c', driver = 'tegra-i2c'),
+        sysfs.Device(bus = 'platform', name = '7000c500.i2c', driver = 'tegra-i2c'),
         sysfs.Device(bus = 'platform', name = '7000c700.i2c', driver = 'tegra-i2c'),
         sysfs.Device(bus = 'platform', name = '7000d000.i2c', driver = 'tegra-i2c'),
-        sysfs.Device(bus = 'platform', name = '7000a000.pwm', driver = 'tegra-pwm'),
         sysfs.Device(bus = 'platform', name = '7000e000.rtc', driver = 'tegra_rtc'),
         sysfs.Device(bus = 'platform', name = '7000e400.pmc', driver = 'tegra-pmc'),
         sysfs.Device(bus = 'platform', name = '7000f800.fuse', driver = 'tegra-fuse'),
         sysfs.Device(bus = 'platform', name = '70019000.memory-controller', driver = 'tegra-mc'),
+        sysfs.Device(bus = 'platform', name = '70030000.hda', driver = 'tegra-hda'),
         sysfs.Device(bus = 'platform', name = '70090000.usb', driver = 'tegra-xusb'),
         sysfs.Device(bus = 'platform', name = '7009f000.padctl', driver = 'tegra-xusb-padctl'),
+        sysfs.Device(bus = 'platform', name = '700e2000.thermal-sensor', driver = 'tegra_soctherm'),
         sysfs.Device(bus = 'platform', name = '700e3000.mipi', driver = 'tegra-mipi'),
+        sysfs.Device(bus = 'platform', name = '70110000.clock', driver = 'tegra124-dfll'),
+        sysfs.Device(bus = 'platform', name = 'cpufreq-dt.0', driver = 'cpufreq-dt'),
+        sysfs.Device(bus = 'platform', name = 'cpufreq-tegra124', driver = 'cpufreq-tegra124'),
         sysfs.Device(bus = 'platform', name = 'gpio-keys', driver = 'gpio-keys'),
+        sysfs.Device(bus = 'platform', name = 'max77620-gpio', driver = 'max77620-gpio'),
+        sysfs.Device(bus = 'platform', name = 'max77620-pinctrl', driver = 'max77620-pinctrl'),
+        sysfs.Device(bus = 'platform', name = 'max77620-pmic', driver = 'max77620-pmic'),
+        sysfs.Device(bus = 'platform', name = 'max77620-rtc', driver = 'max77686-rtc'),
+        sysfs.Device(bus = 'platform', name = 'pmu', driver = 'armv8-pmu'),
     # Device trees in Linux v5.9 changed sdhci@... to mmc@...
     ] + [
         device for device in [
@@ -44,14 +57,22 @@ class Board(boards.Board):
             sysfs.Device(bus = 'platform', name = '700b0000.mmc', driver = 'sdhci-tegra'),
             sysfs.Device(bus = 'platform', name = '700b0600.mmc', driver = 'sdhci-tegra'),
         ] if Kernel().version >= Kernel.Version('5.9.0')
+    # HDA bus
+    ] + [
+        sysfs.Device(bus = 'hdaudio', name = 'hdaudioC0D3', driver = 'snd_hda_codec_hdmi'),
     # I2C bus
     ] + [
         sysfs.Device(bus = 'i2c', name = '0-0074', driver = 'pca953x'),
-        sysfs.Device(bus = 'i2c', name = '1-003c', driver = 'max77620'),
+        sysfs.Device(bus = 'i2c', name = '0-0077', driver = 'pca953x'),
+        sysfs.Device(bus = 'i2c', name = '1-0050', driver = 'at24'),
+        sysfs.Device(bus = 'i2c', name = '1-0057', driver = 'at24'),
+        sysfs.Device(bus = 'i2c', name = '2-003c', driver = 'max77620'),
     # USB bus
     ] + [
         sysfs.Device(bus = 'usb', name = '2-1:1.0', driver = 'r8152'),
     # host1x bus
+    ] + [
+        sysfs.Device(bus = 'host1x', name = 'drm', driver = 'drm'),
     # Linux v5.8 enabled support for the Tegra VI/CSI V4L2 driver on Jetson TX1
     ] + [
         device for device in [
