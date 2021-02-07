@@ -12,12 +12,10 @@ class Board(boards.Board):
         sysfs.Device(bus = 'platform', name = '2200000.gpio', driver = 'tegra186-gpio'),
         sysfs.Device(bus = 'platform', name = '2430000.pinmux', driver = 'tegra194-pinctrl'),
         sysfs.Device(bus = 'platform', name = '2490000.ethernet', driver = 'dwc-eth-dwmac'),
-        sysfs.Device(bus = 'platform', name = '2c00000.memory-controller', driver = 'tegra186-mc'),
         sysfs.Device(bus = 'platform', name = '3110000.serial', driver = [ 'of_serial', 'tegra-uart' ]),
         sysfs.Device(bus = 'platform', name = '31c0000.i2c', driver = 'tegra-i2c'),
         sysfs.Device(bus = 'platform', name = '31c0000.i2c', driver = 'tegra-i2c'),
         sysfs.Device(bus = 'platform', name = '3510000.hda', driver = 'tegra-hda'),
-        sysfs.Device(bus = 'platform', name = '3820000.fuse', driver = 'tegra-fuse'),
         sysfs.Device(bus = 'platform', name = '3c00000.hsp', driver = 'tegra-hsp'),
         sysfs.Device(bus = 'platform', name = '3e10000.phy', driver = 'tegra194-p2u'),
         sysfs.Device(bus = 'platform', name = '3e20000.phy', driver = 'tegra194-p2u'),
@@ -55,11 +53,7 @@ class Board(boards.Board):
         sysfs.Device(bus = 'platform', name = '15220000.display', driver = 'tegra-dc'),
         sysfs.Device(bus = 'platform', name = '15230000.display', driver = 'tegra-dc'),
         sysfs.Device(bus = 'platform', name = '15340000.vic', driver = 'tegra-vic'),
-        sysfs.Device(bus = 'platform', name = '155c0000.dpaux', driver = 'tegra-dpaux'),
-        sysfs.Device(bus = 'platform', name = '155d0000.dpaux', driver = 'tegra-dpaux'),
         sysfs.Device(bus = 'platform', name = '155e0000.dpaux', driver = 'tegra-dpaux'),
-        sysfs.Device(bus = 'platform', name = '15b00000.sor', driver = 'tegra-sor'),
-        sysfs.Device(bus = 'platform', name = '15b40000.sor', driver = 'tegra-sor'),
         sysfs.Device(bus = 'platform', name = '15b80000.sor', driver = 'tegra-sor'),
         sysfs.Device(bus = 'platform', name = 'bpmp', driver = 'tegra-bpmp'),
         sysfs.Device(bus = 'platform', name = 'bpmp:i2c', driver = 'tegra-bpmp-i2c'),
@@ -71,14 +65,24 @@ class Board(boards.Board):
         sysfs.Device(bus = 'platform', name = 'max77620-gpio', driver = 'max77620-gpio'),
         sysfs.Device(bus = 'platform', name = 'max77620-rtc', driver = 'max77686-rtc'),
         sysfs.Device(bus = 'platform', name = 'tcu', driver = 'tegra-tcu'),
-    # Linux v5.5 added support for the PCIe host controllers on Jetson AGX Xavier
+    # Linux v5.5 added support for the PCIe host controllers and Display Port on Jetson AGX Xavier
     ] + [
         device for device in [
             sysfs.Device(bus = 'platform', name = '14100000.pcie', driver = 'tegra194-pcie'),
             sysfs.Device(bus = 'platform', name = '14140000.pcie', driver = 'tegra194-pcie'),
             sysfs.Device(bus = 'platform', name = '14180000.pcie', driver = 'tegra194-pcie'),
             sysfs.Device(bus = 'platform', name = '141a0000.pcie', driver = 'tegra194-pcie'),
+            sysfs.Device(bus = 'platform', name = '155c0000.dpaux', driver = 'tegra-dpaux'),
+            sysfs.Device(bus = 'platform', name = '155d0000.dpaux', driver = 'tegra-dpaux'),
+            sysfs.Device(bus = 'platform', name = '15b00000.sor', driver = 'tegra-sor'),
+            sysfs.Device(bus = 'platform', name = '15b40000.sor', driver = 'tegra-sor'),
         ] if Kernel().version >= Kernel.Version('5.5.0')
+    # Linux v5.6 added support for the fuse and memory controller on Jetson AGX Xavier
+    ] + [
+        device for device in [
+            sysfs.Device(bus = 'platform', name = '2c00000.memory-controller', driver = 'tegra186-mc'),
+            sysfs.Device(bus = 'platform', name = '3820000.fuse', driver = 'tegra-fuse'),
+        ] if Kernel().version >= Kernel.Version('5.6.0')
     # Device trees in Linux v5.9 changed sdhci@... to mmc@... and sysram@... to sram@...
     ] + [
         device for device in [
