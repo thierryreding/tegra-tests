@@ -77,5 +77,9 @@ class Board(boards.Board):
         sysfs.Device(bus = 'spi', name = 'spi0.1', driver ='spi-nor'),
     ]
 
-    whitelist = [
+    allowlist = [
+    ] + [
+        warning for warning in [
+            r'.* sound: ASoC: no DMI vendor name!',
+        ] if Kernel().version < Kernel.Version('5.13.0')
     ]

@@ -71,5 +71,9 @@ class Board(boards.Board):
         sysfs.Device(bus = 'i2c', name = '3-004c', driver ='lm90'),
     ]
 
-    whitelist = [
+    allowlist = [
+    ] + [
+        warning for warning in [
+            r'.* sound: ASoC: no DMI vendor name!',
+        ] if Kernel().version < Kernel.Version('5.13.0')
     ]

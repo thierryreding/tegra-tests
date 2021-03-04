@@ -92,6 +92,10 @@ class Board(boards.Board):
         r'lp855x: probe of 0-002c failed with error -121',
         r'tegra-i2c 7000c700.i2c: deferred probe timeout, ignoring dependency',
         r'urandom_read: [0-9]+ callbacks suppressed',
+    ] + [
+        warning for warning in [
+            r'.* sound: ASoC: no DMI vendor name!',
+        ] if Kernel().version < Kernel.Version('5.13.0')
     ]
 
     def __init__(self):

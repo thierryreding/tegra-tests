@@ -89,6 +89,10 @@ class Board(boards.Board):
         r'pci [0-9a-fA-F]{4}:[0-9a-fA-F]{2}:[0-9a-fA-F]{2}\.[0-9a-fA-F]: nv_msi_ht_cap_quirk didn\'t locate host bridge',
         r'tegra-i2c 7000c700.i2c: deferred probe timeout, ignoring dependency',
         r'urandom_read: [0-9]+ callbacks suppressed',
+    ] + [
+        warning for warning in [
+            r'.* sound: ASoC: no DMI vendor name!',
+        ] if Kernel().version < Kernel.Version('5.13.0')
     ]
 
     def __init__(self):

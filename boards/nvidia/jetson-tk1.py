@@ -116,4 +116,8 @@ class Board(boards.Board):
         r'platform regulatory.0: Direct firmware load for regulatory.db failed with error -2',
         r'tegra-hdmi 54280000.hdmi: cannot set audio to 48000 Hz at 297000000 Hz pixel clock',
         r'urandom_read: [0-9]+ callbacks suppressed',
+    ] + [
+        warning for warning in [
+            r'.* sound: ASoC: no DMI vendor name!',
+        ] if Kernel().version < Kernel.Version('5.13.0')
     ]

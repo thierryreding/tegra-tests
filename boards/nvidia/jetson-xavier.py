@@ -142,6 +142,10 @@ class Board(boards.Board):
         r'tegra-i2c 31c0000.i2c: deferred probe timeout, ignoring dependency',
         r'\[drm\] parse error at position 6 in video mode \'tegrafb\'',
         r'urandom_read: [0-9]+ callbacks suppressed',
+    ] + [
+        warning for warning in [
+            r'.* sound: ASoC: no DMI vendor name!',
+        ] if Kernel().version < Kernel.Version('5.13.0')
     ]
 
     def __init__(self):

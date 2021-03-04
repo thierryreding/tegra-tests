@@ -95,6 +95,10 @@ class Board(boards.Board):
         r'dwc-eth-dwmac 2490000.ethernet: PTP uses main clock',
         r'tegra-i2c 3190000.i2c: deferred probe timeout, ignoring dependency',
         r'urandom_read: [0-9]+ callbacks suppressed',
+    ] + [
+        warning for warning in [
+            r'.* sound: ASoC: no DMI vendor name!',
+        ] if Kernel().version < Kernel.Version('5.13.0')
     ]
 
     def __init__(self):
