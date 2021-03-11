@@ -83,6 +83,12 @@ class Board(boards.Board):
             sysfs.Device(bus = 'platform', name = '2c00000.memory-controller', driver = 'tegra186-mc'),
             sysfs.Device(bus = 'platform', name = '3820000.fuse', driver = 'tegra-fuse'),
         ] if Kernel().version >= Kernel.Version('5.6.0')
+    # Linux v5.7 added support for USB on Jetson AGX Xavier
+    ] + [
+        device for device in [
+            sysfs.Device(bus = 'platform', name = '3520000.padctl', driver = 'tegra-xusb-padctl'),
+            sysfs.Device(bus = 'platform', name = '3610000.usb', driver = 'tegra-xusb'),
+        ] if Kernel().version >= Kernel.Version('5.7.0')
     # Device trees in Linux v5.9 changed sdhci@... to mmc@... and sysram@... to sram@...
     ] + [
         device for device in [

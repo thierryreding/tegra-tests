@@ -30,6 +30,8 @@ class Board(boards.Board):
         sysfs.Device(bus = 'platform', name = '32d0000.pwm', driver = 'tegra-pwm'),
         sysfs.Device(bus = 'platform', name = '3400000.mmc', driver = 'sdhci-tegra'),
         sysfs.Device(bus = 'platform', name = '3510000.hda', driver = 'tegra-hda'),
+        sysfs.Device(bus = 'platform', name = '3520000.padctl', driver = 'tegra-xusb-padctl'),
+        sysfs.Device(bus = 'platform', name = '3610000.usb', driver = 'tegra-xusb'),
         sysfs.Device(bus = 'platform', name = '3820000.fuse', driver = 'tegra-fuse'),
         sysfs.Device(bus = 'platform', name = '3c00000.hsp', driver = 'tegra-hsp'),
         sysfs.Device(bus = 'platform', name = '3e10000.phy', driver = 'tegra194-p2u'),
