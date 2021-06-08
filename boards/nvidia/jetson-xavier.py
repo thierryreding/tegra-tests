@@ -80,7 +80,7 @@ class Board(boards.Board):
     # Linux v5.6 added support for the fuse and memory controller on Jetson AGX Xavier
     ] + [
         device for device in [
-            sysfs.Device(bus = 'platform', name = '2c00000.memory-controller', driver = 'tegra186-mc'),
+            sysfs.Device(bus = 'platform', name = '2c00000.memory-controller', driver = [ 'tegra186-mc', 'tegra-mc' ]),
             sysfs.Device(bus = 'platform', name = '3820000.fuse', driver = 'tegra-fuse'),
         ] if Kernel().version >= Kernel.Version('5.6.0')
     # Linux v5.7 added support for USB on Jetson AGX Xavier
