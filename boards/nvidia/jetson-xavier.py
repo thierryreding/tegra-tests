@@ -103,10 +103,26 @@ class Board(boards.Board):
             sysfs.Device(bus = 'platform', name = '40000000.sram', driver = 'sram'),
         ] if Kernel().version >= Kernel.Version('5.9.0')
     # Linux v5.10 enabled the GEN_I2C1 controller that drives the bus containing ID EEPROMs
+    # and support for ACONNECT, ADMA and AGIC
     ] + [
         device for device in [
+            sysfs.Device(bus = 'platform', name = 'bus@0:aconnect@2900000', driver = 'tegra-aconnect'),
+            sysfs.Device(bus = 'platform', name = '2930000.dma-controller', driver = 'tegra-adma'),
+            sysfs.Device(bus = 'platform', name = '2a41000.interrupt-controller', driver = 'gic'),
             sysfs.Device(bus = 'platform', name = '3160000.i2c', driver = 'tegra-i2c'),
         ] if Kernel().version >= Kernel.Version('5.10.0')
+    # Linux v5.12 enabled support for the Audio Processing Engine
+    ] + [
+        device for device in [
+            sysfs.Device(bus = 'platform', name = '2900800.ahub', driver = 'tegra210-ahub'),
+            sysfs.Device(bus = 'platform', name = '2901000.i2s', driver = 'tegra210-i2s'),
+            sysfs.Device(bus = 'platform', name = '2901100.i2s', driver = 'tegra210-i2s'),
+            sysfs.Device(bus = 'platform', name = '2901300.i2s', driver = 'tegra210-i2s'),
+            sysfs.Device(bus = 'platform', name = '2901500.i2s', driver = 'tegra210-i2s'),
+            sysfs.Device(bus = 'platform', name = '2904200.dmic', driver = 'tegra210-dmic'),
+            sysfs.Device(bus = 'platform', name = '290f000.admaif', driver = 'tegra210-admaif'),
+            sysfs.Device(bus = 'platform', name = 'sound', driver = 'tegra-audio-graph-card'),
+        ] if Kernel().version >= Kernel.Version('5.12.0')
     # HDA bus
     ] + [
         sysfs.Device(bus = 'hdaudio', name = 'hdaudioC0D3', driver = 'snd_hda_codec_hdmi'),

@@ -70,6 +70,27 @@ class Board(boards.Board):
         sysfs.Device(bus = 'platform', name = 'max77620-gpio', driver = 'max77620-gpio'),
         sysfs.Device(bus = 'platform', name = 'max77620-rtc', driver = 'max77686-rtc'),
         sysfs.Device(bus = 'platform', name = 'tcu', driver = 'tegra-tcu'),
+    # ACONNECT, ADMA and AGIC are available as of Linux v5.10
+    ] + [
+        device for device in [
+            sysfs.Device(bus = 'platform', name = 'bus@0:aconnect@2900000', driver = 'tegra-aconnect'),
+            sysfs.Device(bus = 'platform', name = '2930000.dma-controller', driver = 'tegra-adma'),
+            sysfs.Device(bus = 'platform', name = '2a41000.interrupt-controller', driver = 'gic'),
+        ] if Kernel().version >= Kernel.Version('5.10.0')
+    # Linux v5.14 enabled support for the Audio Processing Engine
+    ] + [
+        device for device in [
+            sysfs.Device(bus = 'platform', name = '2900800.ahub', driver = 'tegra210-ahub'),
+            sysfs.Device(bus = 'platform', name = '2901200.i2s', driver = 'tegra210-i2s'),
+            sysfs.Device(bus = 'platform', name = '2901400.i2s', driver = 'tegra210-i2s'),
+            sysfs.Device(bus = 'platform', name = '2904000.dmic', driver = 'tegra210-dmic'),
+            sysfs.Device(bus = 'platform', name = '2904100.dmic', driver = 'tegra210-dmic'),
+            sysfs.Device(bus = 'platform', name = '2904300.dmic', driver = 'tegra210-dmic'),
+            sysfs.Device(bus = 'platform', name = '2905000.dspk', driver = 'tegra186-dspk'),
+            sysfs.Device(bus = 'platform', name = '2905100.dspk', driver = 'tegra186-dspk'),
+            sysfs.Device(bus = 'platform', name = '290f000.admaif', driver = 'tegra210-admaif'),
+            sysfs.Device(bus = 'platform', name = 'sound', driver = 'tegra-audio-graph-card'),
+        ] if Kernel().version >= Kernel.Version('5.12.0')
     # HDA bus
     ] + [
         sysfs.Device(bus = 'hdaudio', name = 'hdaudioC0D3', driver = 'snd_hda_codec_hdmi'),
