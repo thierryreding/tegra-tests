@@ -137,6 +137,7 @@ class Board(boards.Board):
     ]
 
     allowlist = [
+        r'.*: loading out-of-tree module taints kernel.',
         r'OF: fdt: Reserved memory: unsupported node format, ignoring',
         r'EINJ: ACPI disabled.',
         r'cacheinfo: Unable to detect cache hierarchy for CPU 0',
