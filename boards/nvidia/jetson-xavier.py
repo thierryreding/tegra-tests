@@ -152,6 +152,10 @@ class Board(boards.Board):
         warning for warning in [
             r'.* sound: ASoC: no DMI vendor name!',
         ] if Kernel().version < Kernel.Version('5.13.0')
+    ] + [
+        warning for warning in [
+            r'kvm: pmu event creation failed -2',
+        ] if Kernel().version == Kernel.Version('5.13.0')
     ]
 
     def __init__(self):
