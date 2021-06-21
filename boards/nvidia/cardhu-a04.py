@@ -40,7 +40,6 @@ class Board(boards.Board):
         sysfs.Device(bus = 'platform', name = '7d008000.usb-phy', driver ='tegra-phy'),
         sysfs.Device(bus = 'platform', name = 'gpio-keys', driver ='gpio-keys'),
         sysfs.Device(bus = 'platform', name = 'pmu', driver ='armv7-pmu'),
-        sysfs.Device(bus = 'platform', name = 'sound', driver ='tegra-snd-wm8903'),
         sysfs.Device(bus = 'platform', name = 'tps65910-gpio', driver ='tps65910-gpio'),
         sysfs.Device(bus = 'platform', name = 'tps65910-pmic', driver ='tps65910-pmic'),
         sysfs.Device(bus = 'platform', name = 'tps65910-rtc', driver ='tps65910-rtc'),
@@ -59,6 +58,15 @@ class Board(boards.Board):
             sysfs.Device(bus = 'platform', name = '78000400.mmc', driver ='sdhci-tegra'),
             sysfs.Device(bus = 'platform', name = '78000600.mmc', driver ='sdhci-tegra'),
         ] if Kernel().version >= Kernel.Version('5.9.0')
+    # Linux v5.14 changed the sound card driver name from 'tegra-snd-wm8903' to 'tegra-wm8903'
+    ] + [
+        device for device in [
+            sysfs.Device(bus = 'platform', name = 'sound', driver ='tegra-snd-wm8903'),
+        ] if Kernel().version < Kernel.Version('5.14.0')
+    ] + [
+        device for device in [
+            sysfs.Device(bus = 'platform', name = 'sound', driver ='tegra-wm8903'),
+        ] if Kernel().version >= Kernel.Version('5.14.0')
     # HDA bus
     ] + [
     # host1x bus
