@@ -173,6 +173,11 @@ class Board(boards.Board):
         warning for warning in [
             r'kvm: pmu event creation failed -2',
         ] if Kernel().version == Kernel.Version('5.13.0')
+    # List of IRQs that do not support setting the IRQ affinity
+    ] + [
+        r"IRQ%s: set affinity failed\(-22\)." % irq for irq in [
+            sysfs.interrupt_get('ahci[0001:01:00.0]'),
+        ]
     ]
 
     def __init__(self):

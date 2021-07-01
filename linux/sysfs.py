@@ -156,3 +156,13 @@ class Driver(Object):
 
     def __str__(self):
         return 'Driver(\'%s\')' % self.path
+
+def interrupt_get(name):
+    directory = os.path.join(mountpoint, 'kernel/irq')
+
+    for irq in os.listdir(directory):
+        path = os.path.join('kernel/irq', irq, 'actions')
+
+        with open(path) as fobj:
+            if name == fobj.read().strip():
+                return irq
