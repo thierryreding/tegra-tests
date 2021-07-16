@@ -90,7 +90,7 @@ class Board(boards.Board):
             sysfs.Device(bus = 'platform', name = '2905100.dspk', driver = 'tegra186-dspk'),
             sysfs.Device(bus = 'platform', name = '290f000.admaif', driver = 'tegra210-admaif'),
             sysfs.Device(bus = 'platform', name = 'sound', driver = 'tegra-audio-graph-card'),
-        ] if Kernel().version >= Kernel.Version('5.12.0')
+        ] if Kernel().version >= Kernel.Version('5.14.0')
     # HDA bus
     ] + [
         sysfs.Device(bus = 'hdaudio', name = 'hdaudioC0D3', driver = 'snd_hda_codec_hdmi'),
