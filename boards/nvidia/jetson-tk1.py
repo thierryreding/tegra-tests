@@ -57,7 +57,6 @@ class Board(boards.Board):
         sysfs.Device(bus = 'platform', name = 'cpufreq-tegra124', driver = 'cpufreq-tegra124'),
         sysfs.Device(bus = 'platform', name = 'gpio-keys', driver = 'gpio-keys'),
         sysfs.Device(bus = 'platform', name = 'pmu', driver = 'armv7-pmu'),
-        sysfs.Device(bus = 'platform', name = 'sound', driver = 'tegra-snd-rt5640'),
     # Device trees in Linux v5.9 changed sdhci@... to mmc@...
     ] + [
         device for device in [
@@ -69,6 +68,15 @@ class Board(boards.Board):
             sysfs.Device(bus = 'platform', name = '700b0400.mmc', driver = 'sdhci-tegra'),
             sysfs.Device(bus = 'platform', name = '700b0600.mmc', driver = 'sdhci-tegra'),
         ] if Kernel().version < Kernel.Version('5.9.0')
+    # Unified audio driver is called tegra-audio as of Linux v5.14
+    ] + [
+        device for device in [
+            sysfs.Device(bus = 'platform', name = 'sound', driver = 'tegra-snd-rt5640'),
+        ] if Kernel().version < Kernel.Version('5.14.0')
+    ] + [
+        device for device in [
+            sysfs.Device(bus = 'platform', name = 'sound', driver = 'tegra-audio'),
+        ] if Kernel().version >= Kernel.Version('5.14.0')
     # HDA bus
     ] + [
         sysfs.Device(bus = 'hdaudio', name = 'hdaudioC0D3', driver = 'snd_hda_codec_hdmi'),
