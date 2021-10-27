@@ -67,7 +67,7 @@ class Board(boards.Board):
         device for device in [
             sysfs.Device(bus = 'platform', name = '700b0400.mmc', driver = 'sdhci-tegra'),
             sysfs.Device(bus = 'platform', name = '700b0600.mmc', driver = 'sdhci-tegra'),
-        ] if Kernel().version < Kernel.Version('5.9.0')
+        ] if Kernel().version >= Kernel.Version('5.9.0')
     # Unified audio driver is called tegra-audio as of Linux v5.14
     ] + [
         device for device in [
