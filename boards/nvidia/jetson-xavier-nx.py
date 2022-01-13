@@ -69,7 +69,7 @@ class Board(boards.Board):
         sysfs.Device(bus = 'platform', name = 'max20024-pmic', driver = 'max77620-pmic'),
         sysfs.Device(bus = 'platform', name = 'max77620-gpio', driver = 'max77620-gpio'),
         sysfs.Device(bus = 'platform', name = 'max77620-rtc', driver = 'max77686-rtc'),
-        sysfs.Device(bus = 'platform', name = 'tcu', driver = 'tegra-tcu'),
+        sysfs.Device(bus = 'platform', name = 'serial' if Kernel().version >= Kernel.Version('5.17.0') else 'tcu', driver = 'tegra-tcu'),
     # ACONNECT, ADMA and AGIC are available as of Linux v5.10
     ] + [
         device for device in [
