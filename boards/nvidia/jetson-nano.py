@@ -38,7 +38,7 @@ class Board(boards.Board):
         sysfs.Device(bus = 'platform', name = '7009f000.padctl', driver = 'tegra-xusb-padctl'),
         sysfs.Device(bus = 'platform', name = '700e2000.thermal-sensor', driver = 'tegra_soctherm'),
         sysfs.Device(bus = 'platform', name = '700e3000.mipi', driver = 'tegra-mipi'),
-        sysfs.Device(bus = 'platform', name = 'fan', driver = 'pwm-fan'),
+        sysfs.Device(bus = 'platform', name = 'pwm-fan' if Kernel().version >= Kernel.Version('5.19.0') else 'fan', driver = 'pwm-fan'),
         sysfs.Device(bus = 'platform', name = 'gpio-keys', driver = 'gpio-keys'),
         sysfs.Device(bus = 'platform', name = 'max77620-gpio', driver = 'max77620-gpio'),
         sysfs.Device(bus = 'platform', name = 'max77620-pinctrl', driver = 'max77620-pinctrl'),

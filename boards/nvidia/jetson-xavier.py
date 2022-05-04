@@ -58,7 +58,7 @@ class Board(boards.Board):
         sysfs.Device(bus = 'platform', name = 'bpmp', driver = 'tegra-bpmp'),
         sysfs.Device(bus = 'platform', name = 'bpmp:i2c', driver = 'tegra-bpmp-i2c'),
         sysfs.Device(bus = 'platform', name = 'bpmp:thermal', driver = 'tegra-bpmp-thermal'),
-        sysfs.Device(bus = 'platform', name = 'fan', driver = 'pwm-fan'),
+        sysfs.Device(bus = 'platform', name = 'pwm-fan' if Kernel().version >= Kernel.Version('5.19.0') else 'fan', driver = 'pwm-fan'),
         sysfs.Device(bus = 'platform', name = 'gpio-keys', driver = 'gpio-keys'),
         sysfs.Device(bus = 'platform', name = 'max20024-pinctrl', driver = 'max77620-pinctrl'),
         sysfs.Device(bus = 'platform', name = 'max20024-pmic', driver = 'max77620-pmic'),
