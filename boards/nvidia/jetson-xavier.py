@@ -162,6 +162,7 @@ class Board(boards.Board):
         r'mmc1: Unknown controller version \(5\). You may experience problems.',
         r'tegra-dpaux 155e0000.dpaux: 155e0000.dpaux supply vdd not found, using dummy regulator',
         r'tegra-hda 3510000.hda: azx_get_response timeout, switching to polling mode:',
+        r'tegra-host1x 13e00000.host1x: Context device 0 has no IOMMU!',
         r'tegra-i2c 31c0000.i2c: deferred probe timeout, ignoring dependency',
         r'\[drm\] parse error at position 6 in video mode \'tegrafb\'',
         r'urandom_read: [0-9]+ callbacks suppressed',
