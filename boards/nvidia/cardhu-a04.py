@@ -11,9 +11,6 @@ class Board(boards.Board):
         sysfs.Device(bus = 'platform', name = '3000.pcie', driver ='tegra-pcie'),
         sysfs.Device(bus = 'platform', name = '50000000.host1x', driver ='tegra-host1x'),
         sysfs.Device(bus = 'platform', name = '54140000.gr2d', driver ='tegra-gr2d'),
-        sysfs.Device(bus = 'platform', name = '54180000.gr3d', driver ='tegra-gr3d'),
-        sysfs.Device(bus = 'platform', name = '54200000.dc', driver ='tegra-dc'),
-        sysfs.Device(bus = 'platform', name = '54240000.dc', driver ='tegra-dc'),
         sysfs.Device(bus = 'platform', name = '60005000.timer', driver ='tegra-wdt'),
         sysfs.Device(bus = 'platform', name = '60007000.flow-controller', driver ='tegra-flowctrl'),
         sysfs.Device(bus = 'platform', name = '6000a000.dma', driver ='tegra-apbdma'),
@@ -67,11 +64,19 @@ class Board(boards.Board):
         device for device in [
             sysfs.Device(bus = 'platform', name = 'sound', driver ='tegra-wm8903'),
         ] if Kernel().version >= Kernel.Version('5.14.0')
+    ] + [
+        device for device in [
+            sysfs.Device(bus = 'platform', name = '54180000.gr3d', driver = 'tegra-gr3d'),
+            sysfs.Device(bus = 'platform', name = '54200000.dc', driver = 'tegra-dc'),
+            sysfs.Device(bus = 'platform', name = '54240000.dc', driver = 'tegra-dc'),
+        ] if Kernel().version < Kernel.Version('5.19.0')
     # HDA bus
     ] + [
     # host1x bus
     ] + [
-        sysfs.Device(bus = 'host1x', name = 'drm', driver ='drm'),
+        device for device in [
+            sysfs.Device(bus = 'host1x', name = 'drm', driver = 'drm'),
+        ] if Kernel().version < Kernel.Version('5.19.0')
     # I2C bus
     ] + [
         sysfs.Device(bus = 'i2c', name = '2-0044', driver ='isl29028'),
