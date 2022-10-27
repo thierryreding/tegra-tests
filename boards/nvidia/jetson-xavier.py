@@ -174,6 +174,10 @@ class Board(boards.Board):
         warning for warning in [
             r'kvm: pmu event creation failed -2',
         ] if Kernel().version < Kernel.Version('5.14.0')
+    ] + [
+        warning for warning in [
+            r'tegra194-pcie [0-f]+.pcie: Phy link never came up',
+        ] if Kernel().version < Kernel.Version('6.2.0')
     # List of IRQs that do not support setting the IRQ affinity
     ] + [
         r"IRQ%s: set affinity failed\(-22\)." % irq for irq in [
