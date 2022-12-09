@@ -127,6 +127,10 @@ class Board(boards.Board):
         r'tegra-host1x 13e00000.host1x: Context device 0 has no IOMMU!',
         r'tegra-mgbe 6800000.ethernet: Cannot get CSR clock',
         r'urandom_read: [0-9]+ callbacks suppressed',
+    ] + [
+        warning for warning in [
+            r'tegra194-pcie [0-f]+.pcie: Phy link never came up',
+        ] if Kernel().version < Kernel.Version('6.2.0')
     ]
 
     def __init__(self):
