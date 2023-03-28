@@ -84,4 +84,8 @@ class Board(boards.Board):
         warning for warning in [
             r'.* sound: ASoC: no DMI vendor name!',
         ] if Kernel().version < Kernel.Version('5.13.0')
+    ] + [
+        warning for warning in [
+            r'memfd_create() without MFD_EXEC nor MFD_NOEXEC_SEAL, pid=[0-9]+ \'systemd\'',
+        ] if Kernel().version < Kernel.Version('6.3.0')
     ]
