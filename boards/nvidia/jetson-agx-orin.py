@@ -37,7 +37,7 @@ class Board(boards.Board):
 		sysfs.Device(bus = 'platform', name = '2910000.asrc', driver = 'tegra186-asrc'),
 		sysfs.Device(bus = 'platform', name = '2930000.dma-controller', driver = 'tegra-adma'),
 		sysfs.Device(bus = 'platform', name = '2a41000.interrupt-controller', driver = 'gic'),
-		sysfs.Device(bus = 'platform', name = '2c00000.memory-controller:external-memory-controller@2c60000', driver = 'tegra186-emc'),
+		sysfs.Device(bus = 'platform', name = '2c00000.memory-controller/2c00000.memory-controller:external-memory-controller@2c60000', driver = 'tegra186-emc'),
 		sysfs.Device(bus = 'platform', name = '2c00000.memory-controller', driver = 'tegra-mc'),
 		sysfs.Device(bus = 'platform', name = '3100000.serial', driver = 'serial-tegra'),
 		sysfs.Device(bus = 'platform', name = '3270000.spi', driver = 'tegra-qspi'),
