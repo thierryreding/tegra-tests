@@ -182,6 +182,13 @@ class Board(boards.Board):
         warning for warning in [
             r'memfd_create\(\) without MFD_EXEC nor MFD_NOEXEC_SEAL, pid=[0-9]+ \'systemd\'',
         ] if Kernel().version >= Kernel.Version('6.3.0')
+    ] + [
+        warning for warning in [
+            r'tegra-mc 2c00000.memory-controller: sync_state\(\) pending due to 15380000.nvjpg',
+            r'tegra-mc 2c00000.memory-controller: sync_state\(\) pending due to 154c0000.nvenc',
+            r'tegra-mc 2c00000.memory-controller: sync_state\(\) pending due to 15a80000.nvenc',
+            r'tegra-mc 2c00000.memory-controller: sync_state\(\) pending due to 17000000.gpu',
+        ] if Kernel().version >= Kernel.Version('6.4.0')
     # List of IRQs that do not support setting the IRQ affinity
     ] + [
         r"IRQ%s: set affinity failed\(-22\)." % irq for irq in [
