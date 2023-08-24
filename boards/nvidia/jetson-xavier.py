@@ -189,6 +189,13 @@ class Board(boards.Board):
             r'tegra-mc 2c00000.memory-controller: sync_state\(\) pending due to 15a80000.nvenc',
             r'tegra-mc 2c00000.memory-controller: sync_state\(\) pending due to 17000000.gpu',
         ] if Kernel().version >= Kernel.Version('6.4.0')
+    ] + [
+        warning for warning in [
+            r'tegra186-emc 2c60000.external-memory-controller: sync_state\(\) pending due to 15380000.nvjpg',
+            r'tegra186-emc 2c60000.external-memory-controller: sync_state\(\) pending due to 154c0000.nvenc',
+            r'tegra186-emc 2c60000.external-memory-controller: sync_state\(\) pending due to 15a80000.nvenc',
+            r'tegra186-emc 2c60000.external-memory-controller: sync_state\(\) pending due to 17000000.gpu',
+        ] if Kernel().version >= Kernel.Version('6.5.0')
     # List of IRQs that do not support setting the IRQ affinity
     ] + [
         r"IRQ%s: set affinity failed\(-22\)." % irq for irq in [
