@@ -98,5 +98,9 @@ class Board(boards.Board):
     ] + [
         warning for warning in [
             r'memfd_create\(\) without MFD_EXEC nor MFD_NOEXEC_SEAL, pid=[0-9]+ \'systemd\'',
-        ] if Kernel().version >= Kernel.Version('6.3.0')
+        ] if Kernel().version >= Kernel.Version('6.3.0') and Kernel().version < Kernel.Version('6.6.0')
+    ] + [
+        warning for warning in [
+            r'systemd\[[0-9]+\]: memfd_create\(\) called without MFD_EXEC or MFD_NOEXEC_SEAL set',
+        ] if Kernel().version >= Kernel.Version('6.4.0')
     ]
