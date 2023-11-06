@@ -233,7 +233,7 @@ class Kernel:
             if self.extra:
                 parts = self.extra.split('-')
 
-                match = re.match('rc(\d+)', parts[0])
+                match = re.match(r'rc(\d+)', parts[0])
                 if match:
                     self.rc = int(match.group(1))
                     del parts[0:1]
