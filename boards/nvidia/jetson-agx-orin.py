@@ -103,6 +103,12 @@ class Board(boards.Board):
         sysfs.Device(bus = 'platform', name = 'serial8250', driver = 'serial8250'),
         sysfs.Device(bus = 'platform', name = 'snd-soc-dummy', driver = 'snd-soc-dummy'),
         sysfs.Device(bus = 'platform', name = 'sound', driver = 'tegra-audio-graph-card'),
+    # Linux v6.2 added support for the ethernet controller on Jetson AGX Xavier
+    ] + [
+        device for device in [
+            sysfs.Device(bus = 'platform', name = '6800000.ethernet', driver = 'tegra-mgbe'),
+            sysfs.Device(bus = 'mdio_bus', name = 'stmmac-0:00', driver = 'Aquantia AQR113C'),
+        ] if Kernel().version >= Kernel.Version('6.2.0')
     # HDA bus
     ] + [
         sysfs.Device(bus = 'hdaudio', name = 'hdaudioC0D0', driver = 'snd_hda_codec_hdmi'),
