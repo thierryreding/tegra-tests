@@ -118,7 +118,7 @@ class Board(boards.Board):
 
     allowlist = [
         r'.*: loading out-of-tree module taints kernel.',
-        r'OF: fdt: Reserved memory: unsupported node format, ignoring',
+        r'OF: (fdt|reserved mem): Reserved memory: unsupported node format, ignoring',
         r'EINJ: ACPI disabled.',
         r'cacheinfo: Unable to detect cache hierarchy for CPU 0',
         r'dwc-eth-dwmac 2490000.ethernet: Cannot get CSR clock',
