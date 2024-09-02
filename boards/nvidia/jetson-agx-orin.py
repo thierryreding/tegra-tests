@@ -118,8 +118,6 @@ class Board(boards.Board):
     # PCI bus
     ] + [
         sysfs.Device(bus = 'pci', name = '0001:00:00.0', driver = 'pcieport'),
-        sysfs.Device(bus = 'pci', name = '0004:00:00.0', driver = 'pcieport'),
-        sysfs.Device(bus = 'pci', name = '0004:01:00.0', driver = 'nvme'),
     ]
 
     drivers = [
