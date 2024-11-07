@@ -13,11 +13,11 @@ class Board(boards.Board):
         sysfs.Device(bus = 'auxiliary', name = 'mlx5_core.rdma.0', driver = 'mlx5_ib.rdma'),
         sysfs.Device(bus = 'auxiliary', name = 'mlx5_core.rdma.1', driver = 'mlx5_ib.rdma'),
         # BaseOS 1.0
-        # sysfs.Device(bus = 'hdaudio', name = 'hdaudioC0D0', driver = 'snd_hda_codec_hdmi'),
-        # sysfs.Device(bus = 'hdaudio', name = 'hdaudioC1D0', driver = 'snd_hda_codec_hdmi'),
+        sysfs.Device(bus = 'hdaudio', name = 'hdaudioC0D0', driver = 'snd_hda_codec_hdmi'),
+        sysfs.Device(bus = 'hdaudio', name = 'hdaudioC1D0', driver = 'snd_hda_codec_hdmi'),
         # BaseOS 1.1
-        sysfs.Device(bus = 'hdaudio', name = 'hdaudioC2D0', driver = 'snd_hda_codec_hdmi'),
-        sysfs.Device(bus = 'hdaudio', name = 'hdaudioC3D0', driver = 'snd_hda_codec_hdmi'),
+        # sysfs.Device(bus = 'hdaudio', name = 'hdaudioC2D0', driver = 'snd_hda_codec_hdmi'),
+        # sysfs.Device(bus = 'hdaudio', name = 'hdaudioC3D0', driver = 'snd_hda_codec_hdmi'),
         sysfs.Device(bus = 'host1x', name = 'drm', driver = 'drm'),
         sysfs.Device(bus = 'host1x', name = 'tegra-se-host1x', driver = 'tegra-se-host1x'),
         sysfs.Device(bus = 'i2c', name = '0-0050', driver = 'at24'),
@@ -99,11 +99,11 @@ class Board(boards.Board):
         sysfs.Device(bus = 'platform', name = '15500000.tsec', driver = 'tsec'),
         sysfs.Device(bus = 'platform', name = '15540000.nvjpg', driver = 'tegra-nvjpg'),
         # BaseOS 1.0
-        # sysfs.Device(bus = 'platform', name = '15820000.se', driver = 'tegra-se'),
-        # sysfs.Device(bus = 'platform', name = '15820000.se', driver = 'tegra-se'),
+        sysfs.Device(bus = 'platform', name = '15820000.se', driver = 'tegra-se'),
+        sysfs.Device(bus = 'platform', name = '15820000.se', driver = 'tegra-se'),
         # BaseOS 1.1
-        sysfs.Device(bus = 'platform', name = '15840000.crypto', driver = 'tegra-se'),
-        sysfs.Device(bus = 'platform', name = '15840000.crypto', driver = 'tegra-se'),
+        # sysfs.Device(bus = 'platform', name = '15840000.crypto', driver = 'tegra-se'),
+        # sysfs.Device(bus = 'platform', name = '15840000.crypto', driver = 'tegra-se'),
         sysfs.Device(bus = 'platform', name = '15880000.nvdla0', driver = 'nvdla'),
         sysfs.Device(bus = 'platform', name = '158c0000.nvdla1', driver = 'nvdla'),
         sysfs.Device(bus = 'platform', name = '15a50000.ofa', driver = 'tegra-ofa'),
@@ -209,7 +209,7 @@ class Board(boards.Board):
         sysfs.Device(bus = 'platform', name = '8000000.iommu', driver = 'arm-smmu'),
         sysfs.Device(bus = 'platform', name = 'alarmtimer.0.auto', driver = 'alarmtimer'),
         # Device b600000.sce-fabric is missing in BaseOS 1.1
-        # sysfs.Device(bus = 'platform', name = 'b600000.sce-fabric', driver = 'tegra234-cbb'),
+        sysfs.Device(bus = 'platform', name = 'b600000.sce-fabric', driver = 'tegra234-cbb'),
         sysfs.Device(bus = 'platform', name = 'b950000.tegra-hsp', driver = 'tegra-hsp'),
         sysfs.Device(bus = 'platform', name = 'bc00000.rtcpu', driver = 'tegra186-cam-rtcpu'),
         sysfs.Device(bus = 'platform', name = 'be00000.rce-fabric', driver = 'tegra234-cbb'),
