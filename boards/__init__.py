@@ -46,7 +46,7 @@ def detect():
             compatible = line.split('\0')[0]
 
             for board in boards:
-                if compatible == board.__compatible__:
+                if compatible in board.__compatible__:
                     return board()
 
             raise UnsupportedBoardException('Board: %s' % compatible)
