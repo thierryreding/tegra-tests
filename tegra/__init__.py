@@ -1,6 +1,7 @@
 import importlib
 import os.path
 import sys
+import subprocess
 
 class UnsupportedSoCException(Exception):
     pass
@@ -31,6 +32,20 @@ def detect():
             raise UnsupportedSoCException('SoC: %s' % (compatible))
 
         raise IOError
+
+'''
+Detect the GPU name by using the nvidia-smi tool.
+'''
+def gpu_detect():
+    if os.path.isfile('/usr/sbin/nvidia-smi'):
+        nvidia_smi_path='/usr/sbin/nvidia-smi'
+    elif os.path.isfile('/usr/bin/nvidia-smi'):
+        nvidia_smi_path='/usr/bin/nvidia-smi'
+    else:
+        return 'Unknown'
+
+    return subprocess.run([nvidia_smi_path, '--query-gpu=gpu_name', '--format=csv,noheader'],\
+            stdout=subprocess.PIPE).stdout.decode("utf-8").strip()
 
 #
 # initialization
