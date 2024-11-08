@@ -31,9 +31,11 @@ class sysinfo(runner.Test):
 class devices(runner.Test):
     def __call__(self, log, *args, **kwargs):
         board = boards.detect()
+        gpu = tegra.gpu_detect()
         failed = False
 
         log.debug('board:', board.name)
+        log.debug('gpu:', gpu)
 
         for device in board.devices:
             path = os.path.join('/sys', 'bus', device.bus, 'devices', device.name)
