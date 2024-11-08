@@ -41,7 +41,8 @@ class Board(boards.Board):
         sysfs.Device(bus = 'pci', name = '0001:03:00.0', driver = 'r8168'),
         sysfs.Device(bus = 'pci', name = '0001:35:00.0', driver = 'r8168'),
         sysfs.Device(bus = 'pci', name = '0001:67:00.0', driver = 'wchpciserial'),
-        sysfs.Device(bus = 'pci', name = '0001:9a:00.0', driver = 'ast'),
+        # ast is blacklisted in some installations. Remove it from the list for now.
+        # sysfs.Device(bus = 'pci', name = '0001:9a:00.0', driver = 'ast'),
         sysfs.Device(bus = 'pci', name = '0001:9a:02.0', driver = 'ehci-pci'),
         sysfs.Device(bus = 'pci', name = '0001:cb:00.0', driver = 'rtl88x2ce'),
         sysfs.Device(bus = 'pci', name = '0004:00:00.0', driver = 'pcieport'),
@@ -77,7 +78,6 @@ class Board(boards.Board):
         sysfs.Device(bus = 'pci_express', name = '0007:00:00.0:pcie002', driver = 'aer'),
         sysfs.Device(bus = 'platform', name = '10000000.iommu', driver = 'arm-smmu'),
         sysfs.Device(bus = 'platform', name = '12000000.iommu', driver = 'arm-smmu'),
-        sysfs.Device(bus = 'platform', name = '13800000.display', driver = 'nv_platform'),
         sysfs.Device(bus = 'platform', name = '13a00000.cbb-fabric', driver = 'tegra234-cbb'),
         sysfs.Device(bus = 'platform', name = '13e00000.host1x', driver = 'tegra-host1x'),
         sysfs.Device(bus = 'platform', name = '13e00000.host1x:isp-thi@14b00000', driver = 'scare-pigeon'),
@@ -116,7 +116,6 @@ class Board(boards.Board):
         sysfs.Device(bus = 'platform', name = '16000000.pva0:pva0_niso1_ctx5', driver = 'pva_iommu_context_dev'),
         sysfs.Device(bus = 'platform', name = '16000000.pva0:pva0_niso1_ctx6', driver = 'pva_iommu_context_dev'),
         sysfs.Device(bus = 'platform', name = '16000000.pva0:pva0_niso1_ctx7', driver = 'pva_iommu_context_dev'),
-        sysfs.Device(bus = 'platform', name = '17000000.gpu', driver = 'gk20a'),
         sysfs.Device(bus = 'platform', name = '2080000.timer', driver = 'tegra186-timer'),
         sysfs.Device(bus = 'platform', name = '2200000.gpio', driver = 'tegra186-gpio'),
         sysfs.Device(bus = 'platform', name = '2430000.pinmux', driver = 'tegra234-pinctrl'),
@@ -288,6 +287,15 @@ class Board(boards.Board):
         sysfs.Device(bus = 'platform', name = 'tegra-carveouts', driver = 'tegra-carveouts'),
         sysfs.Device(bus = 'tegra-ivc-bus', name = 'bc00000.rtcpu:ivc-bus:ivccapture@4', driver = 'tegra-capture-ivc'),
         sysfs.Device(bus = 'tegra-ivc-bus', name = 'bc00000.rtcpu:ivc-bus:ivccontrol@3', driver = 'tegra-capture-ivc'),
+    ] + [
+        device for device in [
+            sysfs.Device(bus = 'pci', name = '0005:09:00.0', driver = 'nvidia'),
+        ] if 'NVIDIA RTX 6000 Ada Generation' == tegra.gpu_detect() or 'NVIDIA RTX A6000 Generation' == tegra.gpu_detect()
+    ] + [
+        device for device in [
+            sysfs.Device(bus = 'platform', name = '13800000.display', driver = 'nv_platform'),
+            sysfs.Device(bus = 'platform', name = '17000000.gpu', driver = 'gk20a'),
+        ] if 'Orin (nvgpu)' == tegra.gpu_detect()
     ]
 
     drivers = [
