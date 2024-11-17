@@ -11,3 +11,11 @@ class IGX():
 
     def __getattr__(self, name):
         return self.release[name]
+
+
+class Firmware():
+    def __init__(self):
+
+        with open('/sys/class/dmi/id/bios_version', 'r') as f:
+            self.version = f.readline().strip()
+
