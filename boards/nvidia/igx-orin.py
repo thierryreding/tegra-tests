@@ -1,6 +1,6 @@
 import boards, tegra
 from linux.system import Kernel
-from linux import sysfs
+from linux import sysfs,l4t
 from tegra import tegra234
 
 class Board(boards.Board):
@@ -12,10 +12,7 @@ class Board(boards.Board):
         sysfs.Device(bus = 'auxiliary', name = 'mlx5_core.eth.1', driver = 'mlx5_core.eth'),
         sysfs.Device(bus = 'auxiliary', name = 'mlx5_core.rdma.0', driver = 'mlx5_ib.rdma'),
         sysfs.Device(bus = 'auxiliary', name = 'mlx5_core.rdma.1', driver = 'mlx5_ib.rdma'),
-        # BaseOS 1.0
-        sysfs.Device(bus = 'hdaudio', name = 'hdaudioC0D0', driver = 'snd_hda_codec_hdmi'),
-        sysfs.Device(bus = 'hdaudio', name = 'hdaudioC1D0', driver = 'snd_hda_codec_hdmi'),
-        # BaseOS 1.1
+        # Device name changes after for hdaudio. Remove it from the list.
         # sysfs.Device(bus = 'hdaudio', name = 'hdaudioC2D0', driver = 'snd_hda_codec_hdmi'),
         # sysfs.Device(bus = 'hdaudio', name = 'hdaudioC3D0', driver = 'snd_hda_codec_hdmi'),
         sysfs.Device(bus = 'host1x', name = 'drm', driver = 'drm'),
@@ -58,7 +55,6 @@ class Board(boards.Board):
         sysfs.Device(bus = 'pci', name = '0005:05:08.0', driver = 'pcieport'),
         sysfs.Device(bus = 'pci', name = '0005:07:00.0', driver = 'pcieport'),
         sysfs.Device(bus = 'pci', name = '0005:08:00.0', driver = 'pcieport'),
-        sysfs.Device(bus = 'pci', name = '0005:09:00.1', driver = 'snd_hda_intel'),
         sysfs.Device(bus = 'pci', name = '0007:00:00.0', driver = 'pcieport'),
         sysfs.Device(bus = 'pci', name = '0007:01:00.0', driver = 'ahci'),
         sysfs.Device(bus = 'pci_express', name = '0001:00:00.0:pcie001', driver = 'pcie_pme'),
@@ -98,12 +94,6 @@ class Board(boards.Board):
         sysfs.Device(bus = 'platform', name = '154c0000.nvenc', driver = 'tegra-nvenc'),
         sysfs.Device(bus = 'platform', name = '15500000.tsec', driver = 'tsec'),
         sysfs.Device(bus = 'platform', name = '15540000.nvjpg', driver = 'tegra-nvjpg'),
-        # BaseOS 1.0
-        sysfs.Device(bus = 'platform', name = '15820000.se', driver = 'tegra-se'),
-        sysfs.Device(bus = 'platform', name = '15820000.se', driver = 'tegra-se'),
-        # BaseOS 1.1
-        # sysfs.Device(bus = 'platform', name = '15840000.crypto', driver = 'tegra-se'),
-        # sysfs.Device(bus = 'platform', name = '15840000.crypto', driver = 'tegra-se'),
         sysfs.Device(bus = 'platform', name = '15880000.nvdla0', driver = 'nvdla'),
         sysfs.Device(bus = 'platform', name = '158c0000.nvdla1', driver = 'nvdla'),
         sysfs.Device(bus = 'platform', name = '15a50000.ofa', driver = 'tegra-ofa'),
@@ -207,8 +197,8 @@ class Board(boards.Board):
         sysfs.Device(bus = 'platform', name = '40000000.sram', driver = 'sram'),
         sysfs.Device(bus = 'platform', name = '8000000.iommu', driver = 'arm-smmu'),
         sysfs.Device(bus = 'platform', name = 'alarmtimer.0.auto', driver = 'alarmtimer'),
-        # Device b600000.sce-fabric is missing in BaseOS 1.1
-        sysfs.Device(bus = 'platform', name = 'b600000.sce-fabric', driver = 'tegra234-cbb'),
+        # Device b600000.sce-fabric is not present in JP6.1
+        # sysfs.Device(bus = 'platform', name = 'b600000.sce-fabric', driver = 'tegra234-cbb'),
         sysfs.Device(bus = 'platform', name = 'b950000.tegra-hsp', driver = 'tegra-hsp'),
         sysfs.Device(bus = 'platform', name = 'bc00000.rtcpu', driver = 'tegra186-cam-rtcpu'),
         sysfs.Device(bus = 'platform', name = 'be00000.rce-fabric', driver = 'tegra234-cbb'),
@@ -289,6 +279,17 @@ class Board(boards.Board):
         sysfs.Device(bus = 'tegra-ivc-bus', name = 'bc00000.rtcpu:ivc-bus:ivccontrol@3', driver = 'tegra-capture-ivc'),
     ] + [
         device for device in [
+            sysfs.Device(bus = 'platform', name = '15820000.se', driver = 'tegra-se'),
+            sysfs.Device(bus = 'platform', name = '15840000.se', driver = 'tegra-se'),
+        ] if '36.3.' in l4t.Firmware().version
+    ] + [
+        device for device in [
+            sysfs.Device(bus = 'platform', name = '15840000.crypto', driver = 'tegra-se'),
+            sysfs.Device(bus = 'platform', name = '15840000.crypto', driver = 'tegra-se'),
+        ] if '36.4.' in l4t.Firmware().version
+    ] + [
+        device for device in [
+            sysfs.Device(bus = 'pci', name = '0005:09:00.1', driver = 'snd_hda_intel'),
             sysfs.Device(bus = 'pci', name = '0005:09:00.0', driver = 'nvidia'),
         ] if 'NVIDIA RTX 6000 Ada Generation' == tegra.gpu_detect() or 'NVIDIA RTX A6000 Generation' == tegra.gpu_detect()
     ] + [
@@ -304,15 +305,11 @@ class Board(boards.Board):
 
     allowlist = [
         # err
-        r'.*: loading out-of-tree module taints kernel.',
-        r'tegra-i2c c250000.i2c: un-recovered arbitration lost',
-        r'(f75308|pca953x|ina3221) 7-004d: Unable to get (f75308|pca953x|ina3221) id: -5',
-        r'(f75308|pca953x|ina3221|ina2xx_adc): probe of 7-00(41|4d|74|44) failed with error -5',
-        r'pca953x 7-0074: failed writing register',
-        r'ina3221 7-0041: Unable to reset device',
-        r'(ina2xx_adc|ina2xx) 7-0044: error configuring the device.*',
         r'usb usb\d-port\d: Cannot enable. Maybe the USB cable is bad?',
+        r'tegra-xusb 3610000.usb: IRQ wake0 not found',
+        r'tegra-hsp b950000.tegra-hsp: Try increasing MBOX_TX_QUEUE_LEN',
         # warn
+        r'.*: loading out-of-tree module taints kernel.',
         r'device-mapper: core: CONFIG_IMA_DISABLE_HTABLE is disabled.*',
         r'r8168  Copyright .*',
         r'mlx5_core 0005:03:00.\d: mlx5_pcie_event:\d*:\(pid \d*\): Detected insufficient power on the PCIe slot \(27W\).',
@@ -324,6 +321,7 @@ class Board(boards.Board):
         r'SPI driver altr_a10sr has no spi_device_id for altr,a10sr',
         r'\(NULL device \*\): fops function table already registered',
         r'rtl8822ce_interrupt: \d* callbacks suppressed',
+        r'kauditd_printk_skb: \d* callbacks suppressed',
     ]
 
     def __init__(self):
