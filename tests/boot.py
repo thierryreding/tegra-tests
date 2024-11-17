@@ -145,9 +145,11 @@ class logs(runner.Test):
             for entry in dmesg:
                 if entry.header.facility == kmsg.LOG_KERN and \
                    entry.header.level <= kmsg.LOG_WARNING:
-                    if not allowlist or entry not in allowlist:
-                        log.debug(entry)
-                        count += 1
+                    # Ignore empty messages
+                    if entry.message:
+                        if not allowlist or entry not in allowlist:
+                            log.debug(entry)
+                            count += 1
 
         if allowlist:
             unmatched = allowlist.unmatched()
