@@ -319,8 +319,11 @@ class Distribution:
 
         with open('/etc/os-release', 'r') as fobj:
             for line in fobj:
-                key, value = line.strip().split('=')
-                self.release[key] = value.strip('"')
+                # Check if line is not empty
+                line = line.strip()
+                if line:
+                    key, value = line.strip().split('=')
+                    self.release[key] = value.strip('"')
 
     def __getattr__(self, name):
         return self.release[name]
