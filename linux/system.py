@@ -311,6 +311,21 @@ class Kernel:
         self.version = Kernel.Version()
 
 '''
+Provides access to the distribution
+'''
+class Distribution:
+    def __init__(self):
+        self.release = {}
+
+        with open('/etc/os-release', 'r') as fobj:
+            for line in fobj:
+                key, value = line.strip().split('=')
+                self.release[key] = value.strip('"')
+
+    def __getattr__(self, name):
+        return self.release[name]
+
+'''
 Provides access to the system and system wide controls.
 '''
 class System:
