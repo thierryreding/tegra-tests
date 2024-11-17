@@ -322,6 +322,7 @@ class Board(boards.Board):
         r'\(NULL device \*\): fops function table already registered',
         r'rtl8822ce_interrupt: \d* callbacks suppressed',
         r'kauditd_printk_skb: \d* callbacks suppressed',
+        r'NVRM: loading NVIDIA UNIX Open Kernel Module for aarch64 .*',
     ]
 
     def __init__(self):
