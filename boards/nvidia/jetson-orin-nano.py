@@ -212,6 +212,10 @@ class Board(boards.Board):
         sysfs.Device(bus = 'tegra-ivc-bus', name = 'bc00000.rtcpu:ivc-bus:ivccontrol@3', driver = 'tegra-capture-ivc'),
     ]
 
+    # Add devices here that are to be ignored in the devices test
+    ignore_devices = [
+    ]
+
     drivers = [
         sysfs.Driver('platform', 'tegra-host1x'),
     ]
@@ -234,6 +238,16 @@ class Board(boards.Board):
         r'platform regulatory.0: Falling back to sysfs fallback for: regulatory.db',
     ]
 
+    # Add additional dmesg warn, err here that are to be ignored in the logs test
+    additional_allowlist = [
+    ]
+
     def __init__(self):
         self.soc = tegra234.SoC()
         self.eeproms = {}
+
+        for x in self.ignore_devices:
+            self.devices.remove(x)
+
+        self.allowlist = self.allowlist + self.additional_allowlist
+
