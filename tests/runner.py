@@ -140,10 +140,11 @@ def standalone(module):
         log.test = test()
 
         try:
-            log.test(log = log)
+            log.test(log = log, args = args)
             log.info('OKAY')
             okay += 1
         except Error as e:
+            log.info(e)
             log.info('FAIL')
             fail += 1
         except Skip as e:
