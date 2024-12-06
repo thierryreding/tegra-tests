@@ -88,6 +88,11 @@ def standalone(module):
                         help = 'show verbose output messages')
     parser.add_argument('subtests', metavar = 'SUBTEST', nargs = '*',
                         help = 'a list of tests that should be run')
+
+    # allow tests to specify their own command-line arguments
+    if hasattr(module, 'setup_parser'):
+        module.setup_parser(parser)
+
     args = parser.parse_args(sys.argv[1:])
 
     if args.kernel:
