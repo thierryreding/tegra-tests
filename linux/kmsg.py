@@ -189,3 +189,8 @@ time.
 '''
 def open(*args):
     return Kmsg(*args)
+
+if __name__ == '__main__':
+    with open('/dev/kmsg') as dmesg:
+        for entry in dmesg:
+            print(entry)
