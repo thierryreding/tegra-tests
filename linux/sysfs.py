@@ -54,6 +54,9 @@ class Object:
     def __str__(self):
         return 'Object(\'%s\')' % self.path
 
+    def __eq__(self, other):
+        return os.path.realpath(self.full_path) == os.path.realpath(other.full_path)
+
 class Bus(Object):
     def __init__(self, name):
         super().__init__('bus', name)
