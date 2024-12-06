@@ -92,7 +92,7 @@ def enumerate(subsystem = None, DEVTYPE = None):
                 yield device
 
 class Device(Object):
-    def __init__(self, path = None, bus = None, name = None, driver = None):
+    def __init__(self, path = None, bus = None, subsystem = None, name = None, driver = None):
         if path:
             parts = path.split('/')
 
@@ -103,13 +103,17 @@ class Device(Object):
                 else:
                     path = os.path.join(*parts[2:])
         else:
-            util.require_arguments(bus = bus, name = name)
-
-            path = os.path.join('bus', bus, 'devices')
+            if subsystem:
+                util.require_arguments(subsystem = subsystem, name = name)
+                path = os.path.join('class', subsystem)
+            else:
+                util.require_arguments(bus = bus, name = name)
+                path = os.path.join('bus', bus, 'devices')
 
         super().__init__(path, name)
 
         self.bus = bus
+        self.subsystem = subsystem
         self.name = name
         self.driver = driver
 
