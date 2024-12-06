@@ -51,15 +51,22 @@ sequence number, timestamp and flags.
 '''
 class Header():
     def __init__(self, header):
-        prefix, seqno, timestamp, flags, *reserved = header.split(',')
+        prefix, seqno, timestamp, flags, *extensions = header.split(',')
 
-        if reserved:
-            print('Excess field(s) in header:', reserved)
+        if extensions:
+            caller = extensions.pop(0)
+        else:
+            caller = None
+
+        # XXX handle extra fields when they are added
+        if extensions:
+            pass
 
         self.level = int(prefix) & 0x7
         self.facility = int(prefix) >> 3
         self.seqno = int(seqno)
         self.timestamp = Timestamp(int(timestamp))
+        self.caller = caller
         self.flags = flags
 
     def __str__(self):
@@ -98,6 +105,9 @@ class Header():
             facility = facilities[self.facility]
         else:
             facility = str(self.facility)
+
+        if self.caller:
+            return '[%s] %s %s [%s]' % (self.timestamp, level, facility, self.caller)
 
         return '[%s] %s %s' % (self.timestamp, level, facility)
 
