@@ -69,7 +69,6 @@ class Board(boards.Board):
         sysfs.Device(bus = 'platform', name = '3f80000.phy', driver = 'tegra194-p2u'),
         sysfs.Device(bus = 'platform', name = '3f90000.phy', driver = 'tegra194-p2u'),
         sysfs.Device(bus = 'platform', name = '8000000.iommu', driver = 'arm-smmu'),
-        sysfs.Device(bus = 'platform', name = 'b600000.sce-fabric', driver = 'tegra234-cbb'),
         sysfs.Device(bus = 'platform', name = 'be00000.rce-fabric', driver = 'tegra234-cbb'),
         sysfs.Device(bus = 'platform', name = 'c150000.hsp', driver = 'tegra-hsp'),
         sysfs.Device(bus = 'platform', name = 'c2a0000.rtc', driver = 'tegra_rtc'),
