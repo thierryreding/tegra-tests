@@ -176,6 +176,10 @@ class Board(boards.Board):
         ] if Kernel().version < Kernel.Version('5.14.0')
     ] + [
         warning for warning in [
+            r'mmc0: running CQE recovery',
+        ] if Kernel().version >= Kernel.Version('5.17.0')
+    ] + [
+        warning for warning in [
             r'tegra194-pcie [0-f]+.pcie: Phy link never came up',
         ] if Kernel().version < Kernel.Version('6.2.0')
     ] + [
