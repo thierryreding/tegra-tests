@@ -40,7 +40,7 @@ class Board(boards.Board):
         sysfs.Device(bus = 'platform', name = '13e00000.host1x:vi1-thi@14f00000', driver = 'scare-pigeon'),
         sysfs.Device(bus = 'platform', name = '14100000.pcie', driver = 'tegra194-pcie'),
         sysfs.Device(bus = 'platform', name = '14160000.pcie', driver = 'tegra194-pcie'),
-        sysfs.Device(bus = 'platform', name = '141a0000.pcie', driver = 'tegra194-pcie'),
+        # sysfs.Device(bus = 'platform', name = '141a0000.pcie', driver = 'tegra194-pcie'),
         sysfs.Device(bus = 'platform', name = '14800000.isp', driver = 'tegra194-isp5'),
         sysfs.Device(bus = 'platform', name = '15340000.vic', driver = 'tegra-vic'),
         sysfs.Device(bus = 'platform', name = '15380000.nvjpg', driver = 'tegra-nvjpg'),
