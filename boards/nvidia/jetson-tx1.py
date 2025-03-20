@@ -80,6 +80,11 @@ class Board(boards.Board):
             sysfs.Device(bus = 'platform', name = '702d4200.dmic', driver = 'tegra210-dmic'),
             sysfs.Device(bus = 'platform', name = 'sound', driver = 'tegra-audio-graph-card'),
         ] if Kernel().version >= Kernel.Version('5.12.0')
+    # Linux v6.15 enabled support for 7000c000.i2c
+    ] + [
+        device for device in [
+            sysfs.Device(bus = 'platform', name = '7000c000.i2c', driver = 'tegra-i2c'),
+        ] if Kernel().version >= Kernel.Version('6.15.0')
     # HDA bus
     ] + [
         sysfs.Device(bus = 'hdaudio', name = 'hdaudioC0D3', driver = 'snd_hda_codec_hdmi'),
@@ -126,6 +131,7 @@ class Board(boards.Board):
         self.soc = tegra210.SoC()
         self.eeproms = {}
 
+        i2c1 = self.soc.devices['i2c1']
         i2c2 = self.soc.devices['i2c2']
         i2c3 = self.soc.devices['i2c3']
         i2c5 = self.soc.devices['i2c5']
@@ -138,6 +144,11 @@ class Board(boards.Board):
             sysfs.Device(bus = 'i2c', name = i2c3.device(0x57).sysfs.name, driver = 'at24'),
             sysfs.Device(bus = 'i2c', name = i2c5.device(0x3c).sysfs.name, driver = 'max77620'),
         ])
+
+        if Kernel().version >= Kernel.Version('6.15.0'):
+            self.devices.extend([
+                sysfs.Device(bus = 'i2c', name = i2c1.device(0x4c).sysfs.name, driver = 'lm90'),
+            ])
 
         self.eeproms['module'] = i2c3.device(0x50)
         self.eeproms['system'] = i2c3.device(0x57)
