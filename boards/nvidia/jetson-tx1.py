@@ -83,13 +83,6 @@ class Board(boards.Board):
     # HDA bus
     ] + [
         sysfs.Device(bus = 'hdaudio', name = 'hdaudioC0D3', driver = 'snd_hda_codec_hdmi'),
-    # I2C bus
-    ] + [
-        sysfs.Device(bus = 'i2c', name = '0-0074', driver = 'pca953x'),
-        sysfs.Device(bus = 'i2c', name = '0-0077', driver = 'pca953x'),
-        sysfs.Device(bus = 'i2c', name = '1-0050', driver = 'at24'),
-        sysfs.Device(bus = 'i2c', name = '1-0057', driver = 'at24'),
-        sysfs.Device(bus = 'i2c', name = '2-003c', driver = 'max77620'),
     # USB bus
     ] + [
         sysfs.Device(bus = 'usb', name = '2-1:1.0', driver = 'r8152'),
@@ -133,7 +126,18 @@ class Board(boards.Board):
         self.soc = tegra210.SoC()
         self.eeproms = {}
 
-        i2c = self.soc.devices['i2c3']
+        i2c2 = self.soc.devices['i2c2']
+        i2c3 = self.soc.devices['i2c3']
+        i2c5 = self.soc.devices['i2c5']
 
-        self.eeproms['module'] = i2c.device(0x50)
-        self.eeproms['system'] = i2c.device(0x57)
+        # I2C bus
+        self.devices.extend([
+            sysfs.Device(bus = 'i2c', name = i2c2.device(0x74).sysfs.name, driver = 'pca953x'),
+            sysfs.Device(bus = 'i2c', name = i2c2.device(0x77).sysfs.name, driver = 'pca953x'),
+            sysfs.Device(bus = 'i2c', name = i2c3.device(0x50).sysfs.name, driver = 'at24'),
+            sysfs.Device(bus = 'i2c', name = i2c3.device(0x57).sysfs.name, driver = 'at24'),
+            sysfs.Device(bus = 'i2c', name = i2c5.device(0x3c).sysfs.name, driver = 'max77620'),
+        ])
+
+        self.eeproms['module'] = i2c3.device(0x50)
+        self.eeproms['system'] = i2c3.device(0x57)
