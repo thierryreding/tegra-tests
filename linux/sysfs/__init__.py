@@ -94,17 +94,23 @@ def enumerate(subsystem = None, DEVTYPE = None):
             else:
                 yield device
 
-class Device(Object):
-    def __init__(self, path = None, bus = None, subsystem = None, name = None, driver = None):
-        if path:
-            parts = path.split('/')
+def split_path(path, name = None):
+    parts = path.split(os.path.sep)
+    if path.startswith(mountpoint):
+        if not name:
+            path = os.path.join(*parts[2:-1])
+            name = parts[-1]
+        else:
+            path = os.path.join(*parts[2:])
 
-            if path.startswith(mountpoint):
-                if not name:
-                    path = os.path.join(*parts[2:-1])
-                    name = parts[-1]
-                else:
-                    path = os.path.join(*parts[2:])
+    return (path, name)
+
+class Device(Object):
+    def __init__(self, parent = None, path = None, bus = None, subsystem = None, name = None, driver = None):
+        if parent:
+            path, name = split_path(parent.full_path, name)
+        elif path:
+            path, name = split_path(path, name)
         else:
             if subsystem:
                 util.require_arguments(subsystem = subsystem, name = name)
