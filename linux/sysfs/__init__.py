@@ -10,6 +10,9 @@ def exists(path):
 def open(path, *args, **kwargs):
     return io.open('%s/%s' % (mountpoint, path), *args, **kwargs)
 
+class DeviceNotAvailable(Exception):
+    pass
+
 class Object:
     def __init__(self, path, name):
         self.path = os.path.join(path, name)
@@ -179,3 +182,6 @@ def interrupt_get(name):
         with open(path) as fobj:
             if name == fobj.read().strip():
                 return irq
+
+# modules can now be imported
+from . import i2c
