@@ -137,18 +137,20 @@ class Board(boards.Board):
         i2c5 = self.soc.devices['i2c5']
 
         # I2C bus
+        self.eeproms['module'] = i2c3.client(0x50, driver = 'at24')
+        self.eeproms['system'] = i2c3.client(0x57, driver = 'at24')
+
         self.devices.extend([
-            sysfs.Device(bus = 'i2c', name = i2c2.device(0x74).sysfs.name, driver = 'pca953x'),
-            sysfs.Device(bus = 'i2c', name = i2c2.device(0x77).sysfs.name, driver = 'pca953x'),
-            sysfs.Device(bus = 'i2c', name = i2c3.device(0x50).sysfs.name, driver = 'at24'),
-            sysfs.Device(bus = 'i2c', name = i2c3.device(0x57).sysfs.name, driver = 'at24'),
-            sysfs.Device(bus = 'i2c', name = i2c5.device(0x3c).sysfs.name, driver = 'max77620'),
+            i2c2,
+            i2c2.client(0x74, driver = 'pca953x'),
+            i2c2.client(0x77, driver = 'pca953x'),
+            i2c3,
+            i2c3.client(0x50, driver = 'at24'),
+            i2c3.client(0x57, driver = 'at24'),
+            i2c5.client(0x3c, driver = 'max77620'),
         ])
 
         if Kernel().version >= Kernel.Version('6.15.0'):
             self.devices.extend([
-                sysfs.Device(bus = 'i2c', name = i2c1.device(0x4c).sysfs.name, driver = 'lm90'),
+                i2c1.client(0x4c, driver = 'lm90'),
             ])
-
-        self.eeproms['module'] = i2c3.device(0x50)
-        self.eeproms['system'] = i2c3.device(0x57)

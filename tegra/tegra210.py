@@ -1,4 +1,4 @@
-from linux import system
+from linux import sysfs
 import tegra
 
 class SoC(tegra.SoC):
@@ -9,7 +9,9 @@ class SoC(tegra.SoC):
         self.num_cpus = 4
         self.devices = {}
 
-        self.devices['i2c1'] = system.I2CController('platform', '7000c000.i2c')
-        self.devices['i2c2'] = system.I2CController('platform', '7000c400.i2c')
-        self.devices['i2c3'] = system.I2CController('platform', '7000c500.i2c')
-        self.devices['i2c5'] = system.I2CController('platform', '7000d000.i2c')
+        self.devices['i2c1'] = sysfs.i2c.Controller('platform', '7000c000.i2c')
+        self.devices['i2c2'] = sysfs.i2c.Controller('platform', '7000c400.i2c')
+        self.devices['i2c3'] = sysfs.i2c.Controller('platform', '7000c500.i2c')
+        self.devices['i2c4'] = sysfs.i2c.Controller('platform', '7000c700.i2c')
+        self.devices['i2c5'] = sysfs.i2c.Controller('platform', '7000d000.i2c')
+        self.devices['i2c6'] = sysfs.i2c.Controller('platform', '7000d100.i2c')

@@ -170,35 +170,6 @@ class RTC:
         with self.sysfs.open('wakealarm', 'w') as file:
             file.write('%u' % alarm)
 
-class I2CController:
-    def __init__(self, bus, name):
-        bus = sysfs.Bus(bus)
-        device = bus.device(name)
-
-        try:
-            alias = device.uevent['OF_ALIAS_0']
-            self.index = int(alias[3:])
-        except KeyError:
-            for child in device:
-                if child.name.startswith('i2c-'):
-                    self.index = int(child.name[4:])
-                    break
-            else:
-                raise
-
-        self.sysfs = device.child('i2c-%u' % self.index)
-
-    def device(self, address):
-        return I2CDevice(self, address)
-
-class I2CDevice:
-    def __init__(self, parent, address):
-        name = '%u-%04x' % (parent.index, address)
-
-        self.sysfs = parent.sysfs.child(name)
-        self.parent = parent
-        self.address = address
-
 class Kernel:
     release = None
 

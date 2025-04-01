@@ -87,8 +87,6 @@ class Board(boards.Board):
         sysfs.Device(bus = 'platform', name = '15340000.vic', driver = 'tegra-vic'),
         sysfs.Device(bus = 'platform', name = '40000000.sram', driver = 'sram'),
         sysfs.Device(bus = 'platform', name = 'alarmtimer.0.auto', driver = 'alarmtimer'),
-        sysfs.Device(bus = 'platform', name = 'bpmp', driver = 'tegra-bpmp'),
-        sysfs.Device(bus = 'platform', name = 'bpmp:i2c', driver = 'tegra-bpmp-i2c'),
         sysfs.Device(bus = 'platform', name = 'bus@0:aconnect@2900000', driver = 'tegra-aconnect'),
         sysfs.Device(bus = 'platform', name = 'gpio-keys', driver = 'gpio-keys'),
         sysfs.Device(bus = 'platform', name = 'pmu', driver = 'armv8-pmu'),
@@ -146,3 +144,27 @@ class Board(boards.Board):
     def __init__(self):
         self.soc = tegra234.SoC()
         self.eeproms = {}
+
+        # platform devices
+        self.devices.extend([
+            self.soc.devices['bpmp'],
+        ])
+
+        # I2C clients
+        i2c_bpmp = self.soc.devices['bpmp:i2c']
+        i2c1 = self.soc.devices['i2c1']
+        i2c2 = self.soc.devices['i2c2']
+        i2c9 = self.soc.devices['i2c9']
+
+        self.devices.extend([
+            i2c_bpmp,
+            i2c_bpmp.client(0x4c, driver = 'lm90'),
+            i2c1,
+            i2c1.client(0x50, driver = 'at24'),
+            i2c1.client(0x56, driver = 'at24'),
+            i2c2,
+            i2c2.client(0x08, driver = 'ucsi_ccg'),
+            i2c2.client(0x40),
+            i2c2.client(0x41),
+            i2c9.client(0x1c, driver = 'rt5640'),
+        ])

@@ -1,5 +1,5 @@
 from linux.system import Kernel
-from linux import system
+from linux import sysfs
 import tegra
 
 class SoC(tegra.SoC):
@@ -11,4 +11,4 @@ class SoC(tegra.SoC):
         self.devices = {}
 
         if Kernel().version >= Kernel.Version('5.10.0'):
-            self.devices['i2c1'] = system.I2CController('platform', '3160000.i2c')
+            self.devices['i2c1'] = sysfs.i2c.Controller('platform', '3160000.i2c')
