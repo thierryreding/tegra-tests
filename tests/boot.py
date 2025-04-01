@@ -36,7 +36,7 @@ class devices(runner.Test):
         log.debug('board:', board.name)
 
         for device in board.devices:
-            path = os.path.join('/sys', 'bus', device.bus, 'devices', device.name)
+            path = device.full_path
 
             log.debug('  device: %s ... ' % path, end = '', flush = True)
 
