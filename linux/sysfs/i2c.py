@@ -1,7 +1,7 @@
 from linux import sysfs
 
 class Controller(sysfs.Device):
-    def __init__(self, parent = None, path = None, bus = None, subsystem = None, name = None, driver = None):
+    def __init__(self, *, parent = None, path = None, bus = None, subsystem = None, name = None, driver = None):
         if not parent:
             if path:
                 parent = sysfs.Device(path = path)

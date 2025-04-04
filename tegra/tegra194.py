@@ -11,4 +11,4 @@ class SoC(tegra.SoC):
         self.devices = {}
 
         if Kernel().version >= Kernel.Version('5.10.0'):
-            self.devices['i2c1'] = sysfs.i2c.Controller('platform', '3160000.i2c')
+            self.devices['i2c1'] = sysfs.i2c.Controller(bus = 'platform', name = '3160000.i2c')
