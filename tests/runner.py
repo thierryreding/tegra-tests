@@ -17,7 +17,7 @@ class Log:
 
     def info(self, *args, **kwargs):
         if self.test:
-            args = [ '%s:' % type(self.test).__name__, *args ]
+            args = [ '%s:' % self.test.name, *args ]
 
         args = [ '%s:' % self.module.name, *args ]
 
@@ -38,7 +38,11 @@ class Log:
             self.next(*args, **kwargs)
 
 class Test:
-    pass
+    __name__ = None
+
+    @property
+    def name(self):
+        return self.__name__ if self.__name__ else type(self).__name__
 
 class Error(Exception):
     pass
