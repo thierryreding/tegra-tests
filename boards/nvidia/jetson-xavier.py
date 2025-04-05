@@ -217,5 +217,5 @@ class Board(boards.Board):
 
         if 'i2c1' in self.soc.devices:
             i2c = self.soc.devices['i2c1']
-            self.eeproms['module'] = i2c.device(0x50)
-            self.eeproms['system'] = i2c.device(0x56)
+            self.eeproms['module'] = i2c.client(0x50)
+            self.eeproms['system'] = i2c.client(0x56)

@@ -137,5 +137,5 @@ class Board(boards.Board):
 
         i2c = self.soc.devices['i2c8']
 
-        self.eeproms['module'] = i2c.device(0x50)
-        self.eeproms['system'] = i2c.device(0x57)
+        self.eeproms['module'] = i2c.client(0x50)
+        self.eeproms['system'] = i2c.client(0x57)
