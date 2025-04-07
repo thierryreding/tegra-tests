@@ -9,4 +9,4 @@ class SoC(tegra.SoC):
         self.num_cpus = 6
         self.devices = {}
 
-        self.devices['i2c8'] = sysfs.i2c.Controller(bus = 'platform', name = 'c250000.i2c')
+        self.devices['i2c8'] = sysfs.i2c.Controller(bus = 'platform', name = 'c250000.i2c', driver = 'tegra-i2c')
