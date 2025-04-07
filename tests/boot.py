@@ -55,7 +55,7 @@ class devices(runner.Test):
 
                 log.debug('    bound: %s ... ' % driver, end = '', flush = True)
 
-                if isinstance(device.driver, str):
+                if not isinstance(device.driver, list):
                     drivers = [ device.driver ]
                 else:
                     drivers = device.driver
@@ -68,10 +68,11 @@ class devices(runner.Test):
                     log.cont('failed')
                     failed = True
             else:
-                log.debug('    unbound')
-
                 if device.driver:
+                    log.debug('    unbound, expected: %s' % device.driver)
                     failed = True
+                else:
+                    log.debug('    unbound')
 
         # no devices should be left in the deferred probe pending list
         if debugfs.exists('devices_deferred'):
