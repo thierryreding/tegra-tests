@@ -153,7 +153,7 @@ class Driver(Object):
                 # not all symlinks refer to device bound by this driver (e.g.
                 # there is a "module" symlink for loadable modules)
                 if os.path.exists(driver) and driver == directory:
-                    device = Device(os.path.realpath(path))
+                    device = Device(path=os.path.realpath(path))
                     yield device
 
     def unbind(self, device):
