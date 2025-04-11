@@ -117,9 +117,17 @@ class Board(boards.Board):
         sysfs.Device(bus = 'pci', name = '0001:00:00.0', driver = 'pcieport'),
     ]
 
-    drivers = [
-        sysfs.Driver('platform', 'tegra-host1x'),
-    ]
+    #
+    # TODO: The Tegra SE crypto driver doesn't currently support being force-
+    # unloaded like this because userspace may actively be keeping a refcount
+    # on some of the algorithms exposed by this module. A workaround for this
+    # is to make sure all userspace that may be using this is stopped. At the
+    # moment the only user seems to be the bluetoothd systemd service, so a
+    # better fix would be to make sure that's stopped while the test is run.
+    #
+    #drivers = [
+    #    sysfs.Driver('platform', 'tegra-host1x'),
+    #]
 
     allowlist = [
         r'.*: loading out-of-tree module taints kernel.',
