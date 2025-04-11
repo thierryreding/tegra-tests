@@ -98,7 +98,6 @@ class Board(boards.Board):
         sysfs.Device(bus = 'platform', name = 'regulator-vdd-3v3-pcie', driver = 'reg-fixed-voltage'),
         sysfs.Device(bus = 'platform', name = 'serial', driver = 'tegra-tcu'),
         sysfs.Device(bus = 'platform', name = 'serial8250', driver = 'serial8250'),
-        sysfs.Device(bus = 'platform', name = 'snd-soc-dummy', driver = 'snd-soc-dummy'),
         sysfs.Device(bus = 'platform', name = 'sound', driver = 'tegra-audio-graph-card'),
     # Linux v6.2 added support for the ethernet controller on Jetson AGX Xavier
     ] + [
