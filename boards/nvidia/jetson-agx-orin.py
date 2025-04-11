@@ -105,6 +105,12 @@ class Board(boards.Board):
             sysfs.Device(bus = 'platform', name = '6800000.ethernet', driver = 'tegra-mgbe'),
             sysfs.Device(bus = 'mdio_bus', name = 'stmmac-0:00', driver = 'Aquantia AQR113C'),
         ] if Kernel().version >= Kernel.Version('6.2.0')
+    # Linux v6.10 added support for the Tegra Security Engine on Jetson AGX Xavier
+    ] + [
+        device for device in [
+            sysfs.Device(bus = 'platform', name = '15820000.crypto', driver = 'tegra-se'),
+            sysfs.Device(bus = 'platform', name = '15840000.crypto', driver = 'tegra-se'),
+        ] if Kernel().version >= Kernel.Version('6.10.0')
     # HDA bus
     ] + [
         sysfs.Device(bus = 'hdaudio', name = 'hdaudioC0D0', driver = 'snd_hda_codec_hdmi'),
