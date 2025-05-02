@@ -91,7 +91,6 @@ class Board(boards.Board):
         sysfs.Device(bus = 'platform', name = 'gpio-keys', driver = 'gpio-keys'),
         sysfs.Device(bus = 'platform', name = 'pmu', driver = 'armv8-pmu'),
         sysfs.Device(bus = 'platform', name = 'psci', driver = 'psci-cpuidle-domain'),
-        sysfs.Device(bus = 'platform', name = 'reg-dummy', driver = 'reg-dummy'),
         sysfs.Device(bus = 'platform', name = 'regulator-vdd-12v-pcie', driver = 'reg-fixed-voltage'),
         sysfs.Device(bus = 'platform', name = 'regulator-vdd-1v8-ao', driver = 'reg-fixed-voltage'),
         sysfs.Device(bus = 'platform', name = 'regulator-vdd-1v8-ls', driver = 'reg-fixed-voltage'),
