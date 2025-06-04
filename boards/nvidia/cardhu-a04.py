@@ -13,7 +13,7 @@ class Board(boards.Board):
         sysfs.Device(bus = 'platform', name = '54140000.gr2d', driver = 'tegra-gr2d'),
         sysfs.Device(bus = 'platform', name = '60005000.timer', driver = 'tegra-wdt'),
         sysfs.Device(bus = 'platform', name = '60007000.flow-controller', driver = 'tegra-flowctrl'),
-        sysfs.Device(bus = 'platform', name = '6000a000.dma', driver = 'tegra-apbdma'),
+        sysfs.Device(bus = 'platform', name = '6000a000.dma-controller' if Kernel().version >= Kernel.Version('6.16.0') else '6000a000.dma', driver = 'tegra-apbdma'),
         sysfs.Device(bus = 'platform', name = '6000c000.ahb', driver = 'tegra-ahb'),
         sysfs.Device(bus = 'platform', name = '6000d000.gpio', driver = 'tegra-gpio'),
         sysfs.Device(bus = 'platform', name = '70000868.pinmux', driver = 'tegra30-pinctrl'),
