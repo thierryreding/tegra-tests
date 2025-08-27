@@ -87,7 +87,7 @@ class Board(boards.Board):
         ] if Kernel().version >= Kernel.Version('6.15.0')
     # HDA bus
     ] + [
-        sysfs.Device(bus = 'hdaudio', name = 'hdaudioC0D3', driver = 'snd_hda_codec_hdmi'),
+        sysfs.Device(bus = 'hdaudio', name = 'hdaudioC0D3', driver = [ 'snd_hda_codec_hdmi', 'snd_hda_codec_tegrahdmi' ]),
     # USB bus
     ] + [
         sysfs.Device(bus = 'usb', name = '2-1:1.0', driver = 'r8152'),

@@ -93,10 +93,10 @@ class Board(boards.Board):
         ] if Kernel().version >= Kernel.Version('5.14.0')
     # HDA bus
     ] + [
-        sysfs.Device(bus = 'hdaudio', name = 'hdaudioC0D3', driver = 'snd_hda_codec_hdmi'),
-        sysfs.Device(bus = 'hdaudio', name = 'hdaudioC0D4', driver = 'snd_hda_codec_hdmi'),
-        sysfs.Device(bus = 'hdaudio', name = 'hdaudioC0D5', driver = 'snd_hda_codec_hdmi'),
-        sysfs.Device(bus = 'hdaudio', name = 'hdaudioC0D6', driver = 'snd_hda_codec_hdmi'),
+        sysfs.Device(bus = 'hdaudio', name = 'hdaudioC0D3', driver = [ 'snd_hda_codec_hdmi', 'snd_hda_codec_tegrahdmi' ]),
+        sysfs.Device(bus = 'hdaudio', name = 'hdaudioC0D4', driver = [ 'snd_hda_codec_hdmi', 'snd_hda_codec_tegrahdmi' ]),
+        sysfs.Device(bus = 'hdaudio', name = 'hdaudioC0D5', driver = [ 'snd_hda_codec_hdmi', 'snd_hda_codec_tegrahdmi' ]),
+        sysfs.Device(bus = 'hdaudio', name = 'hdaudioC0D6', driver = [ 'snd_hda_codec_hdmi', 'snd_hda_codec_tegrahdmi' ]),
     # I2C bus
     ] + [
         # I2C bus

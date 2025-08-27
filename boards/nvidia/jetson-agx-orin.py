@@ -112,7 +112,7 @@ class Board(boards.Board):
         ] if Kernel().version >= Kernel.Version('6.10.0')
     # HDA bus
     ] + [
-        sysfs.Device(bus = 'hdaudio', name = 'hdaudioC0D0', driver = 'snd_hda_codec_hdmi'),
+        sysfs.Device(bus = 'hdaudio', name = 'hdaudioC0D0', driver = [ 'snd_hda_codec_hdmi', 'snd_hda_codec_tegrahdmi' ]),
     # host1x bus
     ] + [
         sysfs.Device(bus = 'host1x', name = 'drm', driver = 'drm'),
