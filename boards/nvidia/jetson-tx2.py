@@ -129,6 +129,13 @@ class Board(boards.Board):
         warning for warning in [
             r'systemd\[[0-9]+\]: memfd_create\(\) called without MFD_EXEC or MFD_NOEXEC_SEAL set',
         ] if Kernel().version >= Kernel.Version('6.4.0')
+    ] + [
+        warning for warning in [
+            r'tegra-bpmp bpmp: sync_state\(\) pending due to 3960000.cec',
+            r'tegra-bpmp bpmp: sync_state\(\) pending due to 3507000.sata',
+            r'tegra-bpmp bpmp: sync_state\(\) pending due to 15380000.nvjpg',
+            r'tegra-bpmp bpmp: sync_state\(\) pending due to 154c0000.nvenc',
+        ] if Kernel().version >= Kernel.Version('6.17.0')
     ]
 
     def __init__(self):
