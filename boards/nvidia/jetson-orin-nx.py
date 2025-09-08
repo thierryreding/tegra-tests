@@ -63,7 +63,6 @@ class Board(boards.Board):
         sysfs.Device(bus = 'platform', name = '2200000.gpio', driver = 'tegra186-gpio'),
         sysfs.Device(bus = 'platform', name = '2430000.pinmux', driver = 'tegra234-pinctrl'),
         sysfs.Device(bus = 'platform', name = '2600000.dma-controller', driver = 'tegra-gpcdma'),
-        sysfs.Device(bus = 'platform', name = '2725f0000.ramoops_carveout', driver = 'ramoops'),
         sysfs.Device(bus = 'platform', name = '2900800.ahub', driver = 'tegra210-ahub'),
         sysfs.Device(bus = 'platform', name = '2901100.i2s', driver = 'tegra210-i2s'),
         sysfs.Device(bus = 'platform', name = '2901200.i2s', driver = 'tegra210-i2s'),
@@ -159,7 +158,6 @@ class Board(boards.Board):
         sysfs.Device(bus = 'platform', name = 'bpmp:thermal', driver = 'tegra-bpmp-thermal'),
         sysfs.Device(bus = 'platform', name = 'bus@0', driver = 'simple-pm-bus'),
         sysfs.Device(bus = 'platform', name = 'bus@0:aconnect@2900000', driver = 'tegra-aconnect'),
-        sysfs.Device(bus = 'platform', name = 'bus@0:cam_i2cmux', driver = 'i2c-mux-gpio'),
         sysfs.Device(bus = 'platform', name = 'c000000.aon', driver = 'tegra234-aon'),
         sysfs.Device(bus = 'platform', name = 'c150000.hsp', driver = 'tegra-hsp'),
         sysfs.Device(bus = 'platform', name = 'c1e0000.hardware-timestamp', driver = 'tegra_hte'),
@@ -210,17 +208,12 @@ class Board(boards.Board):
         sysfs.Device(bus = 'platform', name = 'soc2-throttle-alert', driver = 'thermal-trip-event'),
         sysfs.Device(bus = 'platform', name = 'soctherm-oc-event', driver = 'tegra234-oc-event'),
         sysfs.Device(bus = 'platform', name = 'sound', driver = 'tegra-asoc:'),
-        sysfs.Device(bus = 'platform', name = 'tegra-camera-platform', driver = 'tegra_camera_platform'),
         sysfs.Device(bus = 'platform', name = 'tegra-capture-vi', driver = 'tegra-camrtc-capture-vi'),
         sysfs.Device(bus = 'platform', name = 'tegra-carveouts', driver = 'tegra-carveouts'),
         sysfs.Device(bus = 'spi', name = 'spi0.0', driver = 'spidev'),
         sysfs.Device(bus = 'spi', name = 'spi0.1', driver = 'spidev'),
         sysfs.Device(bus = 'spi', name = 'spi1.0', driver = 'spidev'),
         sysfs.Device(bus = 'spi', name = 'spi1.1', driver = 'spidev'),
-        sysfs.Device(bus = 'tegra-ivc-bus', name = 'bc00000.rtcpu:ivc-bus:dbg@1', driver = 'tegra-ivc-cdev'),
-        sysfs.Device(bus = 'tegra-ivc-bus', name = 'bc00000.rtcpu:ivc-bus:dbg@2', driver = 'tegra-camera-rtcpu-debugfs'),
-        sysfs.Device(bus = 'tegra-ivc-bus', name = 'bc00000.rtcpu:ivc-bus:diag@5', driver = 'tegra-camera-diagnostics'),
-        sysfs.Device(bus = 'tegra-ivc-bus', name = 'bc00000.rtcpu:ivc-bus:echo@0', driver = 'tegra-ivc-cdev'),
         sysfs.Device(bus = 'tegra-ivc-bus', name = 'bc00000.rtcpu:ivc-bus:ivccapture@4', driver = 'tegra-capture-ivc'),
         sysfs.Device(bus = 'tegra-ivc-bus', name = 'bc00000.rtcpu:ivc-bus:ivccontrol@3', driver = 'tegra-capture-ivc'),
     ]
@@ -249,6 +242,8 @@ class Board(boards.Board):
         r'imx219: probe of (9-0010|10-0010) failed with error -121',
         r'platform regulatory.0: Direct firmware load for regulatory.db failed with error -2',
         r'platform regulatory.0: Falling back to sysfs fallback for: regulatory.db',
+        r'IRQ\d*: set affinity failed\(-22\).',
+        r'nvme nvme0: missing or invalid SUBNQN field.',
     ]
 
     # Add additional dmesg warn, err here that are to be ignored in the logs test

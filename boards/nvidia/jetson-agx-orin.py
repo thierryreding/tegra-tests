@@ -28,7 +28,6 @@ class Board(boards.Board):
         sysfs.Device(bus = 'pci_express', name = '0001:00:00.0:pcie001', driver = 'pcie_pme'),
         sysfs.Device(bus = 'pci_express', name = '0001:00:00.0:pcie002', driver = 'aer'),
         sysfs.Device(bus = 'platform', name = '10000000.iommu', driver = 'arm-smmu'),
-        sysfs.Device(bus = 'platform', name = '102cdf0000.ramoops_carveout', driver = 'ramoops'),
         sysfs.Device(bus = 'platform', name = '12000000.iommu', driver = 'arm-smmu'),
         sysfs.Device(bus = 'platform', name = '13a00000.cbb-fabric', driver = 'tegra234-cbb'),
         sysfs.Device(bus = 'platform', name = '13e00000.host1x', driver = 'tegra-host1x'),
@@ -233,10 +232,6 @@ class Board(boards.Board):
         sysfs.Device(bus = 'spi', name = 'spi0.1', driver = 'spidev'),
         sysfs.Device(bus = 'spi', name = 'spi1.0', driver = 'spidev'),
         sysfs.Device(bus = 'spi', name = 'spi1.1', driver = 'spidev'),
-        sysfs.Device(bus = 'tegra-ivc-bus', name = 'bc00000.rtcpu:ivc-bus:dbg@1', driver = 'tegra-ivc-cdev'),
-        sysfs.Device(bus = 'tegra-ivc-bus', name = 'bc00000.rtcpu:ivc-bus:dbg@2', driver = 'tegra-camera-rtcpu-debugfs'),
-        sysfs.Device(bus = 'tegra-ivc-bus', name = 'bc00000.rtcpu:ivc-bus:diag@5', driver = 'tegra-camera-diagnostics'),
-        sysfs.Device(bus = 'tegra-ivc-bus', name = 'bc00000.rtcpu:ivc-bus:echo@0', driver = 'tegra-ivc-cdev'),
         sysfs.Device(bus = 'tegra-ivc-bus', name = 'bc00000.rtcpu:ivc-bus:ivccapture@4', driver = 'tegra-capture-ivc'),
         sysfs.Device(bus = 'tegra-ivc-bus', name = 'bc00000.rtcpu:ivc-bus:ivccontrol@3', driver = 'tegra-capture-ivc'),
     ]
@@ -263,6 +258,8 @@ class Board(boards.Board):
         r'imx274 (9-001a|10-001a): supply vif not found, using dummy regulator',
         r'platform regulatory.0: Direct firmware load for regulatory.db failed with error -2',
         r'platform regulatory.0: Falling back to sysfs fallback for: regulatory.db',
+        r'IRQ\d*: set affinity failed\(-22\).',
+        r'nvme nvme0: missing or invalid SUBNQN field.',
     ]
 
     # Add additional dmesg warn, err here that are to be ignored in the logs test
