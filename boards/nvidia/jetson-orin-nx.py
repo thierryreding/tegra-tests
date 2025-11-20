@@ -240,6 +240,10 @@ class Board(boards.Board):
         r'platform regulatory.0: Falling back to sysfs fallback for: regulatory.db',
         r'IRQ\d*: set affinity failed\(-22\).',
         r'nvme nvme0: missing or invalid SUBNQN field.',
+        r'SPI driver altr_a10sr has no spi_device_id for altr,a10sr',
+        r'device-mapper: core: CONFIG_IMA_DISABLE_HTABLE is disabled. Duplicate IMA measurements will not be recorded in the IMA log.',
+        r'NVRM rpcRmApiControl_dce: NVRM_RPC_DCE: Failed RM ctrl call cmd:0x731341 result 0xffff:',
+        r'r8168  Copyright \(C\) 2024 Realtek NIC software team <nicfae@realtek.com> \\x0a This program comes with ABSOLUTELY NO WARRANTY; for details, please see <http://www.gnu.org/licenses/>. \\x0a This is free software, and you are welcome to redistribute it under certain conditions; see <http://www.gnu.org/licenses/>.',
     ]
 
     # Add additional dmesg warn, err here that are to be ignored in the logs test
