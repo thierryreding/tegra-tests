@@ -5,6 +5,7 @@ import tegra
 class SoC(tegra.SoC):
     compatible = 'nvidia,tegra234'
     name = 'NVIDIA Tegra234'
+    ID = 0x234
 
     def __init__(self):
         self.num_cpus = 12

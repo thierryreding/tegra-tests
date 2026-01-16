@@ -21,12 +21,18 @@ class sysinfo(runner.Test):
         log.debug('Board:', boards.detect())
         log.debug('SoC:', tegra.detect())
 
+        soc = tegra.detect()
+        log.debug(f'  ID: {soc.id:#x}')
+
         cpus = system.CPUSet()
 
         log.debug('CPUs:', cpus.count())
 
         for cpu in cpus:
             log.debug(' ', cpu)
+
+        if soc.id != soc.ID:
+            raise runner.Error(f'expected SoC ID {soc.ID:#x}, but got {soc.id:#x}')
 
 class devices(runner.Test):
     def __call__(self, log, *args, **kwargs):
