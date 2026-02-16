@@ -169,6 +169,10 @@ class Board(boards.Board):
             r'tegra-bpmp bpmp: sync_state\(\) pending due to 154c0000.nvenc',
             r'tegra-bpmp bpmp: sync_state\(\) pending due to 15a80000.nvenc',
         ] if Kernel().version >= Kernel.Version('6.17.0')
+    ] + [
+        warning for warning in [
+	    r'tegra210-ahub 2900800.ahub: using zero-initialized flat cache, this may cause unexpected behavior'
+        ] if Kernel().version >= Kernel.Version('6.19.0') and Kernel().version < Kernel.Version('7.0.0')
     ]
 
     def __init__(self):
