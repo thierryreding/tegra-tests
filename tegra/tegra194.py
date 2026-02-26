@@ -11,5 +11,11 @@ class SoC(tegra.SoC):
         self.num_cpus = 8
         self.devices = {}
 
-        if Kernel().version >= Kernel.Version('5.10.0'):
-            self.devices['i2c1'] = sysfs.i2c.Controller(bus = 'platform', name = '3160000.i2c', driver = 'tegra-i2c')
+        # BPMP and subdevices
+        bpmp = sysfs.Device(bus = 'platform', name = 'bpmp', driver = 'tegra-bpmp')
+        i2c = sysfs.i2c.Controller(parent = bpmp.child('bpmp:i2c'), driver = 'tegra-bpmp-i2c')
+        thermal = sysfs.Device(bus = 'platform', name = 'bpmp:thermal', driver = 'tegra-bpmp-thermal')
+
+        self.devices['bpmp'] = bpmp
+        self.devices['bpmp:i2c'] = i2c
+        self.devices['bpmp:thermal'] = thermal

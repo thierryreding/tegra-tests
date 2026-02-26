@@ -2,6 +2,8 @@ import fnmatch
 import importlib
 import os.path
 
+from linux.system import Kernel
+
 class Vendor:
     def __init__(self, name):
         self.name = name
@@ -32,6 +34,27 @@ class UnsupportedBoardException(Exception):
 class Board:
     def __str__(self):
         return self.name
+
+    def _build_devices(self, kernel):
+        yield from ()
+
+    def _build_drivers(self, kernel):
+        yield from ()
+
+    def _build_allowlist(self, kernel):
+        yield from()
+
+    def __init__(self, soc, kernel = Kernel()):
+        self.soc = soc
+
+        if not hasattr(self, 'devices'):
+            self.devices = list(self._build_devices(kernel))
+
+        if not hasattr(self, 'drivers'):
+            self.drivers = list(self._build_drivers(kernel))
+
+        if not hasattr(self, 'allowlist'):
+            self.allowlist = list(self._build_allowlist(kernel))
 
 boards = []
 
