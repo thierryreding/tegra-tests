@@ -7,189 +7,181 @@ class Board(boards.Board):
     __compatible__ = 'nvidia,p3737-0000+p3701-0000'
     name = 'NVIDIA Jetson AGX Orin Developer Kit'
 
-    devices = [
+    def _build_devices(self, kernel):
+        yield from super()._build_devices(kernel)
+
         # platform bus
-        sysfs.Device(bus = 'platform', name = '2200000.gpio', driver = 'tegra186-gpio'),
-        sysfs.Device(bus = 'platform', name = '2600000.dma-controller', driver = 'tegra-gpcdma'),
-        sysfs.Device(bus = 'platform', name = '2900800.ahub', driver = 'tegra210-ahub'),
-        sysfs.Device(bus = 'platform', name = '2901000.i2s', driver = 'tegra210-i2s'),
-        sysfs.Device(bus = 'platform', name = '2901100.i2s', driver = 'tegra210-i2s'),
-        sysfs.Device(bus = 'platform', name = '2901300.i2s', driver = 'tegra210-i2s'),
-        sysfs.Device(bus = 'platform', name = '2901500.i2s', driver = 'tegra210-i2s'),
-        sysfs.Device(bus = 'platform', name = '2902000.sfc', driver = 'tegra210-sfc'),
-        sysfs.Device(bus = 'platform', name = '2902200.sfc', driver = 'tegra210-sfc'),
-        sysfs.Device(bus = 'platform', name = '2902400.sfc', driver = 'tegra210-sfc'),
-        sysfs.Device(bus = 'platform', name = '2902600.sfc', driver = 'tegra210-sfc'),
-        sysfs.Device(bus = 'platform', name = '2903000.amx', driver = 'tegra210-amx'),
-        sysfs.Device(bus = 'platform', name = '2903100.amx', driver = 'tegra210-amx'),
-        sysfs.Device(bus = 'platform', name = '2903200.amx', driver = 'tegra210-amx'),
-        sysfs.Device(bus = 'platform', name = '2903300.amx', driver = 'tegra210-amx'),
-        sysfs.Device(bus = 'platform', name = '2903800.adx', driver = 'tegra210-adx'),
-        sysfs.Device(bus = 'platform', name = '2903900.adx', driver = 'tegra210-adx'),
-        sysfs.Device(bus = 'platform', name = '2903a00.adx', driver = 'tegra210-adx'),
-        sysfs.Device(bus = 'platform', name = '2903b00.adx', driver = 'tegra210-adx'),
-        sysfs.Device(bus = 'platform', name = '2904200.dmic', driver = 'tegra210-dmic'),
-        sysfs.Device(bus = 'platform', name = '2908000.processing-engine', driver = 'tegra210-ope'),
-        sysfs.Device(bus = 'platform', name = '290a000.mvc', driver = 'tegra210-mvc'),
-        sysfs.Device(bus = 'platform', name = '290a200.mvc', driver = 'tegra210-mvc'),
-        sysfs.Device(bus = 'platform', name = '290bb00.amixer', driver = 'tegra210_mixer'),
-        sysfs.Device(bus = 'platform', name = '290f000.admaif', driver = 'tegra210-admaif'),
-        sysfs.Device(bus = 'platform', name = '2910000.asrc', driver = 'tegra186-asrc'),
-        sysfs.Device(bus = 'platform', name = '2930000.dma-controller', driver = 'tegra-adma'),
-        sysfs.Device(bus = 'platform', name = '2a41000.interrupt-controller', driver = 'gic'),
-        sysfs.Device(bus = 'platform', name = '2c00000.memory-controller/2c60000.external-memory-controller', driver = 'tegra186-emc'),
-        sysfs.Device(bus = 'platform', name = '2c00000.memory-controller', driver = 'tegra-mc'),
-        sysfs.Device(bus = 'platform', name = '3100000.serial', driver = 'serial-tegra'),
-        sysfs.Device(bus = 'platform', name = '3460000.mmc', driver = 'sdhci-tegra'),
-        sysfs.Device(bus = 'platform', name = '3510000.hda', driver = 'tegra-hda'),
-        sysfs.Device(bus = 'platform', name = '3810000.fuse', driver = 'tegra-fuse'),
-        sysfs.Device(bus = 'platform', name = '3c00000.hsp', driver = 'tegra-hsp'),
-        sysfs.Device(bus = 'platform', name = '3e00000.phy', driver = 'tegra194-p2u'),
-        sysfs.Device(bus = 'platform', name = '3e10000.phy', driver = 'tegra194-p2u'),
-        sysfs.Device(bus = 'platform', name = '3e20000.phy', driver = 'tegra194-p2u'),
-        sysfs.Device(bus = 'platform', name = '3e30000.phy', driver = 'tegra194-p2u'),
-        sysfs.Device(bus = 'platform', name = '3e40000.phy', driver = 'tegra194-p2u'),
-        sysfs.Device(bus = 'platform', name = '3e50000.phy', driver = 'tegra194-p2u'),
-        sysfs.Device(bus = 'platform', name = '3e60000.phy', driver = 'tegra194-p2u'),
-        sysfs.Device(bus = 'platform', name = '3e70000.phy', driver = 'tegra194-p2u'),
-        sysfs.Device(bus = 'platform', name = '3e90000.phy', driver = 'tegra194-p2u'),
-        sysfs.Device(bus = 'platform', name = '3ea0000.phy', driver = 'tegra194-p2u'),
-        sysfs.Device(bus = 'platform', name = '3eb0000.phy', driver = 'tegra194-p2u'),
-        sysfs.Device(bus = 'platform', name = '3ec0000.phy', driver = 'tegra194-p2u'),
-        sysfs.Device(bus = 'platform', name = '3ed0000.phy', driver = 'tegra194-p2u'),
-        sysfs.Device(bus = 'platform', name = '3ee0000.phy', driver = 'tegra194-p2u'),
-        sysfs.Device(bus = 'platform', name = '3ef0000.phy', driver = 'tegra194-p2u'),
-        sysfs.Device(bus = 'platform', name = '3f00000.phy', driver = 'tegra194-p2u'),
-        sysfs.Device(bus = 'platform', name = '3f20000.phy', driver = 'tegra194-p2u'),
-        sysfs.Device(bus = 'platform', name = '3f30000.phy', driver = 'tegra194-p2u'),
-        sysfs.Device(bus = 'platform', name = '3f40000.phy', driver = 'tegra194-p2u'),
-        sysfs.Device(bus = 'platform', name = '3f50000.phy', driver = 'tegra194-p2u'),
-        sysfs.Device(bus = 'platform', name = '3f60000.phy', driver = 'tegra194-p2u'),
-        sysfs.Device(bus = 'platform', name = '3f70000.phy', driver = 'tegra194-p2u'),
-        sysfs.Device(bus = 'platform', name = '3f80000.phy', driver = 'tegra194-p2u'),
-        sysfs.Device(bus = 'platform', name = '3f90000.phy', driver = 'tegra194-p2u'),
-        sysfs.Device(bus = 'platform', name = '8000000.iommu', driver = 'arm-smmu'),
-        sysfs.Device(bus = 'platform', name = 'be00000.rce-fabric', driver = 'tegra234-cbb'),
-        sysfs.Device(bus = 'platform', name = 'c150000.hsp', driver = 'tegra-hsp'),
-        sysfs.Device(bus = 'platform', name = 'c2a0000.rtc', driver = 'tegra_rtc'),
-        sysfs.Device(bus = 'platform', name = 'c2f0000.gpio', driver = 'tegra186-gpio'),
-        sysfs.Device(bus = 'platform', name = 'c360000.pmc', driver = 'tegra-pmc'),
-        sysfs.Device(bus = 'platform', name = 'c600000.aon-fabric', driver = 'tegra234-cbb'),
-        sysfs.Device(bus = 'platform', name = 'd600000.bpmp-fabric', driver = 'tegra234-cbb'),
-        sysfs.Device(bus = 'platform', name = 'de00000.dce-fabric', driver = 'tegra234-cbb'),
-        sysfs.Device(bus = 'platform', name = 'e000000.ccplex', driver = 'tegra194-cpufreq'),
-        sysfs.Device(bus = 'platform', name = '10000000.iommu', driver = 'arm-smmu'),
-        sysfs.Device(bus = 'platform', name = '12000000.iommu', driver = 'arm-smmu'),
-        sysfs.Device(bus = 'platform', name = '13a00000.cbb-fabric', driver = 'tegra234-cbb'),
-        sysfs.Device(bus = 'platform', name = '13e00000.host1x', driver = 'tegra-host1x'),
-        sysfs.Device(bus = 'platform', name = '14100000.pcie', driver = 'tegra194-pcie'),
-        sysfs.Device(bus = 'platform', name = '14160000.pcie', driver = 'tegra194-pcie'),
-        sysfs.Device(bus = 'platform', name = '15340000.vic', driver = 'tegra-vic'),
-        sysfs.Device(bus = 'platform', name = '40000000.sram', driver = 'sram'),
-        sysfs.Device(bus = 'platform', name = 'alarmtimer.0.auto', driver = 'alarmtimer'),
-        sysfs.Device(bus = 'platform', name = 'bus@0:aconnect@2900000', driver = 'tegra-aconnect'),
-        sysfs.Device(bus = 'platform', name = 'gpio-keys', driver = 'gpio-keys'),
-        sysfs.Device(bus = 'platform', name = 'pmu', driver = 'armv8-pmu'),
-        sysfs.Device(bus = 'platform', name = 'psci', driver = 'psci-cpuidle-domain'),
-        sysfs.Device(bus = 'platform', name = 'regulator-vdd-12v-pcie', driver = 'reg-fixed-voltage'),
-        sysfs.Device(bus = 'platform', name = 'regulator-vdd-1v8-ao', driver = 'reg-fixed-voltage'),
-        sysfs.Device(bus = 'platform', name = 'regulator-vdd-1v8-ls', driver = 'reg-fixed-voltage'),
-        sysfs.Device(bus = 'platform', name = 'regulator-vdd-3v3-pcie', driver = 'reg-fixed-voltage'),
-        sysfs.Device(bus = 'platform', name = 'serial', driver = 'tegra-tcu'),
-        sysfs.Device(bus = 'platform', name = 'serial8250', driver = 'serial8250'),
-        sysfs.Device(bus = 'platform', name = 'sound', driver = 'tegra-audio-graph-card'),
-    # Linux v6.2 added support for the ethernet controller on Jetson AGX Xavier
-    ] + [
-        device for device in [
-            sysfs.Device(bus = 'platform', name = '6800000.ethernet', driver = 'tegra-mgbe'),
-            sysfs.Device(bus = 'mdio_bus', name = 'stmmac-0:00', driver = 'Aquantia AQR113C'),
-        ] if Kernel().version >= Kernel.Version('6.2.0')
-    # Linux v6.10 added support for the Tegra Security Engine on Jetson AGX Xavier
-    ] + [
-        device for device in [
-            sysfs.Device(bus = 'platform', name = '15820000.crypto', driver = 'tegra-se'),
-            sysfs.Device(bus = 'platform', name = '15840000.crypto', driver = 'tegra-se'),
-        ] if Kernel().version >= Kernel.Version('6.10.0')
-    # HDA bus
-    ] + [
-        sysfs.Device(bus = 'hdaudio', name = 'hdaudioC0D0', driver = [ 'snd_hda_codec_hdmi', 'snd_hda_codec_tegrahdmi' ]),
-    # host1x bus
-    ] + [
-        sysfs.Device(bus = 'host1x', name = 'drm', driver = 'drm'),
-    # PCI bus
-    ] + [
-        sysfs.Device(bus = 'pci', name = '0001:00:00.0', driver = 'pcieport'),
-    ]
+        yield sysfs.Device(bus = 'platform', name = '2200000.gpio', driver = 'tegra186-gpio')
+        yield sysfs.Device(bus = 'platform', name = '2600000.dma-controller', driver = 'tegra-gpcdma')
+        yield sysfs.Device(bus = 'platform', name = '2900800.ahub', driver = 'tegra210-ahub')
+        yield sysfs.Device(bus = 'platform', name = '2901000.i2s', driver = 'tegra210-i2s')
+        yield sysfs.Device(bus = 'platform', name = '2901100.i2s', driver = 'tegra210-i2s')
+        yield sysfs.Device(bus = 'platform', name = '2901300.i2s', driver = 'tegra210-i2s')
+        yield sysfs.Device(bus = 'platform', name = '2901500.i2s', driver = 'tegra210-i2s')
+        yield sysfs.Device(bus = 'platform', name = '2902000.sfc', driver = 'tegra210-sfc')
+        yield sysfs.Device(bus = 'platform', name = '2902200.sfc', driver = 'tegra210-sfc')
+        yield sysfs.Device(bus = 'platform', name = '2902400.sfc', driver = 'tegra210-sfc')
+        yield sysfs.Device(bus = 'platform', name = '2902600.sfc', driver = 'tegra210-sfc')
+        yield sysfs.Device(bus = 'platform', name = '2903000.amx', driver = 'tegra210-amx')
+        yield sysfs.Device(bus = 'platform', name = '2903100.amx', driver = 'tegra210-amx')
+        yield sysfs.Device(bus = 'platform', name = '2903200.amx', driver = 'tegra210-amx')
+        yield sysfs.Device(bus = 'platform', name = '2903300.amx', driver = 'tegra210-amx')
+        yield sysfs.Device(bus = 'platform', name = '2903800.adx', driver = 'tegra210-adx')
+        yield sysfs.Device(bus = 'platform', name = '2903900.adx', driver = 'tegra210-adx')
+        yield sysfs.Device(bus = 'platform', name = '2903a00.adx', driver = 'tegra210-adx')
+        yield sysfs.Device(bus = 'platform', name = '2903b00.adx', driver = 'tegra210-adx')
+        yield sysfs.Device(bus = 'platform', name = '2904200.dmic', driver = 'tegra210-dmic')
+        yield sysfs.Device(bus = 'platform', name = '2908000.processing-engine', driver = 'tegra210-ope')
+        yield sysfs.Device(bus = 'platform', name = '290a000.mvc', driver = 'tegra210-mvc')
+        yield sysfs.Device(bus = 'platform', name = '290a200.mvc', driver = 'tegra210-mvc')
+        yield sysfs.Device(bus = 'platform', name = '290bb00.amixer', driver = 'tegra210_mixer')
+        yield sysfs.Device(bus = 'platform', name = '290f000.admaif', driver = 'tegra210-admaif')
+        yield sysfs.Device(bus = 'platform', name = '2910000.asrc', driver = 'tegra186-asrc')
+        yield sysfs.Device(bus = 'platform', name = '2930000.dma-controller', driver = 'tegra-adma')
+        yield sysfs.Device(bus = 'platform', name = '2a41000.interrupt-controller', driver = 'gic')
+        yield sysfs.Device(bus = 'platform', name = '2c00000.memory-controller/2c60000.external-memory-controller', driver = 'tegra186-emc')
+        yield sysfs.Device(bus = 'platform', name = '2c00000.memory-controller', driver = 'tegra-mc')
+        yield sysfs.Device(bus = 'platform', name = '3100000.serial', driver = 'serial-tegra')
+        yield sysfs.Device(bus = 'platform', name = '3460000.mmc', driver = 'sdhci-tegra')
+        yield sysfs.Device(bus = 'platform', name = '3510000.hda', driver = 'tegra-hda')
+        yield sysfs.Device(bus = 'platform', name = '3810000.fuse', driver = 'tegra-fuse')
+        yield sysfs.Device(bus = 'platform', name = '3c00000.hsp', driver = 'tegra-hsp')
+        yield sysfs.Device(bus = 'platform', name = '3e00000.phy', driver = 'tegra194-p2u')
+        yield sysfs.Device(bus = 'platform', name = '3e10000.phy', driver = 'tegra194-p2u')
+        yield sysfs.Device(bus = 'platform', name = '3e20000.phy', driver = 'tegra194-p2u')
+        yield sysfs.Device(bus = 'platform', name = '3e30000.phy', driver = 'tegra194-p2u')
+        yield sysfs.Device(bus = 'platform', name = '3e40000.phy', driver = 'tegra194-p2u')
+        yield sysfs.Device(bus = 'platform', name = '3e50000.phy', driver = 'tegra194-p2u')
+        yield sysfs.Device(bus = 'platform', name = '3e60000.phy', driver = 'tegra194-p2u')
+        yield sysfs.Device(bus = 'platform', name = '3e70000.phy', driver = 'tegra194-p2u')
+        yield sysfs.Device(bus = 'platform', name = '3e90000.phy', driver = 'tegra194-p2u')
+        yield sysfs.Device(bus = 'platform', name = '3ea0000.phy', driver = 'tegra194-p2u')
+        yield sysfs.Device(bus = 'platform', name = '3eb0000.phy', driver = 'tegra194-p2u')
+        yield sysfs.Device(bus = 'platform', name = '3ec0000.phy', driver = 'tegra194-p2u')
+        yield sysfs.Device(bus = 'platform', name = '3ed0000.phy', driver = 'tegra194-p2u')
+        yield sysfs.Device(bus = 'platform', name = '3ee0000.phy', driver = 'tegra194-p2u')
+        yield sysfs.Device(bus = 'platform', name = '3ef0000.phy', driver = 'tegra194-p2u')
+        yield sysfs.Device(bus = 'platform', name = '3f00000.phy', driver = 'tegra194-p2u')
+        yield sysfs.Device(bus = 'platform', name = '3f20000.phy', driver = 'tegra194-p2u')
+        yield sysfs.Device(bus = 'platform', name = '3f30000.phy', driver = 'tegra194-p2u')
+        yield sysfs.Device(bus = 'platform', name = '3f40000.phy', driver = 'tegra194-p2u')
+        yield sysfs.Device(bus = 'platform', name = '3f50000.phy', driver = 'tegra194-p2u')
+        yield sysfs.Device(bus = 'platform', name = '3f60000.phy', driver = 'tegra194-p2u')
+        yield sysfs.Device(bus = 'platform', name = '3f70000.phy', driver = 'tegra194-p2u')
+        yield sysfs.Device(bus = 'platform', name = '3f80000.phy', driver = 'tegra194-p2u')
+        yield sysfs.Device(bus = 'platform', name = '3f90000.phy', driver = 'tegra194-p2u')
+        yield sysfs.Device(bus = 'platform', name = '8000000.iommu', driver = 'arm-smmu')
+        yield sysfs.Device(bus = 'platform', name = 'be00000.rce-fabric', driver = 'tegra234-cbb')
+        yield sysfs.Device(bus = 'platform', name = 'c150000.hsp', driver = 'tegra-hsp')
+        yield sysfs.Device(bus = 'platform', name = 'c2a0000.rtc', driver = 'tegra_rtc')
+        yield sysfs.Device(bus = 'platform', name = 'c2f0000.gpio', driver = 'tegra186-gpio')
+        yield sysfs.Device(bus = 'platform', name = 'c360000.pmc', driver = 'tegra-pmc')
+        yield sysfs.Device(bus = 'platform', name = 'c600000.aon-fabric', driver = 'tegra234-cbb')
+        yield sysfs.Device(bus = 'platform', name = 'd600000.bpmp-fabric', driver = 'tegra234-cbb')
+        yield sysfs.Device(bus = 'platform', name = 'de00000.dce-fabric', driver = 'tegra234-cbb')
+        yield sysfs.Device(bus = 'platform', name = 'e000000.ccplex', driver = 'tegra194-cpufreq')
+        yield sysfs.Device(bus = 'platform', name = '10000000.iommu', driver = 'arm-smmu')
+        yield sysfs.Device(bus = 'platform', name = '12000000.iommu', driver = 'arm-smmu')
+        yield sysfs.Device(bus = 'platform', name = '13a00000.cbb-fabric', driver = 'tegra234-cbb')
+        yield sysfs.Device(bus = 'platform', name = '13e00000.host1x', driver = 'tegra-host1x')
+        yield sysfs.Device(bus = 'platform', name = '14100000.pcie', driver = 'tegra194-pcie')
+        yield sysfs.Device(bus = 'platform', name = '14160000.pcie', driver = 'tegra194-pcie')
+        yield sysfs.Device(bus = 'platform', name = '15340000.vic', driver = 'tegra-vic')
+        yield sysfs.Device(bus = 'platform', name = '40000000.sram', driver = 'sram')
+        yield sysfs.Device(bus = 'platform', name = 'alarmtimer.0.auto', driver = 'alarmtimer')
+        yield sysfs.Device(bus = 'platform', name = 'bus@0:aconnect@2900000', driver = 'tegra-aconnect')
+        yield sysfs.Device(bus = 'platform', name = 'gpio-keys', driver = 'gpio-keys')
+        yield sysfs.Device(bus = 'platform', name = 'pmu', driver = 'armv8-pmu')
+        yield sysfs.Device(bus = 'platform', name = 'psci', driver = 'psci-cpuidle-domain')
+        yield sysfs.Device(bus = 'platform', name = 'regulator-vdd-12v-pcie', driver = 'reg-fixed-voltage')
+        yield sysfs.Device(bus = 'platform', name = 'regulator-vdd-1v8-ao', driver = 'reg-fixed-voltage')
+        yield sysfs.Device(bus = 'platform', name = 'regulator-vdd-1v8-ls', driver = 'reg-fixed-voltage')
+        yield sysfs.Device(bus = 'platform', name = 'regulator-vdd-3v3-pcie', driver = 'reg-fixed-voltage')
+        yield sysfs.Device(bus = 'platform', name = 'serial', driver = 'tegra-tcu')
+        yield sysfs.Device(bus = 'platform', name = 'serial8250', driver = 'serial8250')
+        yield sysfs.Device(bus = 'platform', name = 'sound', driver = 'tegra-audio-graph-card')
 
-    #
-    # TODO: The Tegra SE crypto driver doesn't currently support being force-
-    # unloaded like this because userspace may actively be keeping a refcount
-    # on some of the algorithms exposed by this module. A workaround for this
-    # is to make sure all userspace that may be using this is stopped. At the
-    # moment the only user seems to be the bluetoothd systemd service, so a
-    # better fix would be to make sure that's stopped while the test is run.
-    #
-    #drivers = [
-    #    sysfs.Driver('platform', 'tegra-host1x'),
-    #]
+        yield self.soc.devices['bpmp']
 
-    allowlist = [
-        r'.*: loading out-of-tree module taints kernel.',
-        r'EINJ: ACPI disabled.',
-        r'tegra-host1x 13e00000.host1x: Context device 0 has no IOMMU!',
-        r'tegra-mgbe 6800000.ethernet: Cannot get CSR clock',
-        r'urandom_read: [0-9]+ callbacks suppressed',
-        r'arch_timer: \[Firmware Bug\]: VHE-capable CPU without EL2 virtual timer interrupt',
-    ] + [
-        warning for warning in [
-            r'tegra194-pcie [0-f]+.pcie: Phy link never came up',
-        ] if Kernel().version < Kernel.Version('6.2.0')
-    ] + [
-        warning for warning in [
-            r'memfd_create\(\) without MFD_EXEC nor MFD_NOEXEC_SEAL, pid=[0-9]+ \'systemd\'',
-        ] if Kernel().version >= Kernel.Version('6.3.0') and Kernel().version < Kernel.Version('6.6.0')
-    ] + [
-        warning for warning in [
-            r'systemd\[[0-9]+\]: memfd_create\(\) called without MFD_EXEC or MFD_NOEXEC_SEAL set',
-        ] if Kernel().version >= Kernel.Version('6.4.0')
-    ] + [
-        warning for warning in [
-            r'tegra210-ahub 2900800.ahub: using zero-initialized flat cache, this may cause unexpected behavior'
-        ] if Kernel().version >= Kernel.Version('6.19.0') and Kernel().version < Kernel.Version('7.0.0')
-    ]
+        # Linux v6.2 added support for the ethernet controller on Jetson AGX Xavier
+        if kernel.version >= '6.2.0':
+            yield sysfs.Device(bus = 'platform', name = '6800000.ethernet', driver = 'tegra-mgbe')
+            yield sysfs.Device(bus = 'mdio_bus', name = 'stmmac-0:00', driver = 'Aquantia AQR113C')
 
-    def __init__(self):
-        self.soc = tegra234.SoC()
-        self.eeproms = {}
+        # Linux v6.10 added support for the Tegra Security Engine on Jetson AGX Xavier
+        if kernel.version >= '6.10.0':
+            sysfs.Device(bus = 'platform', name = '15820000.crypto', driver = 'tegra-se')
+            sysfs.Device(bus = 'platform', name = '15840000.crypto', driver = 'tegra-se')
 
-        # platform devices
-        self.devices.extend([
-            self.soc.devices['bpmp'],
-        ])
+        # HDA bus
+        yield sysfs.Device(bus = 'hdaudio', name = 'hdaudioC0D0', driver = [ 'snd_hda_codec_hdmi', 'snd_hda_codec_tegrahdmi' ])
 
-        # I2C clients
+        # host1x bus
+        yield sysfs.Device(bus = 'host1x', name = 'drm', driver = 'drm')
+
+        # PCI bus
+        yield sysfs.Device(bus = 'pci', name = '0001:00:00.0', driver = 'pcieport')
+
+        # I2C controllers and clients
         i2c_bpmp = self.soc.devices['bpmp:i2c']
+
+        if kernel.version >= '6.12.0':
+            yield i2c_bpmp
+            yield i2c_bpmp.client(0x4c, driver = 'lm90')
+
         i2c1 = self.soc.devices['i2c1']
+        yield i2c1
+        yield i2c1.client(0x50, driver = 'at24')
+        yield i2c1.client(0x56, driver = 'at24')
+
         i2c2 = self.soc.devices['i2c2']
+        yield i2c2
+        yield i2c2.client(0x08, driver = 'ucsi_ccg')
+
+        if kernel.version >= '6.7.0':
+            yield i2c2.client(0x40, driver = 'ina3221')
+            yield i2c2.client(0x41, driver = 'ina3221')
+
         i2c9 = self.soc.devices['i2c9']
+        yield i2c9
+        yield i2c9.client(0x1c, driver = 'rt5640')
 
-        self.devices.extend([
-            i2c1,
-            i2c1.client(0x50, driver = 'at24'),
-            i2c1.client(0x56, driver = 'at24'),
-            i2c2,
-            i2c2.client(0x08, driver = 'ucsi_ccg'),
-            i2c9.client(0x1c, driver = 'rt5640'),
-        ])
+    def _build_drivers(self, kernel):
+        yield from super()._build_drivers(kernel)
 
-        if Kernel().version >= Kernel.Version('6.7.0'):
-            self.devices.extend([
-                i2c2.client(0x40, driver = 'ina3221'),
-                i2c2.client(0x41, driver = 'ina3221'),
-            ])
+        # TODO: The Tegra SE crypto driver doesn't currently support being force-
+        # unloaded like this because userspace may actively be keeping a refcount
+        # on some of the algorithms exposed by this module. A workaround for this
+        # is to make sure all userspace that may be using this is stopped. At the
+        # moment the only user seems to be the bluetoothd systemd service, so a
+        # better fix would be to make sure that's stopped while the test is run.
+        #yield sysfs.Driver('platform', 'tegra-host1x')
 
-        if Kernel().version >= Kernel.Version('6.12.0'):
-            self.devices.extend([
-                i2c_bpmp,
-                i2c_bpmp.client(0x4c, driver = 'lm90'),
-            ])
+        yield from ()
+
+    def _build_allowlist(self, kernel):
+        yield from super()._build_allowlist(kernel)
+
+        yield r'.*: loading out-of-tree module taints kernel.'
+        yield r'EINJ: ACPI disabled.'
+        yield r'tegra-host1x 13e00000.host1x: Context device 0 has no IOMMU!'
+        yield r'tegra-mgbe 6800000.ethernet: Cannot get CSR clock'
+        yield r'urandom_read: [0-9]+ callbacks suppressed'
+        yield r'arch_timer: \[Firmware Bug\]: VHE-capable CPU without EL2 virtual timer interrupt'
+
+        if kernel.version < '6.2.0':
+            yield r'tegra194-pcie [0-f]+.pcie: Phy link never came up'
+
+        if kernel.version >= '6.3.0' and kernel.version < '6.6.0':
+            yield r'memfd_create\(\) without MFD_EXEC nor MFD_NOEXEC_SEAL, pid=[0-9]+ \'systemd\''
+
+        if kernel.version >= '6.4.0':
+            yield r'systemd\[[0-9]+\]: memfd_create\(\) called without MFD_EXEC or MFD_NOEXEC_SEAL set'
+
+        if kernel.version >= '6.19.0' and kernel.version < '7.0.0':
+            yield r'tegra210-ahub 2900800.ahub: using zero-initialized flat cache, this may cause unexpected behavior'
+
+    def __init__(self, kernel = Kernel()):
+        super().__init__(tegra234.SoC(), kernel)
+
+        self.eeproms = {}
