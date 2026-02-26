@@ -241,31 +241,31 @@ class Kernel:
 
         def __lt__(self, other):
             if isinstance(other, str):
-                other = Version(other)
+                other = Kernel.Version(other)
 
             return self.numerical() < other.numerical()
 
         def __le__(self, other):
             if isinstance(other, str):
-                other = Version(other)
+                other = Kernel.Version(other)
 
             return self.numerical() <= other.numerical()
 
         def __eq__(self, other):
             if isinstance(other, str):
-                other = Version(other)
+                other = Kernel.Version(other)
 
             return self.numerical() == other.numerical()
 
         def __gt__(self, other):
             if isinstance(other, str):
-                other = Version(other)
+                other = Kernel.Version(other)
 
             return self.numerical() > other.numerical()
 
         def __ge__(self, other):
             if isinstance(other, str):
-                other = Version(other)
+                other = Kernel.Version(other)
 
             return self.numerical() >= other.numerical()
 
