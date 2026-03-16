@@ -173,14 +173,22 @@ class Board(boards.Board):
         i2c9 = self.soc.devices['i2c9']
 
         self.devices.extend([
-            i2c_bpmp,
-            i2c_bpmp.client(0x4c, driver = 'lm90'),
             i2c1,
             i2c1.client(0x50, driver = 'at24'),
             i2c1.client(0x56, driver = 'at24'),
             i2c2,
             i2c2.client(0x08, driver = 'ucsi_ccg'),
-            i2c2.client(0x40, driver = 'ina3221'),
-            i2c2.client(0x41, driver = 'ina3221'),
             i2c9.client(0x1c, driver = 'rt5640'),
         ])
+
+        if Kernel().version >= Kernel.Version('6.7.0'):
+            self.devices.extend([
+                i2c2.client(0x40, driver = 'ina3221'),
+                i2c2.client(0x41, driver = 'ina3221'),
+            ])
+
+        if Kernel().version >= Kernel.Version('6.12.0'):
+            self.devices.extend([
+                i2c_bpmp,
+                i2c_bpmp.client(0x4c, driver = 'lm90'),
+            ])
