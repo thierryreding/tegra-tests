@@ -72,7 +72,7 @@ class cpufreq(runner.Test):
                     rate = file.read().strip()
 
                 if rate != value:
-                    raise Exception('unexpected CPU frequency: %u' % rate)
+                    raise Exception('unexpected CPU frequency: %s' % rate)
 
                 return
 
