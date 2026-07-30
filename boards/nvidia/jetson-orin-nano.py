@@ -112,6 +112,7 @@ class Board(boards.Board):
 
     allowlist = [
         r'.*: loading out-of-tree module taints kernel.',
+        r'arch_timer: \[Firmware Bug\]: VHE-capable CPU without EL2 virtual timer interrupt',
     ] + [
         warning for warning in [
 	    r'tegra210-ahub 2900800.ahub: using zero-initialized flat cache, this may cause unexpected behavior'

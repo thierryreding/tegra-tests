@@ -139,6 +139,7 @@ class Board(boards.Board):
         r'tegra-host1x 13e00000.host1x: Context device 0 has no IOMMU!',
         r'tegra-mgbe 6800000.ethernet: Cannot get CSR clock',
         r'urandom_read: [0-9]+ callbacks suppressed',
+        r'arch_timer: \[Firmware Bug\]: VHE-capable CPU without EL2 virtual timer interrupt',
     ] + [
         warning for warning in [
             r'tegra194-pcie [0-f]+.pcie: Phy link never came up',
