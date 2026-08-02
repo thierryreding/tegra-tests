@@ -122,7 +122,7 @@ class Board(boards.Board):
         ] if Kernel().version >= Kernel.Version('6.4.0')
     ] + [
         warning for warning in [
-	    r'tegra210-ahub 702d0800.ahub: using zero-initialized flat cache, this may cause unexpected behavior'
+            r'tegra210-ahub 702d0800.ahub: using zero-initialized flat cache, this may cause unexpected behavior'
         ] if Kernel().version >= Kernel.Version('6.19.0') and Kernel().version < Kernel.Version('7.0.0')
     ]
 

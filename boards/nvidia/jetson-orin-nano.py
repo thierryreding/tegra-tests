@@ -115,7 +115,7 @@ class Board(boards.Board):
         r'arch_timer: \[Firmware Bug\]: VHE-capable CPU without EL2 virtual timer interrupt',
     ] + [
         warning for warning in [
-	    r'tegra210-ahub 2900800.ahub: using zero-initialized flat cache, this may cause unexpected behavior'
+            r'tegra210-ahub 2900800.ahub: using zero-initialized flat cache, this may cause unexpected behavior'
         ] if Kernel().version >= Kernel.Version('6.19.0') and Kernel().version < Kernel.Version('7.0.0')
     ]
 
