@@ -46,6 +46,9 @@ class cpufreq(runner.Test):
                 for line in f:
                     self.supported_rates.extend(line.split())
 
+            with self.sysfs.open('scaling_min_freq', 'r') as f:
+                self.minimum_rate = int(f.read().strip())
+
         def __getattr__(self, name):
             if name == 'governor':
                 with self.sysfs.open('scaling_governor') as file:
@@ -133,6 +136,10 @@ class cpufreq(runner.Test):
 
             for rate in cpu.supported_rates:
                 log.debug('  - setting rate %s...' % rate, end = '')
+
+                if int(rate) < cpu.minimum_rate:
+                    log.cont('skip (below scaling_min_freq: %u)' % cpu.minimum_rate)
+                    continue
 
                 try:
                     cpu.rate = rate
