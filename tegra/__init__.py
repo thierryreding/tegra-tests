@@ -36,7 +36,9 @@ class SoC:
                     if match:
                         soc_id = int(content, 10)
 
-                        if soc_id == 0x23:
+                        # Tegra234 and Tegra264 include the major revision in
+                        # their product ID.
+                        if soc_id in (0x23, 0x26):
                             with device.open('major') as major:
                                 major = major.read().strip()
 
