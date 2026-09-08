@@ -8,6 +8,29 @@ from linux import debugfs
 module = sys.modules[__name__]
 module.name = 'memory'
 
+BWMGR_HALT_PATH = 'bpmp/debug/bwmgr/bwmgr_halt'
+
+def get_bwmgr_halt():
+    if not debugfs.exists(BWMGR_HALT_PATH):
+        return None
+
+    with debugfs.open(BWMGR_HALT_PATH, 'r') as fobj:
+        return int(fobj.read().strip())
+
+def set_bwmgr_halt(log, value):
+    operation = 'enabling' if value else 'disabling'
+    log.debug('- %s bwmgr halt...' % operation, end = '')
+
+    with debugfs.open(BWMGR_HALT_PATH, 'w') as fobj:
+        fobj.write('%u' % value)
+
+    actual = get_bwmgr_halt()
+    if actual != value:
+        raise runner.Error('failed to set bwmgr_halt to %u (reported %u)' %
+                           (value, actual))
+
+    log.cont('done')
+
 def emc_legacy(log, *args, **kwargs):
     def set_rate(rate):
         with debugfs.open('emc/rate', 'w') as f:
@@ -161,13 +184,22 @@ def emc_modern(log, *args, **kwargs):
 
 class emc(runner.Test):
     def __call__(self, log, *args, **kwargs):
-        if debugfs.exists('emc/available_rates'):
-            return emc_modern(log, *args, **kwargs)
+        bwmgr_halt = get_bwmgr_halt()
 
-        if debugfs.exists('emc/supported_rates'):
-            return emc_legacy(log, *args, **kwargs)
+        try:
+            if bwmgr_halt is not None:
+                set_bwmgr_halt(log, 1)
 
-        raise runner.Skip('EMC frequency scaling is not supported')
+            if debugfs.exists('emc/available_rates'):
+                return emc_modern(log, *args, **kwargs)
+
+            if debugfs.exists('emc/supported_rates'):
+                return emc_legacy(log, *args, **kwargs)
+
+            raise runner.Skip('EMC frequency scaling is not supported')
+        finally:
+            if bwmgr_halt is not None:
+                set_bwmgr_halt(log, bwmgr_halt)
 
 if __name__ == '__main__':
     runner.standalone(module)
