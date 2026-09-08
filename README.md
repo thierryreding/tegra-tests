@@ -63,6 +63,12 @@ device-specific testing. For some devices this may test rudimentary
 functionality such as PCI bus enumeration by checking that all expected
 PCI devices have been added.
 
+The devices subtest can also display bound devices that are not listed in
+the board definition. The output is formatted so that it can be copied into
+the board's devices list:
+
+    $ tests/boot.py devices --extra
+
 ### system.py
 
 This is a slightly more advanced test that will first try to suspend and

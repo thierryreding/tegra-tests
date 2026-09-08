@@ -3,11 +3,40 @@
 import os, os.path, sys
 import runner
 
-from linux import debugfs, kmsg, system, util
+from linux import debugfs, kmsg, sysfs, system, util
 import boards, tegra
 
 module = sys.modules[__name__]
 module.name = 'boot'
+
+def setup_parser(parser):
+    parser.add_argument('--extra', action = 'store_true',
+                        help = 'show bound devices not listed for the board')
+
+def find_extra_devices(board):
+    expected = {
+        os.path.realpath(device.full_path)
+        for device in board.devices
+    }
+
+    buses = os.path.join(sysfs.mountpoint, 'bus')
+
+    for bus in sorted(os.listdir(buses)):
+        devices = os.path.join(buses, bus, 'devices')
+        if not os.path.isdir(devices):
+            continue
+
+        for name in sorted(os.listdir(devices)):
+            path = os.path.join(devices, name)
+            if os.path.realpath(path) in expected:
+                continue
+
+            driver = os.path.join(path, 'driver')
+            if not os.path.exists(driver):
+                continue
+
+            yield sysfs.Device(bus = bus, name = name,
+                               driver = os.path.basename(os.path.realpath(driver)))
 
 class sysinfo(runner.Test):
     def __call__(self, log, *args, **kwargs):
@@ -79,6 +108,18 @@ class devices(runner.Test):
                     failed = True
                 else:
                     log.debug('    unbound')
+
+        if kwargs['args'].extra:
+            extra = list(find_extra_devices(board))
+
+            log.info('extra devices:')
+
+            if extra:
+                for device in extra:
+                    log.info("  sysfs.Device(bus = %r, name = %r, driver = %r)," %
+                             (device.bus, device.name, device.driver))
+            else:
+                log.info('  none')
 
         # no devices should be left in the deferred probe pending list
         if debugfs.exists('devices_deferred'):
