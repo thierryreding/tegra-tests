@@ -88,6 +88,10 @@ class cpufreq(runner.Test):
         cpuset = system.CPUSet()
         failed = False
 
+        if not any(sysfs.Object('devices/system/cpu/cpu%u' % cpu.num, 'cpufreq').exists()
+                   for cpu in cpuset):
+            raise runner.Skip('no CPU frequency scaling')
+
         # output supported governors and frequencies
         for cpu in cpuset:
             log.debug('- CPU#%u:' % cpu.num)
