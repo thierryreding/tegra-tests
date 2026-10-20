@@ -10,6 +10,9 @@ class Board(boards.Board):
     def _build_devices(self, kernel):
         yield from super()._build_devices(kernel)
 
+        top = self.soc.chiplets['top']
+        self.eeproms = {}
+
         # platform bus
         yield sysfs.Device(bus = 'platform', name = '8400000.dma-controller', driver = 'tegra-gpcdma')
         yield sysfs.Device(bus = 'platform', name = '8800000.hsp', driver = 'tegra-hsp')
@@ -45,6 +48,14 @@ class Board(boards.Board):
         yield sysfs.Device(bus = 'pci', name = '0005:01:00.0', driver = 'nvme')
 
         # I2C controllers and clients
+        i2c1 = sysfs.i2c.Controller(parent = top, name = '810c640000.i2c', driver = 'tegra-i2c')
+        self.eeproms['module'] = i2c1.client(0x50, driver = 'at24')
+        self.eeproms['system'] = i2c1.client(0x56, driver = 'at24')
+
+        yield i2c1
+        yield self.eeproms['module']
+        yield self.eeproms['system']
+
         if kernel.version >= '7.4.0':
             i2c_bpmp = self.soc.devices['bpmp:i2c']
 
@@ -56,5 +67,3 @@ class Board(boards.Board):
 
     def __init__(self, kernel = Kernel()):
         super().__init__(tegra264.SoC(), kernel)
-
-        self.eeproms = {}

@@ -25,3 +25,8 @@ class SoC(tegra.SoC):
         self.chiplets['vision'] = sysfs.Device(bus = 'platform', name = 'bus@8180000000')
         self.chiplets['disp-usb'] = sysfs.Device(bus = 'platform', name = 'bus@8800000000')
         self.chiplets['uphy0'] = sysfs.Device(bus = 'platform', name = 'bus@a800000000')
+
+        top_mmio = sysfs.Device(bus = 'platform', name = 'bus@8100000000')
+
+        # I2C controllers
+        self.devices['i2c1'] = sysfs.i2c.Controller(parent = top_mmio, name = '810c640000.i2c', driver = 'tegra-i2c')
