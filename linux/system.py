@@ -353,6 +353,50 @@ class ChecksumMismatch(Exception):
                 (checksum, expected))
 
 class EEPROM():
+    class Version():
+        def __init__(self, major, minor = 0):
+            if isinstance(major, str):
+                major, minor = map(int, major.split('.', maxsplit = 1))
+
+            self.major = major
+            self.minor = minor
+
+        def __lt__(self, other):
+            if isinstance(other, str):
+                other = EEPROM.Version(other)
+
+            return self.numerical() < other.numerical()
+
+        def __le__(self, other):
+            if isinstance(other, str):
+                other = EEPROM.Version(other)
+
+            return self.numerical() <= other.numerical()
+
+        def __gt__(self, other):
+            if isinstance(other, str):
+                other = EEPROM.Version(other)
+
+            return self.numerical() > other.numerical()
+
+        def __ge__(self, other):
+            if isinstance(other, str):
+                other = EEPROM.Version(other)
+
+            return self.numerical() >= other.numerical()
+
+        def __eq__(self, other):
+            if isinstance(other, str):
+                other = EEPROM.Version(other)
+
+            return self.numerical() == other.numerical()
+
+        def __str__(self):
+            return f'{self.major}.{self.minor}'
+
+        def numerical(self):
+            return self.major << 8 | self.minor
+
     class MACAddress():
         def __init__(self, data):
             self.data = data
@@ -361,11 +405,12 @@ class EEPROM():
             return ':'.join('%02x' % byte for byte in self.data)
 
     class ConfigurationBlock():
-        def __init__(self, data):
+        def __init__(self, eeprom, data):
+            self.eeprom = eeprom
             self.signature = data[0:4].decode('ascii')
             self.length = data[5] << 8 | data[4]
             self.type = data[6:8].decode('ascii')
-            self.version = data[9] << 8 | data[8]
+            self.version = EEPROM.Version(data[9], data[8])
 
             self.mac = {
                     'wifi': EEPROM.MACAddress(data[15:9:-1]),
@@ -373,16 +418,24 @@ class EEPROM():
                     'ethernet': EEPROM.MACAddress(data[27:21:-1])
                 }
 
+            if self.eeprom.version >= '2.0':
+                self.num_addresses = data[28]
+
         def dump(self, output = sys.stdout):
             print('NV Configuration Block:', file = output)
             print('  Signature: %s' % self.signature, file = output)
             print('  Length: %u' % self.length, file = output)
             print('  Type: %s' % self.type, file = output)
-            print('  Version: %04x' % self.version, file = output)
+            print('  Version: %s' % self.version, file = output)
             print('  MAC addresses:', file = output)
             print('    WiFi: %s' % self.mac['wifi'], file = output)
             print('    Bluetooth: %s' % self.mac['bluetooth'], file = output)
             print('    Ethernet: %s' % self.mac['ethernet'], file = output)
+
+            if self.eeprom.version >= '2.0':
+                if self.num_addresses > 0:
+                    print('  Extra MAC addresses: %u' % self.num_addresses,
+                          file = output)
 
     def __init__(self, sysfs):
         self.legacy = False
@@ -392,13 +445,14 @@ class EEPROM():
         with self.sysfs.open('eeprom', 'rb') as eeprom:
             data = eeprom.read(-1)
 
-        if data[1] != 0 or data[0] != 1:
-            raise UnknownVersion('%04x' % (data[1] << 8 | data[0]))
+        self.version = EEPROM.Version(data[0], data[1])
 
-        self.version = data[1] << 8 | data[0]
+        if self.version != '1.0' and self.version != '2.0':
+            raise UnknownVersion(f'{self.version}')
+
+        self.size = data[3] << 8 | data[2]
 
         if self.legacy:
-            self.size = data[3] << 8 | data[2]
             self.board = data[5] << 8 | data[4]
             self.sku = data[7] << 8 | data[6]
             self.fab = data[8]
@@ -414,8 +468,11 @@ class EEPROM():
             self.rework = data[17]
             self.sno = data[19] << 8 | data[18]
 
+        if self.version >= '2.0':
+            self.num_mac_addresses = data[19]
+
         try:
-            product = data[20:50]
+            product = data[20:49]
 
             offset = product.find(b'\xff')
             if offset >= 0:
@@ -433,10 +490,10 @@ class EEPROM():
                 'ethernet': EEPROM.MACAddress(data[73:67:-1])
             }
 
-        self.serial = data[74:89].decode('ascii')
+        self.serial = data[74:88].decode('ascii')
 
         if data[150:154] == b'NVCB':
-            self.nvcb = EEPROM.ConfigurationBlock(data[150:255])
+            self.nvcb = EEPROM.ConfigurationBlock(self, data[150:255])
 
         checksum = EEPROM.checksum(data[0:255])
         crc = data[255]
@@ -445,7 +502,8 @@ class EEPROM():
             raise ChecksumMismatch(checksum, crc)
 
     def dump(self, output = sys.stdout):
-        print('Version: %04x' % self.version, file = output)
+        print('Version: %s' % self.version, file = output)
+        print('Size: %u' % self.size, file = output)
 
         if self.legacy:
             print('Size: %u' % self.size, file = output)
