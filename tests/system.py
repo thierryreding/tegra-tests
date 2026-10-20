@@ -31,40 +31,28 @@ class watchdog(runner.Test):
         watchdog.enable()
 
 class eeprom(runner.Test):
+    def dump(self, log, board, name):
+        if name in board.eeproms:
+            device = board.eeproms[name]
+            buf = io.StringIO()
+
+            eeprom = system.EEPROM(device)
+
+            log.debug(f'{name} ID EEPROM:')
+            eeprom.dump(output = buf)
+            buf.seek(0, io.SEEK_SET)
+
+            for line in buf:
+                log.debug('  %s' % line.rstrip())
+
     def __call__(self, log, *args, **kwargs):
         board = boards.detect()
 
         if not hasattr(board, 'eeproms'):
             raise runner.Error()
 
-        if 'module' in board.eeproms:
-            device = board.eeproms['module']
-            buf = io.StringIO()
-
-            eeprom = system.EEPROM(device.sysfs)
-
-            log.debug('module ID EEPROM:')
-            eeprom.dump(output = buf)
-            buf.seek(0, io.SEEK_SET)
-
-            for line in buf:
-                log.debug('  %s' % line.rstrip())
-
-        if 'system' in board.eeproms:
-            device = board.eeproms['system']
-            buf = io.StringIO()
-
-            try:
-                eeprom = system.EEPROM(device.sysfs)
-            except Exception as e:
-                log.info('ERROR:', e)
-
-            log.debug('system ID EEPROM:')
-            eeprom.dump(output = buf)
-            buf.seek(0, io.SEEK_SET)
-
-            for line in buf:
-                log.debug('  %s' % line.rstrip())
+        self.dump(log, board, 'module')
+        self.dump(log, board, 'system')
 
 if __name__ == '__main__':
     runner.standalone(module)
