@@ -58,3 +58,8 @@ class Board(boards.Board):
         super().__init__(tegra264.SoC(), kernel)
 
         self.eeproms = {}
+
+        if 'i2c1' in self.soc.devices:
+            i2c = self.soc.devices['i2c1']
+            self.eeproms['module'] = i2c.client(0x50)
+            self.eeproms['system'] = i2c.client(0x56)

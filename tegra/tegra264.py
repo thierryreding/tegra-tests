@@ -16,3 +16,8 @@ class SoC(tegra.SoC):
 
         self.devices['bpmp'] = bpmp
         self.devices['bpmp:i2c'] = i2c
+
+        top_mmio = sysfs.Device(bus = 'platform', name = 'bus@8100000000')
+
+        # I2C controllers
+        self.devices['i2c1'] = sysfs.i2c.Controller(parent = top_mmio, name = '810c640000.i2c', driver = 'tegra-i2c')
