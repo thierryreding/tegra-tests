@@ -11,6 +11,12 @@ class Controller(sysfs.Device):
                 # need to clear the name because it is part of the parent now
                 name = None
 
+        for child in parent:
+            if child.name == name:
+                parent = child
+                name = None
+                break
+
         try:
             alias = parent.uevent['OF_ALIAS_0']
             self.index = int(alias[3:])
